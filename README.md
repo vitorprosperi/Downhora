@@ -2,8 +2,8 @@ Downhora
 
 1. Pré-requisitos
 
-- Node.js: Baixe em https://nodejs.org/
-- Git: Baixe em https://git-scm.com/
+- Node.js: https://nodejs.org/
+- Git: https://git-scm.com/
 - Github Desktop: https://desktop.github.com/download/
 - Expo Go (Celular): Instale via Play Store ou App Store
 
