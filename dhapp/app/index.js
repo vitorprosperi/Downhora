@@ -1,4 +1,4 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, TextInput } from 'react-native';
 import {useRouter} from 'expo-router';
 
 
@@ -13,6 +13,7 @@ export default function App (){
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text>Hello World</Text>
+            <TextInput placeholder="Digite algo"/>       
             <Button title='Próximo' onPress={novapagina}/>
         </View>
     )
