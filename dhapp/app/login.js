@@ -8,7 +8,7 @@ export default function Login (){
             <View style={styles.containerForm}>
                 <View>
                     <Text style={styles.textForm}>CPF</Text>
-                    <TextInput maxLength={11} keyboardType={"numeric"} placeholder="123.456.789-10"/>
+                    <TextInput style={styles.input} maxLength={11} keyboardType={"numeric"} placeholder="123.456.789-10"/>
                 </View>
                 <View>
                     <Text style={styles.textForm}>Senha</Text>
