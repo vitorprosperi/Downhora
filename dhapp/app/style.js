@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
@@ -11,6 +11,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         gap: 5,
         width: 200,
+    },
+    containerBotoes: {
+        gap: 10,
     },
     input: {
         backgroundColor: '#081221',
