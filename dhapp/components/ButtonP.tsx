@@ -1,8 +1,8 @@
-import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 // O jeito que eu fiz esse botao foi com o app tutorial do expo + stackoverflow entao talvez esteja errado.
 // Até o momento funciona mas se vc souber fazer mais bonito pode mexer a vontade
+// dou o bumbum
 
 type Props = {
     label: string;
