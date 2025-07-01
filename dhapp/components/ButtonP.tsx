@@ -1,22 +1,22 @@
-import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { GestureResponderEvent, Pressable, StyleSheet, Text, View } from 'react-native';
 
-// O jeito que eu fiz pro onPress funcionar foi pegar o nome da página pelo atributo(prop) redirect
-// que eu criei aqui embaixo e passar pra um router.push no onPress do Pressable. 
-// Deve ter uma solução melhor mas não sei react então sinta-se livre pra mudar isso.
+// O jeito que eu fiz esse botao foi com o app tutorial do expo + google entao talvez esteja errado.
+// E a linha gigante definindo o tipo do props foi um quick fix do vscode.
+// Ainda não sei react sinto mto pode mudar essa lógica se vc souber um modo mais bonito. (mas ta funcionando por enquanto)
 
 type Props = {
     label: string;
-    redirect: string;
 };
 
 
-export default function ButtonP({ label, redirect }: Props) {
+export default function ButtonP(props: { onPress: ((event: GestureResponderEvent) => void) | null | undefined; label: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }) {
 
+    
     return (
         <View>
-            <Pressable style={styles.button} onPress={() => router.push(`./${redirect}`)}>
-                <Text style={styles.text}>{label}</Text>
+            <Pressable style={styles.button} onPress={props.onPress}>
+                <Text style={styles.text}>{props.label}</Text>
             </Pressable>
         </View>
     )
