@@ -5,5 +5,5 @@ export function login () {
 }
 
 export function cadastroprof () {
-    router.push('/second');
+    router.push('/cadastroProf');
 }
