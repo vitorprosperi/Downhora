@@ -10,10 +10,8 @@ export default function App (){
         <View style={styles.container}>
             <Text style={styles.textForm}>Projeto Downhora </Text>  
             <View style={styles.containerBotoes}>
-                {/* <Button title='Entrar' onPress={login}/> */}
                 <ButtonP label='Entrar' onPress={login}></ButtonP>
                 <ButtonP label='Cadastre-se' onPress={cadastroprof}></ButtonP>
-                {/* <Button title='Cadastre-se' onPress={cadastroprof}/> */}
             </View>     
         </View>
     )
