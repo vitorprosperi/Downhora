@@ -1,8 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { Text, View } from 'react-native';
-import { cadastropac, login } from './rotas';
+import { cadastropac, login } from '@/routes/rotas';
 import styles from './style';
-import CadastroPac from './cadastroPac';
 
 export default function App (){
     
