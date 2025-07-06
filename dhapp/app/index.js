@@ -1,6 +1,6 @@
 import ButtonP from '@/components/ButtonP';
 import { Text, View } from 'react-native';
-import { cadastroprof, login } from './rotas';
+import { cadastropac, login } from '@/routes/rotas';
 import styles from './style';
 
 export default function App (){
@@ -11,7 +11,7 @@ export default function App (){
             <Text style={styles.textForm}>Projeto Downhora </Text>  
             <View style={styles.containerBotoes}>
                 <ButtonP label='Entrar' onPress={login}></ButtonP>
-                <ButtonP label='Cadastre-se' onPress={cadastroprof}></ButtonP>
+                <ButtonP label='Cadastre-se' onPress={cadastropac}></ButtonP>
             </View>     
         </View>
     )
