@@ -6,6 +6,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { cadastropacDois } from '../routes/rotas';
 
 export default function CadastroPac() {
+  //Variáveis para o funcionamento do dropdown
   const [valor, Setvalor] = useState();
   const [aberto, Setaberto] = useState(false);
   const [value, setValue] = useState(null);
