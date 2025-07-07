@@ -4,12 +4,20 @@ import { unidades } from "../unidades/unidades";
 import { cadastropacTres } from "../routes/rotas";
 import DropDownPicker from 'react-native-dropdown-picker';
 import ButtonP from '@/components/ButtonP';
+import { buscarcep } from "../API Correios/endereco";
 
 export default function CadastroPacDois() {
 //Variáveis para o funcionamento do dropdown
 const [aberto, Setaberto] = useState(false);
 const [valor, setValor] = useState(null);
 const [items, setItems] = useState(unidades);
+const [cep, setCep] = useState('');
+const [rua, setRua] = useState('');
+const [bairro, setBairro] = useState('');
+const [cidade, setCidade] = useState('');
+const [estado, setEstado] = useState('');
+const [complemento, setComplemento] = useState('');
+
 
     return(
     <ScrollView nestedScrollEnabled={true}>
@@ -21,10 +29,17 @@ const [items, setItems] = useState(unidades);
             </View>
             <View>
                 <Text>CEP*</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                value={cep}
+                onChangeText={setCep}
+                onBlur={() => buscarcep(cep, setRua, setBairro, setCidade, setEstado, setComplemento)}
+                />
                 
                 <Text>Rua*</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }}
+                value={rua}
+                onChangeText={setRua}
+                />
                 
                 <Text>Número*</Text>
                 <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
@@ -33,13 +48,22 @@ const [items, setItems] = useState(unidades);
                 <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
                 
                 <Text>Bairro*</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                value={bairro}
+                onChangeText={setBairro}                
+                />
 
                 <Text>Cidade*</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                value={cidade}
+                onChangeText={setCidade}                
+                />
 
                 <Text>Estado*</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                value={estado}
+                onChangeText={setEstado}                
+                />
 
                 <Text>Unidade de Saúde*</Text>
                 <DropDownPicker
