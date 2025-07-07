@@ -1,5 +1,7 @@
 import {router} from 'expo-router';
 
+// Funções para navegação entre telas
+
 export function login () {
     router.push('/login');
 }

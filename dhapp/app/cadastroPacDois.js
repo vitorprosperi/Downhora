@@ -16,6 +16,7 @@ const [valor, setValor] = useState(null);
                 <Text>Cadastro de Pessoas com SD. Down</Text>
                 <Text>Endereço</Text>
             </View>
+            {/* View do formulário*/}
             <View>
                 <Text>CEP*</Text>
                 <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
