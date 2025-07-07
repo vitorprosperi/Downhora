@@ -15,3 +15,7 @@ export function cadastropac () {
 export function cadastropacDois () {
     router.push('/cadastroPacDois');
 }
+
+export function cadastropacTres () {
+    router.push('/cadastroPacTres');
+}
