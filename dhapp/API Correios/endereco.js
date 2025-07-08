@@ -10,7 +10,6 @@ export const buscarcep = async (cep, setRua, setBairro, setCidade, setEstado, se
       setBairro(data.bairro);
       setCidade(data.localidade);
       setEstado(data.uf);
-      setComplemento(data.complemento);
       
     } else {
       alert('CEP não encontrado');

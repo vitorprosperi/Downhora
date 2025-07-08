@@ -7,7 +7,7 @@ import { cadastropacDois } from '../routes/rotas';
 
 export default function CadastroPac() {
   //Variáveis para o funcionamento do dropdown
-  const [valor, Setvalor] = useState();
+  const [valor, Setvalor] = useState(null);
   const [aberto, Setaberto] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([

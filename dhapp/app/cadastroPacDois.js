@@ -11,13 +11,12 @@ export default function CadastroPacDois() {
 const [aberto, Setaberto] = useState(false);
 const [valor, setValor] = useState(null);
 const [items, setItems] = useState(unidades);
+//Variáveis para o funcionamento do CEP
 const [cep, setCep] = useState('');
 const [rua, setRua] = useState('');
 const [bairro, setBairro] = useState('');
 const [cidade, setCidade] = useState('');
 const [estado, setEstado] = useState('');
-const [complemento, setComplemento] = useState('');
-
 
     return(
     <ScrollView nestedScrollEnabled={true}>
@@ -32,7 +31,8 @@ const [complemento, setComplemento] = useState('');
                 <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
                 value={cep}
                 onChangeText={setCep}
-                onBlur={() => buscarcep(cep, setRua, setBairro, setCidade, setEstado, setComplemento)}
+                keyboardType="numeric"
+                onBlur={() => buscarcep(cep, setRua, setBairro, setCidade, setEstado)}
                 />
                 
                 <Text>Rua*</Text>
@@ -42,7 +42,9 @@ const [complemento, setComplemento] = useState('');
                 />
                 
                 <Text>Número*</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }}
+                keyboardType="numeric"
+                />
                 
                 <Text>Complemento*</Text>
                 <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
