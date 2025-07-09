@@ -1,9 +1,10 @@
 import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
-import { View, Text, TextInput, ScrollView } from "react-native";
-import { RadioButton } from "react-native-paper";
+import { ScrollView, Text, TextInput, View } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
+import { RadioButton } from "react-native-paper";
 import { cadastropacDois } from '../routes/rotas';
+import styles from './style';
 
 export default function CadastroPac() {
   const [valor, Setvalor] = useState();
@@ -16,67 +17,113 @@ export default function CadastroPac() {
 
   return (
     <ScrollView nestedScrollEnabled={true}>
-      <View style={{ padding: 16 }}>
-        {/* View da header */}
-        <View>
-          <Text>Cadastro de Pessoas com SD. Down</Text>
-          <Text>Dados Pessoais</Text>
-          <Text>Campos com * são obrigatórios</Text>
-        </View>
-
+      <View style={styles.container}>
+        
         {/* View do formulário */}
-        <View style={{ marginTop: 16 }}>
-          <Text>Nome Completo*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+          <View style={styles.containerForm}>
+        
+            <View>
+              <Text style={styles.textForm}>Nome Completo*</Text>
+              <TextInput style={styles.input} />
+            </View>
 
-          <Text>Data de Nascimento*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
 
-          <Text>Gênero*</Text>
-          <DropDownPicker
-            open={aberto}
-            value={value}
-            items={items}
-            setOpen={Setaberto}
-            setValue={setValue}
-            setItems={setItems}
-            placeholder="Selecione o gênero"
-            listMode="SCROLLVIEW"
-            style={{ marginBottom: aberto ? 150 : 8 }} // espaço extra quando aberto
-          />
+            {/* Testando o scroll só, pode comentar ai qnd precisar. */}
+            <View>
+              <Text style={styles.textForm}>Nome Completo*</Text>
+              <TextInput style={styles.input} />
+            </View>
+            <View>
+              <Text style={styles.textForm}>Nome Completo*</Text>
+              <TextInput style={styles.input} />
+            </View>
+            <View>
+              <Text style={styles.textForm}>Nome Completo*</Text>
+              <TextInput style={styles.input} />
+            </View>
+             <View>
+              <Text style={styles.textForm}>Nome Completo*</Text>
+              <TextInput style={styles.input} />
+            </View>
+             <View>
+              <Text style={styles.textForm}>Nome Completo*</Text>
+              <TextInput style={styles.input} />
+            </View>
+             <View>
+              <Text style={styles.textForm}>Nome Completo*</Text>
+              <TextInput style={styles.input} />
+            </View>
+            
 
-          <Text>CPF*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+            <View>
+              <Text style={styles.textForm}>Data de Nascimento*</Text>
+              <TextInput style={styles.input} />
+            </View>
 
-          <Text>CNS*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+            <View>
+            <Text style={styles.textForm}>Gênero*</Text>
+            <DropDownPicker
+              open={aberto}
+              value={value}
+              items={items}
+              setOpen={Setaberto}
+              setValue={setValue}
+              setItems={setItems}
+              placeholder="Selecione o gênero"
+              listMode="SCROLLVIEW"
+              style={{ marginBottom: aberto ? 100 : 0 }} // espaço extra quando aberto
+            />
+            </View>
 
-          <Text>Nome da mãe*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+            <View>
+              <Text style={styles.textForm}>CPF*</Text>
+              <TextInput style={styles.input} />
+            </View>
 
-          <Text>Nome do responsável*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+            <View>
+            <Text style={styles.textForm}>CNS*</Text>
+            <TextInput style={styles.input} />
+            </View>
 
-          <Text>Telefone do responsável*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+            <View>
+              <Text style={styles.textForm}>Nome da mãe*</Text>
+              <TextInput style={styles.input} />
+            </View>
 
-          <Text>E-mail do responsável*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+            <View>
+              <Text style={styles.textForm}>Nome do responsável*</Text>
+              <TextInput style={styles.input} />
+            </View>
 
-          <Text>Nº do Prontuário*</Text>
-          <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+            <View>
+              <Text style={styles.textForm}>Telefone do responsável*</Text>
+              <TextInput style={styles.input} />
+            </View>
 
-          {/* View dos botões do prontuário */}
-          <View style={{ marginBottom: 16 }}>
-            <RadioButton.Group onValueChange={Setvalor} value={valor}>
-              <RadioButton.Item label="UBS" value="UBS" />
-              <RadioButton.Item label="Unesp" value="Unesp" />
-            </RadioButton.Group>
+            <View>
+              <Text style={styles.textForm}>E-mail do responsável*</Text>
+              <TextInput style={styles.input} />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Nº do Prontuário*</Text>
+              <TextInput style={styles.input} />
+            </View>
+
+            {/* View dos botões do prontuário */}
+            <View style={{ marginBottom: 16 }}>
+              <RadioButton.Group onValueChange={Setvalor} value={valor}>
+                <RadioButton.Item label="UBS" value="UBS" />
+                <RadioButton.Item label="Unesp" value="Unesp" />
+              </RadioButton.Group>
+            </View>
+
+            <ButtonP label="Continuar" onPress={cadastropacDois}/>
+            
           </View>
-
-          <ButtonP label="Continuar" onPress={cadastropacDois}/>
-        </View>
+          
       </View>
-    </ScrollView>
+      </ScrollView>
+    
   );
 }

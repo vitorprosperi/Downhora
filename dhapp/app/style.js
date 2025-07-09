@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     containerForm: {
         justifyContent: 'flex-start',
         gap: 5,
-        width: 200,
+        width: 210,
     },
     containerBotoes: {
         gap: 10,
