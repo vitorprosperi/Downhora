@@ -28,7 +28,8 @@ const [estado, setEstado] = useState('');
             </View>
             <View>
                 <Text>CEP*</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }}
+                maxLength={8} 
                 value={cep}
                 onChangeText={setCep}
                 keyboardType="numeric"

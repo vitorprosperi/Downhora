@@ -5,6 +5,7 @@ import ButtonP from '@/components/ButtonP';
 import { CadastroPacQuatro } from "../routes/rotas";
 
 export default function CadastroPacTres() {
+// Variáveis para o funcionamento dos dropdowns
 const [aberto1, setAberto1] = useState(false);
 const [valor1, setValor1] = useState(null);
 
