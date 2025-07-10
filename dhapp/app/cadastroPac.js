@@ -27,34 +27,6 @@ export default function CadastroPac() {
               <TextInput style={styles.input} />
             </View>
 
-
-            {/* Testando o scroll só, pode comentar ai qnd precisar. */}
-            <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-            <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-            <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-            
-
             <View>
               <Text style={styles.textForm}>Data de Nascimento*</Text>
               <TextInput style={styles.input} />
