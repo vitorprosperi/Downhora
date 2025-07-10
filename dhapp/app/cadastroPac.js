@@ -85,34 +85,6 @@ export default function CadastroPac() {
               <TextInput style={styles.input} />
             </View>
 
-
-            {/* Testando o scroll só, pode comentar ai qnd precisar. */}
-            <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-            <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-            <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
-            </View>
-            
-
             <View>
               <Text style={styles.textForm}>Data de Nascimento*</Text>
               <TextInput style={styles.input} />
@@ -133,37 +105,37 @@ export default function CadastroPac() {
 
             <View>
               <Text style={styles.textForm}>CPF*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} onChangeText={text => handleChange('cpf', text)} />
             </View>
 
             <View>
             <Text style={styles.textForm}>CNS*</Text>
-            <TextInput style={styles.input} />
+            <TextInput style={styles.input}onChangeText={text => handleChange('cns', text)} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} onChangeText={text => handleChange('nomeMae', text)} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome do responsável*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input}onChangeText={text => handleChange('nomeResponsavel', text)} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Telefone do responsável*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} onChangeText={text => handleChange('telefoneResponsavel', text)} />
             </View>
 
             <View>
               <Text style={styles.textForm}>E-mail do responsável*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} onChangeText={text => handleChange('emailResponsavel', text)} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nº do Prontuário*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} onChangeText={text => handleChange('prontuario', text)} />
             </View>
 
             {/* View dos botões do prontuário */}
