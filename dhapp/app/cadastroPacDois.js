@@ -9,7 +9,7 @@ import { buscarcep } from "../API Correios/endereco";
 export default function CadastroPacDois() {
 //Variáveis para o funcionamento do dropdown
 const [valor, setValor] = useState(null);
-const itens = unidades
+const itens = unidades;
 //Variáveis para o funcionamento do CEP
 const [cep, setCep] = useState('');
 const [rua, setRua] = useState('');

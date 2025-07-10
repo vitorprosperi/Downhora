@@ -14,7 +14,7 @@ export default function CadastroPac() {
     { label: 'Masculino', value: 'masculino' },
     { label: 'Feminino', value: 'feminino' },
     { label: 'Outro', value: 'outro' },
-  ]
+  ];
 
   return (
     <ScrollView nestedScrollEnabled={true}>
