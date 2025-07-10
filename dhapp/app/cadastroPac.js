@@ -1,10 +1,9 @@
 import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
-import { ScrollView, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { RadioButton } from "react-native-paper";
 import { cadastropacDois } from '../routes/rotas';
-import styles from './style';
 
 export default function CadastroPac() {
   //Variáveis para o funcionamento do dropdown
@@ -72,7 +71,8 @@ export default function CadastroPac() {
               setItems={setItems}
               placeholder="Selecione o gênero"
               listMode="SCROLLVIEW"
-              style={{ marginBottom: aberto ? 100 : 0 }} // espaço extra quando aberto
+              style={{ marginBottom: aberto ? 80 : 0, backgroundColor: 'darkblue' }}
+              containerStyle={{color: 'blue'}} // espaço extra quando aberto
             />
             </View>
 
@@ -128,3 +128,31 @@ export default function CadastroPac() {
     
   );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#081221',
+        paddingVertical: 50,
+    },
+    containerForm: {
+        justifyContent: 'flex-start',
+        gap: 5,
+        width: 210,
+    },
+    input: {
+        backgroundColor: '#081221',
+        color: '#fff',
+        paddingVertical: 3,
+        paddingHorizontal: 5,
+        borderWidth: 1,
+        borderColor: '#fff',
+        borderRadius: 2,
+        width: '100%',
+    },
+    textForm: {
+        color: '#fff',
+    }
+})
