@@ -16,6 +16,63 @@ export default function CadastroPac() {
     { label: 'Outro', value: 'outro' },
   ];
 
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (
+        !form.nomeCompleto ||
+        !form.dataNascimento ||
+        !value || 
+        !form.cpf ||
+        !form.nomeResponsavel ||
+        !form.telefoneResponsavel ||
+        !form.emailResponsavel ||
+        !form.prontuario ||
+        !valor 
+      ) {
+        throw new Error('Todos os campos obrigatórios devem ser preenchidos.');
+      }
+
+      await db.runAsync(
+        `INSERT INTO PessoaSindromeDeDown 
+        (nome_completo, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, numero_prontuario, unidade_saude)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          form.nomeCompleto,
+          form.dataNascimento,
+          value,
+          form.cpf,
+          form.cns,
+          form.nomeMae,
+          form.nomeResponsavel,
+          form.telefoneResponsavel,
+          form.emailResponsavel,
+          form.prontuario,
+          valor
+        ]
+      );
+
+      Alert.alert("Sucesso", "Paciente cadastrado com sucesso!");
+    } catch (error) {
+      console.error(error.message);
+      Alert.alert("Erro", error.message);
+    }
+  };
+
+  const checkPacientes = async () => {
+    try {
+      const results = await db.getAllAsync(
+        'SELECT * FROM PessoaSindromeDeDown'
+      );
+      console.log('Pacientes cadastrados:', results);
+    } catch (error) {
+      console.error('Erro ao consultar pacientes:', error.message);
+    }
+  };
+
   return (
     <ScrollView nestedScrollEnabled={true}>
       <View style={styles.container}>
