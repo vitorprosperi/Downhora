@@ -1,10 +1,9 @@
-import { View, Text, TextInput, ScrollView } from "react-native"
 import { useState } from "react";
-import { unidades } from "../unidades/unidades";
-import { cadastropacTres } from "../routes/rotas";
-import ButtonP from '@/components/ButtonP';
+import { ScrollView, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { buscarcep } from "../API Correios/endereco";
+import { cadastropacTres } from "../routes/rotas";
+import { unidades } from "../unidades/unidades";
 
 export default function CadastroPacDois() {
 //Variáveis para o funcionamento do dropdown

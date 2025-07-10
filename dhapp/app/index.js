@@ -1,7 +1,6 @@
 import ButtonP from '@/components/ButtonP';
-import { Text, View } from 'react-native';
 import { cadastropac, login } from '@/routes/rotas';
-import styles from './style';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function App (){
     
@@ -18,3 +17,17 @@ export default function App (){
     )
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#081221',
+    },
+    containerBotoes: {
+        gap: 10,
+    },
+    textForm: {
+        color: '#fff',
+    },
+});
