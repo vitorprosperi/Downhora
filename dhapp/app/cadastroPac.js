@@ -2,18 +2,18 @@ import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
 import { View, Text, TextInput, ScrollView } from "react-native";
 import { RadioButton } from "react-native-paper";
-import DropDownPicker from 'react-native-dropdown-picker';
 import { cadastropacDois } from '../routes/rotas';
+import { Dropdown } from 'react-native-element-dropdown';
 
 export default function CadastroPac() {
   //Variáveis para o funcionamento do dropdown
-  const [valor, Setvalor] = useState(null);
-  const [aberto, Setaberto] = useState(false);
+  const [valor, setValor] = useState(null);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
+  const itens = [
     { label: 'Masculino', value: 'masculino' },
     { label: 'Feminino', value: 'feminino' },
-  ]);
+    { label: 'Outro', value: 'outro' },
+  ]
 
   return (
     <ScrollView nestedScrollEnabled={true}>
@@ -34,16 +34,14 @@ export default function CadastroPac() {
           <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
 
           <Text>Gênero*</Text>
-          <DropDownPicker
-            open={aberto}
-            value={value}
-            items={items}
-            setOpen={Setaberto}
-            setValue={setValue}
-            setItems={setItems}
+          <Dropdown
+            style={{ borderWidth: 1, marginBottom: 8 }}
+            data={itens}
+            labelField="label"
+            valueField="value"
             placeholder="Selecione o gênero"
-            listMode="SCROLLVIEW"
-            style={{ marginBottom: aberto ? 150 : 8 }} // espaço extra quando aberto
+            value={value}
+            onChange={item => setValue(item.value)}         
           />
 
           <Text>CPF*</Text>
@@ -69,12 +67,11 @@ export default function CadastroPac() {
 
           {/* View dos botões do prontuário */}
           <View style={{ marginBottom: 16 }}>
-            <RadioButton.Group onValueChange={Setvalor} value={valor}>
+            <RadioButton.Group onValueChange={setValor} value={valor}>
               <RadioButton.Item label="UBS" value="UBS" />
               <RadioButton.Item label="Unesp" value="Unesp" />
             </RadioButton.Group>
           </View>
-
           <ButtonP label="Continuar" onPress={cadastropacDois}/>
         </View>
       </View>

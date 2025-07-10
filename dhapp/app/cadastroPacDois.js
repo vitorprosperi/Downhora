@@ -2,15 +2,14 @@ import { View, Text, TextInput, ScrollView } from "react-native"
 import { useState } from "react";
 import { unidades } from "../unidades/unidades";
 import { cadastropacTres } from "../routes/rotas";
-import DropDownPicker from 'react-native-dropdown-picker';
 import ButtonP from '@/components/ButtonP';
+import { Dropdown } from 'react-native-element-dropdown';
 import { buscarcep } from "../API Correios/endereco";
 
 export default function CadastroPacDois() {
 //Variáveis para o funcionamento do dropdown
-const [aberto, Setaberto] = useState(false);
 const [valor, setValor] = useState(null);
-const [items, setItems] = useState(unidades);
+const itens = unidades
 //Variáveis para o funcionamento do CEP
 const [cep, setCep] = useState('');
 const [rua, setRua] = useState('');
@@ -69,16 +68,16 @@ const [estado, setEstado] = useState('');
                 />
 
                 <Text>Unidade de Saúde*</Text>
-                <DropDownPicker
-                 open={aberto}
-                 value={valor}
-                 items={items}
-                 setOpen={Setaberto}
-                 setValue={setValor}
-                 setItems={setItems}
-                 placeholder="Selecione a unidade de saúde"
-                 listMode="SCROLLVIEW"
-                 style={{ marginBottom: aberto ? 150 : 8 }} // espaço extra quando aberto
+                <Dropdown
+                style={{ borderWidth: 1, marginBottom: 8 }}
+                data={itens}
+                labelField="label"
+                valueField="value"
+                placeholder="Selecione a unidade"
+                search
+                searchPlaceholder="Pesquisar unidade"
+                value={valor}
+                onChange={item => setValor(item.value)}         
                 />
             </View>
             <ButtonP label="Continuar" onPress={cadastropacTres}/>

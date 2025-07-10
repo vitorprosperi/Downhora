@@ -1,39 +1,34 @@
 import { View, Text, TextInput, ScrollView } from "react-native";
-import DropDownPicker from 'react-native-dropdown-picker';
+import { Dropdown } from 'react-native-element-dropdown';
 import { useState } from "react";
 import ButtonP from '@/components/ButtonP';
 import { CadastroPacQuatro } from "../routes/rotas";
 
 export default function CadastroPacTres() {
 // Variáveis para o funcionamento dos dropdowns
-const [aberto1, setAberto1] = useState(false);
 const [valor1, setValor1] = useState(null);
 
-const [aberto2, setAberto2] = useState(false);
 const [valor2, setValor2] = useState(null);
 
-const [aberto3, setAberto3] = useState(false);
 const [valor3, setValor3] = useState(null);
 
-const [aberto4, setAberto4] = useState(false);
 const [valor4, setValor4] = useState(null);
 
-const [aberto5, setAberto5] = useState(false);
 const [valor5, setValor5] = useState(null);
 
 // Itens dos 3 primeiros dropdowns
-const[items1, setItems1] = useState([
+const itens1 = [
     {label: 'Sim', value: 'sim'},
     {label: 'Não', value: 'nao'},
-]);
+];
 // Itens das comorbidades
-const[items2, setItems2] = useState([
+const itens2 = [
     {label: 'Cardiáca', value: 'cardiaca'},
     {label: 'Tireoidiana', value: 'tireoidiana'},
     {label: 'Outra', value: 'outra'},
-]);
+];
 // Itens do tipo sanguíneo
-const[items3, setItems3] = useState([
+const itens3 = [
     {label: 'A+', value: 'apositivo'},
     {label: 'A-', value: 'anegativo'},
     {label: 'B+', value: 'bpositivo'},
@@ -42,7 +37,7 @@ const[items3, setItems3] = useState([
     {label: 'AB-', value: 'abnegativo'},
     {label: 'O+', value: 'opositivo'},
     {label: 'O-', value: 'onegativo'},
-]);
+];
 
     return(
     <ScrollView nestedScrollEnabled={true}>
@@ -55,55 +50,47 @@ const[items3, setItems3] = useState([
             {/* View do Form*/}
             <View>
                 <Text>Diagnóstico confirmado de Sindrome de Down</Text>
-                <DropDownPicker
-                    open={aberto1}
-                    value={valor1}
-                    items={items1}
-                    setOpen={setAberto1}
-                    setValue={setValor1}
-                    setItems={setItems1}
-                    placeholder="Selecione"
-                    listMode="SCROLLVIEW"
-                    style={{ marginBottom: aberto1 ? 150 : 8 }} // espaço extra quando aberto
+                <Dropdown
+                 style={{ borderWidth: 1, marginBottom: 8 }}
+                 data={itens1}
+                 labelField="label"
+                 valueField="value"
+                 placeholder="Selecione"
+                 value={valor1}
+                 onChange={item => setValor1(item.value)}         
                 />
 
                 <Text>Acompanhamento Médico</Text>
-                <DropDownPicker
-                    open={aberto2}
-                    value={valor2}
-                    items={items1}
-                    setOpen={setAberto2}
-                    setValue={setValor2}
-                    setItems={setItems1}
-                    placeholder="Selecione"
-                    listMode="SCROLLVIEW"
-                    style={{ marginBottom: aberto2 ? 150 : 8 }} // espaço extra quando aberto
+                <Dropdown
+                 style={{ borderWidth: 1, marginBottom: 8 }}
+                 data={itens1}
+                 labelField="label"
+                 valueField="value"
+                 placeholder="Selecione"
+                 value={valor2}
+                 onChange={item => setValor2(item.value)}         
                 />
 
                 <Text>Comorbidades</Text>
-                <DropDownPicker
-                    open={aberto3}
-                    value={valor3}
-                    items={items1}
-                    setOpen={setAberto3}
-                    setValue={setValor3}
-                    setItems={setItems1}
-                    placeholder="Selecione"
-                    listMode="SCROLLVIEW"
-                    style={{ marginBottom: aberto3 ? 150 : 8 }} // espaço extra quando aberto
+                <Dropdown
+                 style={{ borderWidth: 1, marginBottom: 8 }}
+                 data={itens1}
+                 labelField="label"
+                 valueField="value"
+                 placeholder="Selecione"
+                 value={valor3}
+                 onChange={item => setValor3(item.value)}         
                 />
 
                 <Text>Tipo de comorbidade</Text>
-                <DropDownPicker
-                    open={aberto4}
-                    value={valor4}
-                    items={items2}
-                    setOpen={setAberto4}
-                    setValue={setValor4}
-                    setItems={setItems2}
-                    placeholder="Selecione"
-                    listMode="SCROLLVIEW"
-                    style={{ marginBottom: aberto4 ? 150 : 8 }} // espaço extra quando aberto
+                <Dropdown
+                 style={{ borderWidth: 1, marginBottom: 8 }}
+                 data={itens2}
+                 labelField="label"
+                 valueField="value"
+                 placeholder="Selecione"
+                 value={valor4}
+                 onChange={item => setValor4(item.value)}         
                 />
 
                 <Text>Medicamento em uso</Text>
@@ -113,16 +100,14 @@ const[items3, setItems3] = useState([
                 <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
 
                 <Text>Tipo sanguíneo</Text>
-                <DropDownPicker
-                    open={aberto5}
-                    value={valor5}
-                    items={items3}
-                    setOpen={setAberto5}
-                    setValue={setValor5}
-                    setItems={setItems3}
-                    placeholder="Selecione"
-                    listMode="SCROLLVIEW"
-                    style={{ marginBottom: aberto5 ? 150 : 8 }} // espaço extra quando aberto
+                <Dropdown
+                 style={{ borderWidth: 1, marginBottom: 8 }}
+                 data={itens3}
+                 labelField="label"
+                 valueField="value"
+                 placeholder="Selecione"
+                 value={valor5}
+                 onChange={item => setValor5(item.value)}         
                 />
             </View>
             <ButtonP label="Continuar" onPress={CadastroPacQuatro}/>
