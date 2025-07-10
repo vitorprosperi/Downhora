@@ -1,19 +1,19 @@
 import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import DropDownPicker from 'react-native-dropdown-picker';
+import { Dropdown } from 'react-native-element-dropdown';
 import { RadioButton } from "react-native-paper";
 import { cadastropacDois } from '../routes/rotas';
 
 export default function CadastroPac() {
   //Variáveis para o funcionamento do dropdown
-  const [valor, Setvalor] = useState();
-  const [aberto, Setaberto] = useState(false);
+  const [valor, setValor] = useState(null);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
+  const itens = [
     { label: 'Masculino', value: 'masculino' },
     { label: 'Feminino', value: 'feminino' },
-  ]);
+    { label: 'Outro', value: 'outro' },
+  ];
 
   return (
     <ScrollView nestedScrollEnabled={true}>
@@ -62,18 +62,15 @@ export default function CadastroPac() {
 
             <View>
             <Text style={styles.textForm}>Gênero*</Text>
-            <DropDownPicker
-              open={aberto}
-              value={value}
-              items={items}
-              setOpen={Setaberto}
-              setValue={setValue}
-              setItems={setItems}
-              placeholder="Selecione o gênero"
-              listMode="SCROLLVIEW"
-              style={{ marginBottom: aberto ? 80 : 0, backgroundColor: 'darkblue' }}
-              containerStyle={{color: 'blue'}} // espaço extra quando aberto
-            />
+            <Dropdown
+                 style={{ borderWidth: 1, marginBottom: 8 }}
+                 data={itens}
+                 labelField="label"
+                 valueField="value"
+                 placeholder="Selecione"
+                 value={value}
+                 onChange={item => setValue(item.value)}         
+             />
             </View>
 
             <View>
@@ -113,7 +110,7 @@ export default function CadastroPac() {
 
             {/* View dos botões do prontuário */}
             <View style={{ marginBottom: 16 }}>
-              <RadioButton.Group onValueChange={Setvalor} value={valor}>
+              <RadioButton.Group onValueChange={setValor} value={valor}>
                 <RadioButton.Item label="UBS" value="UBS" />
                 <RadioButton.Item label="Unesp" value="Unesp" />
               </RadioButton.Group>
