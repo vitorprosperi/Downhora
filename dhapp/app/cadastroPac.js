@@ -92,7 +92,8 @@ export default function CadastroPac() {
             <View>
             <Text style={styles.textForm}>Gênero*</Text>
             <Dropdown
-                 style={{ borderWidth: 1, marginBottom: 8 }}
+                 style={styles.input}
+                 placeholderStyle={styles.textForm}
                  data={itens}
                  labelField="label"
                  valueField="value"
