@@ -174,7 +174,10 @@ export default function CadastroPac() {
               </RadioButton.Group>
             </View>
 
+            <ButtonP label="Cadastrar Paciente" onPress={handleSubmit}/>
             <ButtonP label="Continuar" onPress={cadastropacDois}/>
+            <ButtonP label="Consultar Pacientes" onPress={checkPacientes}/>
+
             
           </View>
           
