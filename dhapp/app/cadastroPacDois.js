@@ -1,3 +1,4 @@
+import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
 import { ScrollView, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';

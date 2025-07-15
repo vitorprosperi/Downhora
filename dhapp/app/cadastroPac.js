@@ -1,4 +1,5 @@
 import ButtonP from '@/components/ButtonP';
+import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -6,6 +7,20 @@ import { RadioButton } from "react-native-paper";
 import { cadastropacDois } from '../routes/rotas';
 
 export default function CadastroPac() {
+  const db = useSQLiteContext();
+
+  const [form, setForm] = useState({
+  nomeCompleto: '',
+  dataNascimento: '',
+  cpf: '',
+  cns: '',
+  nomeMae: '',
+  nomeResponsavel: '',
+  telefoneResponsavel: '',
+  emailResponsavel: '',
+  prontuario: '',
+});
+
   //Variáveis para o funcionamento do dropdown
   const [valor, setValor] = useState(null);
   const [value, setValue] = useState(null);
@@ -54,10 +69,10 @@ export default function CadastroPac() {
         ]
       );
 
-      Alert.alert("Sucesso", "Paciente cadastrado com sucesso!");
+      console.log("Sucesso", "Paciente cadastrado com sucesso!");
     } catch (error) {
       console.error(error.message);
-      Alert.alert("Erro", error.message);
+      console.log("Erro", error.message);
     }
   };
 
@@ -81,12 +96,12 @@ export default function CadastroPac() {
         
             <View>
               <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} onChangeText={text => handleChange('nomeCompleto', text)} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Data de Nascimento*</Text>
-              <TextInput style={styles.input} />
+              <TextInput style={styles.input} onChangeText={text => handleChange('dataNascimento', text)} />
             </View>
 
             <View>
@@ -147,7 +162,7 @@ export default function CadastroPac() {
             </View>
 
             <ButtonP label="Cadastrar Paciente" onPress={handleSubmit}/>
-            <ButtonP label="Continuar" onPress={cadastropacDois}/>
+            <ButtonP label="Próximo" onPress={cadastropacDois}/>
             <ButtonP label="Consultar Pacientes" onPress={checkPacientes}/>
 
             
