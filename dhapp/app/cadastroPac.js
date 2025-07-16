@@ -1,10 +1,13 @@
 import ButtonP from '@/components/ButtonP';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RadioButton } from "react-native-paper";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
+
 
 export default function CadastroPac() {
   const db = useSQLiteContext();
@@ -88,8 +91,8 @@ export default function CadastroPac() {
   };
 
   return (
-    <ScrollView nestedScrollEnabled={true}>
-      <View style={styles.container}>
+    <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
+      <SafeAreaView style={styles.container}>
         
         {/* View do formulário */}
           <View style={styles.containerForm}>
@@ -166,8 +169,8 @@ export default function CadastroPac() {
             
           </View>
           
-      </View>
-      </ScrollView>
+      </SafeAreaView>
+      </KeyboardAwareScrollView>
     
   );
 }
@@ -178,7 +181,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#081221',
-        paddingVertical: 50,
     },
     containerForm: {
         justifyContent: 'flex-start',
