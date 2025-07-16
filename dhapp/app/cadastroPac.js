@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     containerForm: {
         justifyContent: 'flex-start',
         gap: 10,
-        width: '80%',
+        width: '90%',
     },
     input: {
         backgroundColor: '#081221',

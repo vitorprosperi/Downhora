@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     },
     containerBotoes: {
         gap: 10,
+        width: '80%',
     },
     textForm: {
         color: '#fff',
