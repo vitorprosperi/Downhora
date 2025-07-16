@@ -151,15 +151,13 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Nº do Prontuário*</Text>
               <TextInput style={styles.input} onChangeText={text => handleChange('prontuario', text)} />
+              <RadioButton.Group onValueChange={setValor} value={valor}>
+                <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="UBS" value="UBS" />
+                <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
+              </RadioButton.Group>
             </View>
 
             {/* View dos botões do prontuário */}
-            <View style={{ marginBottom: 16 }}>
-              <RadioButton.Group onValueChange={setValor} value={valor}>
-                <RadioButton.Item label="UBS" value="UBS" />
-                <RadioButton.Item label="Unesp" value="Unesp" />
-              </RadioButton.Group>
-            </View>
 
             <ButtonP label="Cadastrar Paciente" onPress={handleSubmit}/>
             <ButtonP label="Próximo" onPress={cadastropacDois}/>
@@ -184,20 +182,24 @@ const styles = StyleSheet.create({
     },
     containerForm: {
         justifyContent: 'flex-start',
-        gap: 5,
-        width: 210,
+        gap: 10,
+        width: 350,
     },
     input: {
         backgroundColor: '#081221',
         color: '#fff',
-        paddingVertical: 3,
+        paddingVertical: 0,
         paddingHorizontal: 5,
         borderWidth: 1,
         borderColor: '#fff',
         borderRadius: 2,
         width: '100%',
+        fontSize: 16,
+        height: 35,
     },
     textForm: {
         color: '#fff',
-    }
+        fontSize: 16,
+    },
+
 })
