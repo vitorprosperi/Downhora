@@ -3,18 +3,16 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useState } from "react";
 import ButtonP from '@/components/ButtonP';
 import { CadastroPacQuatro } from "../routes/rotas";
+import { usePaciente } from '@/context/context';
 
 export default function CadastroPacTres() {
-// Variáveis para o funcionamento dos dropdowns
-const [valor1, setValor1] = useState(null);
 
-const [valor2, setValor2] = useState(null);
+const {pacientedados, setPacientedados} = usePaciente();    
 
-const [valor3, setValor3] = useState(null);
-
-const [valor4, setValor4] = useState(null);
-
-const [valor5, setValor5] = useState(null);
+const verTodos = () => {
+  console.log('Dados do paciente até agora:', pacientedados);
+  CadastroPacQuatro(); // navega pra próxima tela
+};
 
 // Itens dos 3 primeiros dropdowns
 const itens1 = [
@@ -56,9 +54,9 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={valor1}
-                 onChange={item => setValor1(item.value)}         
-                />
+                 value={pacientedados.diagnostico}
+                 onChange={item => setPacientedados(prev => ({ ...prev, diagnostico: item.value }))}         
+                />         
 
                 <Text>Acompanhamento Médico</Text>
                 <Dropdown
@@ -67,8 +65,8 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={valor2}
-                 onChange={item => setValor2(item.value)}         
+                 value={pacientedados.acompanhamento}
+                 onChange={item => setPacientedados(prev => ({ ...prev, acompanhamento: item.value }))}         
                 />
 
                 <Text>Comorbidades</Text>
@@ -78,8 +76,8 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={valor3}
-                 onChange={item => setValor3(item.value)}         
+                 value={pacientedados.comorbidades}
+                 onChange={item => setPacientedados(prev => ({ ...prev, comorbidades: item.value }))}         
                 />
 
                 <Text>Tipo de comorbidade</Text>
@@ -89,15 +87,17 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={valor4}
-                 onChange={item => setValor4(item.value)}         
-                />
+                 value={pacientedados.tipocom}
+                 onChange={item => setPacientedados(prev => ({ ...prev, tipocom: item.value }))}/>
 
                 <Text>Medicamento em uso</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, medicamento: text }))}/>
+                
 
                 <Text>Alergias</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, alergia: text }))}/>
 
                 <Text>Tipo sanguíneo</Text>
                 <Dropdown
@@ -106,11 +106,11 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={valor5}
-                 onChange={item => setValor5(item.value)}         
+                 value={pacientedados.sangue}
+                 onChange={item => setPacientedados(prev => ({ ...prev, sangue: item.value }))}         
                 />
             </View>
-            <ButtonP label="Continuar" onPress={CadastroPacQuatro}/>
+            <ButtonP label="Próximo" onPress={verTodos}/>
         </View>
     </ScrollView>    
     )

@@ -1,12 +1,27 @@
 import ButtonP from '@/components/ButtonP';
-import { useSQLiteContext } from 'expo-sqlite';
-import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { RadioButton } from "react-native-paper";
 import { cadastropacDois } from '../routes/rotas';
+import { usePaciente } from '@/context/context';
 
 export default function CadastroPac() {
+
+  const { pacientedados, setPacientedados } = usePaciente();
+
+//Variáveis para o funcionamento do dropdown
+  const itens = [
+    { label: 'Masculino', value: 'masculino' },
+    { label: 'Feminino', value: 'feminino' },
+    { label: 'Outro', value: 'outro' },
+  ];
+
+  const verDadosAtuais = () => {
+  console.log('Dados do paciente até agora:', pacientedados);
+  cadastropacDois(); // navega pra próxima tela
+};
+
+  /*
   const db = useSQLiteContext();
 
   const [form, setForm] = useState({
@@ -20,15 +35,6 @@ export default function CadastroPac() {
   emailResponsavel: '',
   prontuario: '',
 });
-
-  //Variáveis para o funcionamento do dropdown
-  const [valor, setValor] = useState(null);
-  const [value, setValue] = useState(null);
-  const itens = [
-    { label: 'Masculino', value: 'masculino' },
-    { label: 'Feminino', value: 'feminino' },
-    { label: 'Outro', value: 'outro' },
-  ];
 
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
@@ -86,7 +92,7 @@ export default function CadastroPac() {
       console.error('Erro ao consultar pacientes:', error.message);
     }
   };
-
+*/
   return (
     <ScrollView nestedScrollEnabled={true}>
       <View style={styles.container}>
@@ -96,12 +102,15 @@ export default function CadastroPac() {
         
             <View>
               <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('nomeCompleto', text)} />
+              <TextInput style={styles.input} 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Data de Nascimento*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('dataNascimento', text)} />
+              <TextInput style={styles.input}
+               keyboardType="numeric"
+               onChangeText={(text) => setPacientedados(prev => ({ ...prev, data: text }))} />
             </View>
 
             <View>
@@ -113,59 +122,67 @@ export default function CadastroPac() {
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={value}
-                 onChange={item => setValue(item.value)}         
+                 value={pacientedados.genero}
+                 onChange={item => setPacientedados(prev => ({ ...prev, genero: item.value }))}         
              />
             </View>
 
             <View>
               <Text style={styles.textForm}>CPF*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('cpf', text)} />
+              <TextInput style={styles.input}
+              keyboardType="numeric" 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, cpf: text }))} />
             </View>
 
             <View>
             <Text style={styles.textForm}>CNS*</Text>
-            <TextInput style={styles.input}onChangeText={text => handleChange('cns', text)} />
+            <TextInput style={styles.input}
+            onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('nomeMae', text)} />
+              <TextInput style={styles.input} 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeMae: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome do responsável*</Text>
-              <TextInput style={styles.input}onChangeText={text => handleChange('nomeResponsavel', text)} />
+              <TextInput style={styles.input}
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeResp: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Telefone do responsável*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('telefoneResponsavel', text)} />
+              <TextInput style={styles.input}
+              keyboardType="numeric" 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, telResp: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>E-mail do responsável*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('emailResponsavel', text)} />
+              <TextInput style={styles.input} 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, emailResp: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nº do Prontuário*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('prontuario', text)} />
+              <TextInput style={styles.input} 
+             onChangeText={(text) => setPacientedados(prev => ({ ...prev, nPront: text }))} />
             </View>
 
             {/* View dos botões do prontuário */}
             <View style={{ marginBottom: 16 }}>
-              <RadioButton.Group onValueChange={setValor} value={valor}>
+              <RadioButton.Group onValueChange={(value) =>
+                setPacientedados((prev) => ({ ...prev, unidadeSaude: value }))
+              }
+                value={pacientedados.unidadeSaude}
+              >
                 <RadioButton.Item label="UBS" value="UBS" />
                 <RadioButton.Item label="Unesp" value="Unesp" />
               </RadioButton.Group>
             </View>
-
-            <ButtonP label="Cadastrar Paciente" onPress={handleSubmit}/>
-            <ButtonP label="Próximo" onPress={cadastropacDois}/>
-            <ButtonP label="Consultar Pacientes" onPress={checkPacientes}/>
-
-            
+            <ButtonP label="Próximo" onPress={verDadosAtuais} />
           </View>
           
       </View>
