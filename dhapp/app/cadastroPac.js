@@ -1,4 +1,5 @@
 import ButtonP from '@/components/ButtonP';
+import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { RadioButton } from "react-native-paper";
@@ -10,17 +11,14 @@ export default function CadastroPac() {
   const { pacientedados, setPacientedados } = usePaciente();
 
 //Variáveis para o funcionamento do dropdown
+
+  const [valor, setValor] = useState(null);
+
   const itens = [
     { label: 'Masculino', value: 'masculino' },
     { label: 'Feminino', value: 'feminino' },
     { label: 'Outro', value: 'outro' },
   ];
-
-  const verDadosAtuais = () => {
-  console.log('Dados do paciente até agora:', pacientedados);
-  cadastropacDois(); // navega pra próxima tela
-};
-
   /*
   const db = useSQLiteContext();
 
@@ -116,14 +114,17 @@ export default function CadastroPac() {
             <View>
             <Text style={styles.textForm}>Gênero*</Text>
             <Dropdown
-                 style={styles.input}
-                 placeholderStyle={styles.textForm}
-                 data={itens}
-                 labelField="label"
-                 valueField="value"
-                 placeholder="Selecione"
-                 value={pacientedados.genero}
-                 onChange={item => setPacientedados(prev => ({ ...prev, genero: item.value }))}         
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                data={itens}
+                labelField="label"
+                valueField="value"
+                placeholder="Selecione"
+                value={valor}
+                onChange={item => {
+                setValor(item.value);
+                setPacientedados(prev => ({ ...prev, genero: item.value }));
+              }}      
              />
             </View>
 
@@ -182,7 +183,7 @@ export default function CadastroPac() {
                 <RadioButton.Item label="Unesp" value="Unesp" />
               </RadioButton.Group>
             </View>
-            <ButtonP label="Próximo" onPress={verDadosAtuais} />
+            <ButtonP label="Próximo" onPress={cadastropacDois} />
           </View>
           
       </View>

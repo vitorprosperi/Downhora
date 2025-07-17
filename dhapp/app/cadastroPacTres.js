@@ -1,18 +1,22 @@
 import { View, Text, TextInput, ScrollView } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
 import { useState } from "react";
+import { Dropdown } from 'react-native-element-dropdown';
 import ButtonP from '@/components/ButtonP';
 import { CadastroPacQuatro } from "../routes/rotas";
 import { usePaciente } from '@/context/context';
 
 export default function CadastroPacTres() {
 
-const {pacientedados, setPacientedados} = usePaciente();    
+const {pacientedados, setPacientedados} = usePaciente();
+const [valor1, setValor1] = useState(null);
 
-const verTodos = () => {
-  console.log('Dados do paciente até agora:', pacientedados);
-  CadastroPacQuatro(); // navega pra próxima tela
-};
+const [valor2, setValor2] = useState(null);
+
+const [valor3, setValor3] = useState(null);
+
+const [valor4, setValor4] = useState(null);
+
+const [valor5, setValor5] = useState(null);
 
 // Itens dos 3 primeiros dropdowns
 const itens1 = [
@@ -54,8 +58,11 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={pacientedados.diagnostico}
-                 onChange={item => setPacientedados(prev => ({ ...prev, diagnostico: item.value }))}         
+                 value={valor1}
+                 onChange={item => {
+                 setValor1(item.value);
+                 setPacientedados(prev => ({ ...prev, diagnostico: item.value }));
+                }}          
                 />         
 
                 <Text>Acompanhamento Médico</Text>
@@ -65,8 +72,11 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={pacientedados.acompanhamento}
-                 onChange={item => setPacientedados(prev => ({ ...prev, acompanhamento: item.value }))}         
+                 value={valor2}
+                 onChange={item => {
+                 setValor2(item.value);
+                 setPacientedados(prev => ({ ...prev, acompanhamento: item.value }));
+                }}         
                 />
 
                 <Text>Comorbidades</Text>
@@ -76,8 +86,11 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={pacientedados.comorbidades}
-                 onChange={item => setPacientedados(prev => ({ ...prev, comorbidades: item.value }))}         
+                 value={valor3}
+                 onChange={item => {
+                 setValor3(item.value);
+                 setPacientedados(prev => ({ ...prev, comorbidades: item.value }));
+                }}          
                 />
 
                 <Text>Tipo de comorbidade</Text>
@@ -106,11 +119,14 @@ const itens3 = [
                  labelField="label"
                  valueField="value"
                  placeholder="Selecione"
-                 value={pacientedados.sangue}
-                 onChange={item => setPacientedados(prev => ({ ...prev, sangue: item.value }))}         
+                 value={valor4}
+                 onChange={item => {
+                 setValor4(item.value);
+                 setPacientedados(prev => ({ ...prev, tiposangue: item.value }));
+                }}         
                 />
             </View>
-            <ButtonP label="Próximo" onPress={verTodos}/>
+            <ButtonP label="Próximo" onPress={CadastroPacQuatro}/>
         </View>
     </ScrollView>    
     )

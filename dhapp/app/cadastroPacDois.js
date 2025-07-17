@@ -11,11 +11,6 @@ export default function CadastroPacDois() {
 
   const { pacientedados, setPacientedados } = usePaciente();
 
-  const verTodosAtuais = () => {
-  console.log('Dados do paciente até agora:', pacientedados);
-  cadastropacTres(); // navega pra próxima tela
-};
-
   const [cep, setCep] = useState('');
   const [rua, setRua] = useState('');
   const [bairro, setBairro] = useState('');
@@ -143,13 +138,12 @@ export default function CadastroPacDois() {
             searchPlaceholder="Pesquisar unidade"
             value={valor}
             onChange={item => {
-              setValor(item.value);
-              setPacientedados(prev => ({ ...prev, unidadeSaude: item.value }));
+            setValor(item.value);
+            setPacientedados(prev => ({ ...prev, unidadeSaude: item.value }));
             }}
           />
         </View>
-
-        <ButtonP label="Próximo" onPress={verTodosAtuais} />
+        <ButtonP label="Próximo" onPress={cadastropacTres} />
       </View>
     </ScrollView>
   );
