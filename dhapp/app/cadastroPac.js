@@ -1,10 +1,13 @@
 import ButtonP from '@/components/ButtonP';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RadioButton } from "react-native-paper";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
+
 
 export default function CadastroPac() {
   const db = useSQLiteContext();
@@ -88,8 +91,8 @@ export default function CadastroPac() {
   };
 
   return (
-    <ScrollView nestedScrollEnabled={true}>
-      <View style={styles.container}>
+    <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
+      <SafeAreaView style={styles.container}>
         
         {/* View do formulário */}
           <View style={styles.containerForm}>
@@ -151,15 +154,13 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Nº do Prontuário*</Text>
               <TextInput style={styles.input} onChangeText={text => handleChange('prontuario', text)} />
+              <RadioButton.Group onValueChange={setValor} value={valor}>
+                <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="UBS" value="UBS" />
+                <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
+              </RadioButton.Group>
             </View>
 
             {/* View dos botões do prontuário */}
-            <View style={{ marginBottom: 16 }}>
-              <RadioButton.Group onValueChange={setValor} value={valor}>
-                <RadioButton.Item label="UBS" value="UBS" />
-                <RadioButton.Item label="Unesp" value="Unesp" />
-              </RadioButton.Group>
-            </View>
 
             <ButtonP label="Cadastrar Paciente" onPress={handleSubmit}/>
             <ButtonP label="Próximo" onPress={cadastropacDois}/>
@@ -168,8 +169,8 @@ export default function CadastroPac() {
             
           </View>
           
-      </View>
-      </ScrollView>
+      </SafeAreaView>
+      </KeyboardAwareScrollView>
     
   );
 }
@@ -180,24 +181,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#081221',
-        paddingVertical: 50,
     },
     containerForm: {
         justifyContent: 'flex-start',
-        gap: 5,
-        width: 210,
+        gap: 10,
+        width: '90%',
     },
     input: {
         backgroundColor: '#081221',
         color: '#fff',
-        paddingVertical: 3,
+        paddingVertical: 0,
         paddingHorizontal: 5,
         borderWidth: 1,
         borderColor: '#fff',
         borderRadius: 2,
         width: '100%',
+        fontSize: 16,
+        height: 35,
     },
     textForm: {
         color: '#fff',
-    }
+        fontSize: 16,
+    },
+
 })

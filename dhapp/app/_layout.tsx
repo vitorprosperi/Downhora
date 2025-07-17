@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
-import { Provider as PaperProvider } from 'react-native-paper';
 import { SQLiteProvider } from 'expo-sqlite';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 export default function RootLayout() {
   return (
