@@ -91,8 +91,9 @@ export default function CadastroPac() {
   };
 
   return (
+    <SafeAreaView style={styles.container}>
     <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
-      <SafeAreaView style={styles.container}>
+      
         
         {/* View do formulário */}
           <View style={styles.containerForm}>
@@ -112,6 +113,9 @@ export default function CadastroPac() {
             <Dropdown
                  style={styles.input}
                  placeholderStyle={styles.textForm}
+                 selectedTextStyle={styles.textForm}
+                 containerStyle={styles.dropdownContainer}
+                 itemTextStyle={styles.textForm}
                  data={itens}
                  labelField="label"
                  valueField="value"
@@ -169,8 +173,9 @@ export default function CadastroPac() {
             
           </View>
           
-      </SafeAreaView>
+      
       </KeyboardAwareScrollView>
+      </SafeAreaView>
     
   );
 }
@@ -186,6 +191,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         gap: 10,
         width: '90%',
+    },
+    dropdownContainer: {
+      backgroundColor: '#081221',
     },
     input: {
         backgroundColor: '#081221',
