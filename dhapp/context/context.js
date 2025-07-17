@@ -1,0 +1,15 @@
+import { createContext, useContext, useState } from "react";
+
+const PacienteContext = createContext();
+
+export const PacienteProvider = ({ children }) => {
+    const [pacientedados, setPacientedados] = useState({});
+
+    return (
+        <PacienteContext.Provider value={{ pacientedados, setPacientedados}}>
+            {children}
+        </PacienteContext.Provider>
+    );
+};
+
+export const usePaciente = () => useContext(PacienteContext);

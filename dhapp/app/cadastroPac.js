@@ -1,5 +1,4 @@
 import ButtonP from '@/components/ButtonP';
-import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -7,9 +6,23 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
+import { usePaciente } from '@/context/context';
 
 
 export default function CadastroPac() {
+
+  const { pacientedados, setPacientedados } = usePaciente();
+
+//Variáveis para o funcionamento do dropdown
+
+  const [valor, setValor] = useState(null);
+
+  const itens = [
+    { label: 'Masculino', value: 'masculino' },
+    { label: 'Feminino', value: 'feminino' },
+    { label: 'Outro', value: 'outro' },
+  ];
+  /*
   const db = useSQLiteContext();
 
   const [form, setForm] = useState({
@@ -23,15 +36,6 @@ export default function CadastroPac() {
   emailResponsavel: '',
   prontuario: '',
 });
-
-  //Variáveis para o funcionamento do dropdown
-  const [valor, setValor] = useState(null);
-  const [value, setValue] = useState(null);
-  const itens = [
-    { label: 'Masculino', value: 'masculino' },
-    { label: 'Feminino', value: 'feminino' },
-    { label: 'Outro', value: 'outro' },
-  ];
 
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
@@ -89,7 +93,7 @@ export default function CadastroPac() {
       console.error('Erro ao consultar pacientes:', error.message);
     }
   };
-
+*/
   return (
     <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
       <SafeAreaView style={styles.container}>
@@ -99,56 +103,70 @@ export default function CadastroPac() {
         
             <View>
               <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('nomeCompleto', text)} />
+              <TextInput style={styles.input} 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Data de Nascimento*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('dataNascimento', text)} />
+              <TextInput style={styles.input}
+               keyboardType="numeric"
+               onChangeText={(text) => setPacientedados(prev => ({ ...prev, data: text }))} />
             </View>
 
             <View>
             <Text style={styles.textForm}>Gênero*</Text>
             <Dropdown
-                 style={styles.input}
-                 placeholderStyle={styles.textForm}
-                 data={itens}
-                 labelField="label"
-                 valueField="value"
-                 placeholder="Selecione"
-                 value={value}
-                 onChange={item => setValue(item.value)}         
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                data={itens}
+                labelField="label"
+                valueField="value"
+                placeholder="Selecione"
+                value={valor}
+                onChange={item => {
+                setValor(item.value);
+                setPacientedados(prev => ({ ...prev, genero: item.value }));
+              }}      
              />
             </View>
 
             <View>
               <Text style={styles.textForm}>CPF*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('cpf', text)} />
+              <TextInput style={styles.input}
+              keyboardType="numeric" 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, cpf: text }))} />
             </View>
 
             <View>
             <Text style={styles.textForm}>CNS*</Text>
-            <TextInput style={styles.input}onChangeText={text => handleChange('cns', text)} />
+            <TextInput style={styles.input}
+            onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('nomeMae', text)} />
+              <TextInput style={styles.input} 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeMae: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome do responsável*</Text>
-              <TextInput style={styles.input}onChangeText={text => handleChange('nomeResponsavel', text)} />
+              <TextInput style={styles.input}
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeResp: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Telefone do responsável*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('telefoneResponsavel', text)} />
+              <TextInput style={styles.input}
+              keyboardType="numeric" 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, telResp: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>E-mail do responsável*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('emailResponsavel', text)} />
+              <TextInput style={styles.input} 
+              onChangeText={(text) => setPacientedados(prev => ({ ...prev, emailResp: text }))} />
             </View>
 
             <View>
@@ -161,12 +179,7 @@ export default function CadastroPac() {
             </View>
 
             {/* View dos botões do prontuário */}
-
-            <ButtonP label="Cadastrar Paciente" onPress={handleSubmit}/>
             <ButtonP label="Próximo" onPress={cadastropacDois}/>
-            <ButtonP label="Consultar Pacientes" onPress={checkPacientes}/>
-
-            
           </View>
           
       </SafeAreaView>

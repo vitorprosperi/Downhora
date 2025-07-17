@@ -1,9 +1,10 @@
 import { Stack } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
-import { Provider as PaperProvider } from 'react-native-paper';
+import {PacienteProvider} from '../context/context';
 
 export default function RootLayout() {
   return (
+  <PacienteProvider>
     <SQLiteProvider
       databaseName='downhora.db'
       onInit={async (db) => {
@@ -27,10 +28,9 @@ export default function RootLayout() {
         `);
       }}
     >
-      <PaperProvider>
         <Stack />
-      </PaperProvider>
     </SQLiteProvider>
+  </PacienteProvider>
   );
 }
 
