@@ -1,4 +1,5 @@
 import ButtonP from '@/components/ButtonP';
+import { usePaciente } from '@/context/context';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -6,7 +7,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
-import { usePaciente } from '@/context/context';
 
 
 export default function CadastroPac() {
@@ -95,10 +95,10 @@ export default function CadastroPac() {
   };
 */
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
     <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
       
-        
+        <View style={styles.container}>
         {/* View do formulário */}
           <View style={styles.containerForm}>
         
@@ -118,21 +118,12 @@ export default function CadastroPac() {
             <View>
             <Text style={styles.textForm}>Gênero*</Text>
             <Dropdown
-<<<<<<< HEAD
-                 style={styles.input}
-                 placeholderStyle={styles.textForm}
-                 selectedTextStyle={styles.textForm}
-                 containerStyle={styles.dropdownContainer}
-                 itemTextStyle={styles.textForm}
-                 data={itens}
-                 labelField="label"
-                 valueField="value"
-                 placeholder="Selecione"
-                 value={value}
-                 onChange={item => setValue(item.value)}         
-=======
                 style={styles.input}
                 placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
                 data={itens}
                 labelField="label"
                 valueField="value"
@@ -142,7 +133,6 @@ export default function CadastroPac() {
                 setValor(item.value);
                 setPacientedados(prev => ({ ...prev, genero: item.value }));
               }}      
->>>>>>> 52a5fa0fcc9e42f57112f592967f5698d3623fd1
              />
             </View>
 
@@ -196,15 +186,18 @@ export default function CadastroPac() {
             {/* View dos botões do prontuário */}
             <ButtonP label="Próximo" onPress={cadastropacDois}/>
           </View>
-          
+        </View>
       
       </KeyboardAwareScrollView>
-      </SafeAreaView>
+    </SafeAreaView>
     
   );
 }
 
 const styles = StyleSheet.create({
+    corEscura: {
+      backgroundColor: '#081221',
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
