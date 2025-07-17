@@ -18,6 +18,10 @@ export function cadastroproftres () {
     router.push('/cadastroProfTres');
 }
 
+export function finalizarCadastro () {
+    router.push('/index');
+}
+
 export function cadastropac () {
     router.push('/cadastroPac');
 }
