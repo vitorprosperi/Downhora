@@ -19,18 +19,16 @@ export default function CadastroProfissionalDois() {
   return (
     <ScrollView nestedScrollEnabled={true} contentContainerStyle={styles.container}>
       <View style={styles.containerForm}>
-        <View style={{ marginBottom: 16 }}>
-          <Text style={[styles.textForm, { fontSize: 18, fontWeight: "bold" }]}>
-            Cadastro de Profissional
-          </Text>
-          <Text style={styles.textForm}>Dados profissionais</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Cadastro de Profissional</Text>
+          <Text style={styles.subtitle}>Dados profissionais</Text>
         </View>
 
-        <Text style={styles.textForm}>Unidade de saúde*</Text>
+        <Text style={styles.label}>Unidade de saúde*</Text>
         <Dropdown
           style={styles.input}
-          placeholderStyle={{ color: "#fff" }}
-          selectedTextStyle={{ color: "#fff" }}
+          placeholderStyle={styles.placeholderText}
+          selectedTextStyle={styles.selectedText}
           data={unidades}
           labelField="label"
           valueField="value"
@@ -39,11 +37,11 @@ export default function CadastroProfissionalDois() {
           onChange={item => setUnidade(item.value)}
         />
 
-        <Text style={styles.textForm}>Função / Cargo</Text>
+        <Text style={styles.label}>Função / Cargo</Text>
         <Dropdown
           style={styles.input}
-          placeholderStyle={{ color: "#fff" }}
-          selectedTextStyle={{ color: "#fff" }}
+          placeholderStyle={styles.placeholderText}
+          selectedTextStyle={styles.selectedText}
           data={funcoes}
           labelField="label"
           valueField="value"
@@ -52,7 +50,7 @@ export default function CadastroProfissionalDois() {
           onChange={item => setFuncao(item.value)}
         />
 
-        <View style={{ marginTop: 16 }}>
+        <View style={{ marginTop: 20 }}>
           <ButtonP label="Continuar" onPress={cadastroproftres} />
         </View>
       </View>
@@ -63,28 +61,55 @@ export default function CadastroProfissionalDois() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#081221',
-    paddingVertical: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#081221",
+    paddingVertical: 40,
   },
   containerForm: {
-    justifyContent: 'flex-start',
-    gap: 5,
-    width: 210,
+    width: "85%",
+    backgroundColor: "#0D1B2A",
+    padding: 20,
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  header: {
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 20,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#ccc",
+    marginTop: 4,
+  },
+  label: {
+    color: "#fff",
+    marginBottom: 6,
+    fontSize: 14,
   },
   input: {
-    backgroundColor: '#081221',
-    color: '#fff',
-    paddingVertical: 3,
-    paddingHorizontal: 5,
+    backgroundColor: "#13293D",
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 2,
-    width: '100%',
-    marginBottom: 8,
+    borderColor: "#3E92CC",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 16,
   },
-  textForm: {
-    color: '#fff',
-  }
+  placeholderText: {
+    color: "#aaa",
+    fontSize: 14,
+  },
+  selectedText: {
+    color: "#fff",
+    fontSize: 14,
+  },
 });

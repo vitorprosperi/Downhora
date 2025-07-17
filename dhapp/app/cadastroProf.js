@@ -1,99 +1,110 @@
+import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
-import { ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
-import { cadastroprofdois } from "../routes/rotas";
-import ButtonP from "../components/ButtonP";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
-export default function CadastroProfissionalUm() {
-  const [nomeCompleto, setNomeCompleto] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [nomeSocial, setNomeSocial] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
-  const [genero, setGenero] = useState("");
+export default function CadastroProfissional() {
+  const router = useRouter(); 
+
+  const [form, setForm] = useState({
+    nomeCompleto: '',
+    cpf: '',
+    nomeSocial: '',
+    dataNascimento: '',
+    genero: ''
+  });
+
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const handleSubmit = () => {
+    if (!form.cpf) {
+      alert("Informe o CPF para continuar.");
+      return;
+    }
+
+    router.push({
+      pathname: '/cadastroProfDois',
+      params: { cpf: form.cpf }
+    });
+  };
 
   return (
-    <ScrollView nestedScrollEnabled={true} contentContainerStyle={styles.container}>
-      <View style={styles.containerForm}>
-        <View style={{ marginBottom: 16 }}>
-          <Text style={[styles.textForm, { fontSize: 18, fontWeight: "bold" }]}>
-            Cadastro de Profissional
-          </Text>
-          <Text style={styles.textForm}>Dados pessoais</Text>
-        </View>
-
-        <View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#081221' }}>
+      <KeyboardAwareScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.scrollContainer}
+        extraScrollHeight={100}
+        enableOnAndroid
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.containerForm}>
+          {/* Campos do formulário */}
           <Text style={styles.textForm}>Nome completo*</Text>
           <TextInput
             style={styles.input}
-            value={nomeCompleto}
-            onChangeText={setNomeCompleto}
+            onChangeText={text => handleChange('nomeCompleto', text)}
+            value={form.nomeCompleto}
           />
 
           <Text style={styles.textForm}>CPF* (Será o método de login)</Text>
           <TextInput
             style={styles.input}
-            value={cpf}
-            onChangeText={setCpf}
-            keyboardType="numeric"
-            maxLength={11}
+            onChangeText={text => handleChange('cpf', text)}
+            value={form.cpf}
           />
 
           <Text style={styles.textForm}>Nome social</Text>
           <TextInput
             style={styles.input}
-            value={nomeSocial}
-            onChangeText={setNomeSocial}
+            onChangeText={text => handleChange('nomeSocial', text)}
+            value={form.nomeSocial}
           />
 
           <Text style={styles.textForm}>Data de nascimento</Text>
           <TextInput
             style={styles.input}
-            value={dataNascimento}
-            onChangeText={setDataNascimento}
-            placeholder="DD/MM/AAAA"
-            placeholderTextColor="#ccc"
+            onChangeText={text => handleChange('dataNascimento', text)}
+            value={form.dataNascimento}
           />
 
           <Text style={styles.textForm}>Gênero</Text>
           <TextInput
             style={styles.input}
-            value={genero}
-            onChangeText={setGenero}
+            onChangeText={text => handleChange('genero', text)}
+            value={form.genero}
           />
-        </View>
 
-        <View style={{ marginTop: 16 }}>
-          <ButtonP label="Continuar" onPress={cadastroprofdois} />
+          <ButtonP label="Continuar" onPress={handleSubmit} />
         </View>
-      </View>
-    </ScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  scrollContainer: {
+    padding: 20,
     backgroundColor: '#081221',
-    paddingVertical: 50,
   },
   containerForm: {
-    justifyContent: 'flex-start',
-    gap: 5,
-    width: 210,
+    gap: 10,
   },
   input: {
     backgroundColor: '#081221',
     color: '#fff',
-    paddingVertical: 3,
     paddingHorizontal: 5,
     borderWidth: 1,
     borderColor: '#fff',
     borderRadius: 2,
-    width: '100%',
-    marginBottom: 8,
+    fontSize: 16,
+    height: 40,
   },
   textForm: {
     color: '#fff',
-  }
+    fontSize: 16,
+  },
 });
