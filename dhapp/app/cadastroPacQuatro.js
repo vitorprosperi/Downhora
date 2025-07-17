@@ -1,14 +1,23 @@
-import { useState } from "react";
 import { View, Text, TextInput } from "react-native";
+import { useState } from "react";
 import { Dropdown } from 'react-native-element-dropdown';
 import ButtonP from '@/components/ButtonP';
+import { usePaciente } from '@/context/context';
 
 export default function CadastroPacQuatro() {
+
+const {pacientedados, setPacientedados} = usePaciente(); 
+
 const [valor1, setValor1] = useState(null);
 
 const [valor2, setValor2] = useState(null);
 
 const [valor3, setValor3] = useState(null);
+
+const verTodos = () => {
+  console.log('Dados do paciente até agora:', pacientedados);
+  console.log('Cadastro finalizado com sucesso!');
+};
 
 const itens1 =[
     {label: 'Ensino fundamental incompleto', value: 'ensino_fundamental_incompleto'},
@@ -16,7 +25,7 @@ const itens1 =[
     {label: 'Ensino médio incompleto', value: 'ensino_medio_incompleto'},
     {label: 'Ensino médio completo', value: 'ensino_medio_completo'},
     {label: 'Ensino superior incompleto', value: 'ensino_superior_incompleto'},
-    {label: 'Ensino superior completo', value: 'ensino_medio_completo'},
+    {label: 'Ensino superior completo', value: 'ensino_superior_completo'},
     {label: 'Pós graduação', value: 'pos_graduacao'},
 ];
 
@@ -48,14 +57,19 @@ const itens3 =[
                  valueField="value"
                  placeholder="Selecione"
                  value={valor1}
-                 onChange={item => setValor1(item.value)}         
+                 onChange={item => {
+                 setValor1(item.value);
+                 setPacientedados(prev => ({ ...prev, escolaridade: item.value }));
+                }}         
                 />
 
                 <Text>Nome da escola</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, escola: text }))}/>
 
                 <Text>Unidade APAE</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} />
+                <TextInput style={{ borderWidth: 1, marginBottom: 8 }}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uniapae: text }))}/>
 
                 <Text>Autonomia de comunicação</Text>
                 <Dropdown
@@ -65,7 +79,10 @@ const itens3 =[
                  valueField="value"
                  placeholder="Selecione"
                  value={valor2}
-                 onChange={item => setValor2(item.value)}         
+                 onChange={item => {
+                 setValor2(item.value);
+                 setPacientedados(prev => ({ ...prev, acompanhamento: item.value }));
+                }}        
                 />
 
                 <Text>Acompanhamento multiprofissional</Text>
@@ -76,10 +93,13 @@ const itens3 =[
                  valueField="value"
                  placeholder="Selecione"
                  value={valor3}
-                 onChange={item => setValor3(item.value)}         
+                 onChange={item => {
+                 setValor3(item.value);
+                 setPacientedados(prev => ({ ...prev, acompanhamento: item.value }));
+                }}          
                 />
             </View>
-            <ButtonP label="FInalizar cadastro" onPress={console.log("Finalizado")}/>
+            <ButtonP label="FInalizar cadastro" onPress={verTodos}/>
         </View>
     )
 }
