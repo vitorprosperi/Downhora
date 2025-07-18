@@ -1,107 +1,110 @@
 import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useProfissional } from '@/context/context'; 
+import { cadastroprofdois, proximoPasso } from '../routes/rotas'; 
 
 export default function CadastroProfissional() {
-  const router = useRouter(); 
+  const { profissionaldados, setProfissionaldados } = useProfissional();
 
-  const [form, setForm] = useState({
-    nomeCompleto: '',
-    cpf: '',
-    nomeSocial: '',
-    dataNascimento: '',
-    genero: ''
-  });
+  const [valorGenero, setValorGenero] = useState(null);
 
-  const handleChange = (field, value) => {
-    setForm({ ...form, [field]: value });
-  };
-
-  const handleSubmit = () => {
-    if (!form.cpf) {
-      alert("Informe o CPF para continuar.");
-      return;
-    }
-
-    router.push({
-      pathname: '/cadastroProfDois',
-      params: { cpf: form.cpf }
-    });
-  };
+  const generos = [
+    { label: 'Masculino', value: 'masculino' },
+    { label: 'Feminino', value: 'feminino' },
+    { label: 'Outro', value: 'outro' },
+  ];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#081221' }}>
-      <KeyboardAwareScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={styles.scrollContainer}
-        extraScrollHeight={100}
-        enableOnAndroid
-        keyboardShouldPersistTaps="handled"
-      >
+    <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.containerForm}>
-          {/* Campos do formulário */}
-          <Text style={styles.textForm}>Nome completo*</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => handleChange('nomeCompleto', text)}
-            value={form.nomeCompleto}
-          />
 
-          <Text style={styles.textForm}>CPF* (Será o método de login)</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => handleChange('cpf', text)}
-            value={form.cpf}
-          />
+          <View>
+            <Text style={styles.textForm}>Nome completo*</Text>
+            <TextInput 
+              style={styles.input}
+              onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, nomeCompleto: text }))}
+            />
+          </View>
 
-          <Text style={styles.textForm}>Nome social</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => handleChange('nomeSocial', text)}
-            value={form.nomeSocial}
-          />
+          <View>
+            <Text style={styles.textForm}>CPF* (Será o método de login)</Text>
+            <TextInput 
+              style={styles.input}
+              keyboardType="numeric"
+              onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, cpf: text }))}
+            />
+          </View>
 
-          <Text style={styles.textForm}>Data de nascimento</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => handleChange('dataNascimento', text)}
-            value={form.dataNascimento}
-          />
+          <View>
+            <Text style={styles.textForm}>Nome social</Text>
+            <TextInput 
+              style={styles.input}
+              onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, nomeSocial: text }))}
+            />
+          </View>
 
-          <Text style={styles.textForm}>Gênero</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={text => handleChange('genero', text)}
-            value={form.genero}
-          />
+          <View>
+            <Text style={styles.textForm}>Data de nascimento</Text>
+            <TextInput 
+              style={styles.input}
+              keyboardType="numeric"
+              onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, dataNascimento: text }))}
+            />
+          </View>
 
-          <ButtonP label="Continuar" onPress={handleSubmit} />
+          <View>
+            <Text style={styles.textForm}>Gênero</Text>
+            <Dropdown
+              style={styles.input}
+              placeholderStyle={styles.textForm}
+              data={generos}
+              labelField="label"
+              valueField="value"
+              placeholder="Selecione"
+              value={valorGenero}
+              onChange={item => {
+                setValorGenero(item.value);
+                setProfissionaldados(prev => ({ ...prev, genero: item.value }));
+              }}
+            />
+          </View>
+
+          <ButtonP label="Continuar" onPress={cadastroprofdois} />
+
         </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    padding: 20,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#081221',
   },
   containerForm: {
+    justifyContent: 'flex-start',
     gap: 10,
+    width: '90%',
   },
   input: {
     backgroundColor: '#081221',
     color: '#fff',
+    paddingVertical: 0,
     paddingHorizontal: 5,
     borderWidth: 1,
     borderColor: '#fff',
     borderRadius: 2,
+    width: '100%',
     fontSize: 16,
-    height: 40,
+    height: 35,
   },
   textForm: {
     color: '#fff',
