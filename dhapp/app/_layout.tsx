@@ -1,36 +1,39 @@
 import { Stack } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
-import {PacienteProvider} from '../context/context';
+import { PacienteProvider } from '../context/context';
+import { ProfissionalProvider } from '../context/context';
 
 export default function RootLayout() {
   return (
-  <PacienteProvider>
-    <SQLiteProvider
-      databaseName='downhora.db'
-      onInit={async (db) => {
-        await db.execAsync(`DROP TABLE IF EXISTS PessoaSindromeDeDown`);
+    <PacienteProvider>
+      <ProfissionalProvider>
+        <SQLiteProvider
+          databaseName="downhora.db"
+          onInit={async (db) => {
+            await db.execAsync(`DROP TABLE IF EXISTS PessoaSindromeDeDown`);
 
-        await db.execAsync(`
-          CREATE TABLE IF NOT EXISTS PessoaSindromeDeDown (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome_completo TEXT NOT NULL,
-            data_nascimento TEXT NOT NULL,
-            genero TEXT NOT NULL,
-            cpf TEXT UNIQUE NOT NULL,
-            cns TEXT,
-            nome_mae TEXT,
-            nome_responsavel TEXT NOT NULL,
-            telefone_responsavel TEXT NOT NULL,
-            email_responsavel TEXT NOT NULL,
-            numero_prontuario TEXT,
-            unidade_saude TEXT NOT NULL
-          );
-        `);
-      }}
-    >
-        <Stack />
-    </SQLiteProvider>
-  </PacienteProvider>
+            await db.execAsync(`
+              CREATE TABLE IF NOT EXISTS PessoaSindromeDeDown (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nome_completo TEXT NOT NULL,
+                data_nascimento TEXT NOT NULL,
+                genero TEXT NOT NULL,
+                cpf TEXT UNIQUE NOT NULL,
+                cns TEXT,
+                nome_mae TEXT,
+                nome_responsavel TEXT NOT NULL,
+                telefone_responsavel TEXT NOT NULL,
+                email_responsavel TEXT NOT NULL,
+                numero_prontuario TEXT,
+                unidade_saude TEXT NOT NULL
+              );
+            `);
+          }}
+        >
+          <Stack />
+        </SQLiteProvider>
+      </ProfissionalProvider>
+    </PacienteProvider>
   );
 }
 

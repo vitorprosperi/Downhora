@@ -13,3 +13,18 @@ export const PacienteProvider = ({ children }) => {
 };
 
 export const usePaciente = () => useContext(PacienteContext);
+
+
+const ProfissionalContext = createContext();
+
+export const ProfissionalProvider = ({ children }) => {
+    const [profissionaldados, setProfissionaldados] = useState({});
+
+    return (
+        <ProfissionalContext.Provider value={{ profissionaldados, setProfissionaldados}}>
+            {children}
+        </ProfissionalContext.Provider>
+    );
+};
+
+export const useProfissional = () => useContext(ProfissionalContext);
