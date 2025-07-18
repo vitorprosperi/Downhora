@@ -1,7 +1,6 @@
 import { Stack } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
-import { PacienteProvider } from '../context/context';
-import { ProfissionalProvider } from '../context/context';
+import { PacienteProvider, ProfissionalProvider } from '../context/context';
 
 export default function RootLayout() {
   return (

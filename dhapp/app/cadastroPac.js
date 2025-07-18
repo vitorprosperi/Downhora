@@ -96,9 +96,9 @@ export default function CadastroPac() {
 */
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-    <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
+    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
       
-        <View style={styles.container}>
+      <View style={styles.container}>
         {/* View do formulário */}
           <View style={styles.containerForm}>
         
@@ -186,7 +186,7 @@ export default function CadastroPac() {
             {/* View dos botões do prontuário */}
             <ButtonP label="Próximo" onPress={cadastropacDois}/>
           </View>
-        </View>
+          </View>
       
       </KeyboardAwareScrollView>
     </SafeAreaView>
@@ -196,10 +196,11 @@ export default function CadastroPac() {
 
 const styles = StyleSheet.create({
     corEscura: {
+      flex: 1,
       backgroundColor: '#081221',
     },
     container: {
-        flex: 1,
+      flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#081221',
@@ -223,6 +224,10 @@ const styles = StyleSheet.create({
         width: '100%',
         fontSize: 16,
         height: 35,
+    },
+    containerTeclado: {
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     textForm: {
         color: '#fff',
