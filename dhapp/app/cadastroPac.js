@@ -196,7 +196,7 @@ export default function CadastroPac() {
 
 const styles = StyleSheet.create({
     corEscura: {
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: '#081221',
     },
     container: {
