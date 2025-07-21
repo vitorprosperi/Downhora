@@ -1,6 +1,6 @@
 import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
-import { ScrollView, Text, TextInput, View } from "react-native";
+import { ScrollView, Text, TextInput, View, ActivityIndicator } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { buscarcep } from "../API Correios/endereco";
 import { cadastropacTres } from "../routes/rotas";
@@ -9,8 +9,9 @@ import { usePaciente } from '@/context/context';
 
 export default function CadastroPacDois() {
 
-  const { pacientedados, setPacientedados } = usePaciente();
+  const { setPacientedados } = usePaciente();
 
+  const[loading, setLoading] = useState(false);
   const [cep, setCep] = useState('');
   const [rua, setRua] = useState('');
   const [bairro, setBairro] = useState('');
@@ -61,15 +62,17 @@ export default function CadastroPacDois() {
                 (estado) => {
                   setEstado(estado);
                   setPacientedados(prev => ({ ...prev, estado }));
-                }
+                },
+                setLoading
               )
             }
           />
-
+          {loading && <ActivityIndicator size="small" color="#0000ff" />}
           <Text>Rua*</Text>
           <TextInput
             style={{ borderWidth: 1, marginBottom: 8 }}
             value={rua}
+            editable={!loading}
             onChangeText={(text) => {
               setRua(text);
               setPacientedados(prev => ({ ...prev, rua: text }));

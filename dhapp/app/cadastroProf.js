@@ -22,7 +22,7 @@ export default function CadastroProfissional() {
     <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
       <SafeAreaView style={styles.container}>
         <View style={styles.containerForm}>
-
+          
           <View>
             <Text style={styles.textForm}>Nome completo*</Text>
             <TextInput 
