@@ -1,7 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RadioButton } from "react-native-paper";
@@ -22,82 +22,11 @@ export default function CadastroPac() {
     { label: 'Feminino', value: 'feminino' },
     { label: 'Outro', value: 'outro' },
   ];
-  /*
-  const db = useSQLiteContext();
-
-  const [form, setForm] = useState({
-  nomeCompleto: '',
-  dataNascimento: '',
-  cpf: '',
-  cns: '',
-  nomeMae: '',
-  nomeResponsavel: '',
-  telefoneResponsavel: '',
-  emailResponsavel: '',
-  prontuario: '',
-});
-
-  const handleChange = (field, value) => {
-    setForm({ ...form, [field]: value });
-  };
-
-  const handleSubmit = async () => {
-    try {
-      if (
-        !form.nomeCompleto ||
-        !form.dataNascimento ||
-        !value || 
-        !form.cpf ||
-        !form.nomeResponsavel ||
-        !form.telefoneResponsavel ||
-        !form.emailResponsavel ||
-        !form.prontuario ||
-        !valor 
-      ) {
-        throw new Error('Todos os campos obrigatórios devem ser preenchidos.');
-      }
-
-      await db.runAsync(
-        `INSERT INTO PessoaSindromeDeDown 
-        (nome_completo, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, numero_prontuario, unidade_saude)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          form.nomeCompleto,
-          form.dataNascimento,
-          value,
-          form.cpf,
-          form.cns,
-          form.nomeMae,
-          form.nomeResponsavel,
-          form.telefoneResponsavel,
-          form.emailResponsavel,
-          form.prontuario,
-          valor
-        ]
-      );
-
-      console.log("Sucesso", "Paciente cadastrado com sucesso!");
-    } catch (error) {
-      console.error(error.message);
-      console.log("Erro", error.message);
-    }
-  };
-
-  const checkPacientes = async () => {
-    try {
-      const results = await db.getAllAsync(
-        'SELECT * FROM PessoaSindromeDeDown'
-      );
-      console.log('Pacientes cadastrados:', results);
-    } catch (error) {
-      console.error('Erro ao consultar pacientes:', error.message);
-    }
-  };
-*/
+  
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
     <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
-      
+      <ScrollView>
       <View style={styles.container}>
         {/* View do formulário */}
           <View style={styles.containerForm}>
@@ -187,7 +116,7 @@ export default function CadastroPac() {
             <ButtonP label="Próximo" onPress={cadastropacDois}/>
           </View>
           </View>
-      
+      </ScrollView>
       </KeyboardAwareScrollView>
     </SafeAreaView>
     

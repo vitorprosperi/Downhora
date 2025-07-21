@@ -1,5 +1,7 @@
-export const buscarcep = async (cep, setRua, setBairro, setCidade, setEstado, setComplemento) => {
+export const buscarcep = async (cep, setRua, setBairro, setCidade, setEstado, setLoading) => {
   if (cep.length !== 8) return null;
+
+  setLoading(true);
 
   try {
     const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -19,5 +21,7 @@ export const buscarcep = async (cep, setRua, setBairro, setCidade, setEstado, se
   } catch (error) {
     console.error('Erro ao buscar o CEP:', error);
     return null;
+  } finally {
+    setLoading(false);
   }
 };
