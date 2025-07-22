@@ -1,12 +1,13 @@
+import ButtonP from "@/components/ButtonP";
+import { useProfissional } from "@/context/context";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useProfissional } from "@/context/context";
+import { cadastroproftres } from "../routes/rotas";
 import { unidades } from "../unidades/unidades";
-import ButtonP from "@/components/ButtonP";
-import { cadastroproftres, proximoPasso } from "../routes/rotas";
+import styles from "./styleForms";
 
 const funcoes = [
   { label: "ACS", value: "ACS" },
@@ -21,83 +22,64 @@ export default function CadastroProfissional2() {
   const [funcaoSelecionada, setFuncaoSelecionada] = useState(null);
 
   return (
-    <KeyboardAwareScrollView extraHeight={280} enableOnAndroid={true}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.containerForm}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+        <View style={styles.container}>
+          <View style={styles.containerForm}>
 
-          <View>
-            <Text style={styles.textForm}>Unidade de saúde*</Text>
-            <Dropdown
-              style={styles.input}
-              placeholderStyle={styles.placeholder}
-              data={unidades}
-              labelField="label"
-              valueField="value"
-              placeholder="Listagem aqui"
-              value={unidadeSelecionada}
-              onChange={(item) => {
-                setUnidadeSelecionada(item.value);
-                setProfissionaldados((prev) => ({
-                  ...prev,
-                  unidadeSaude: item.value,
-                }));
-              }}
-            />
+            <View>
+              <Text style={styles.textForm}>Unidade de saúde*</Text>
+              <Dropdown
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
+                data={unidades}
+                labelField="label"
+                valueField="value"
+                placeholder="Listagem aqui"
+                value={unidadeSelecionada}
+                onChange={(item) => {
+                  setUnidadeSelecionada(item.value);
+                  setProfissionaldados((prev) => ({
+                    ...prev,
+                    unidadeSaude: item.value,
+                  }));
+                }}
+              />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Função / Cargo</Text>
+              <Dropdown
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
+                data={funcoes}
+                labelField="label"
+                valueField="value"
+                placeholder="Selecione"
+                value={funcaoSelecionada}
+                onChange={(item) => {
+                  setFuncaoSelecionada(item.value);
+                  setProfissionaldados((prev) => ({
+                    ...prev,
+                    funcao: item.value,
+                  }));
+                }}
+              />
+            </View>
+
+            <ButtonP label="Continuar" onPress={cadastroproftres} />
           </View>
-
-          <View>
-            <Text style={styles.textForm}>Função / Cargo</Text>
-            <Dropdown
-              style={styles.input}
-              placeholderStyle={styles.placeholder}
-              data={funcoes}
-              labelField="label"
-              valueField="value"
-              placeholder="Selecione"
-              value={funcaoSelecionada}
-              onChange={(item) => {
-                setFuncaoSelecionada(item.value);
-                setProfissionaldados((prev) => ({
-                  ...prev,
-                  funcao: item.value,
-                }));
-              }}
-            />
-          </View>
-
-          <ButtonP label="Continuar" onPress={cadastroproftres} />
         </View>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#081221',
-  },
-  containerForm: {
-    justifyContent: 'flex-start',
-    gap: 10,
-    width: '90%',
-  },
-  input: {
-    backgroundColor: '#081221',
-    color: '#fff',
-    paddingVertical: 0,
-    paddingHorizontal: 5,
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 2,
-    width: '100%',
-    fontSize: 16,
-    height: 35,
-  },
-  textForm: {
-    color: '#fff',
-    fontSize: 16,
-  },
-});

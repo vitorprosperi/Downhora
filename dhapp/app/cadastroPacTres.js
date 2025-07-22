@@ -1,9 +1,10 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
 import { useState } from "react";
-import { SafeAreaView, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CadastroPacQuatro } from "../routes/rotas";
 import styles from './styleForms';
 
@@ -48,7 +49,7 @@ export default function CadastroPacTres() {
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
-                        
+
                         <View>
                             <Text style={styles.textForm}>Diagnóstico confirmado de Sindrome de Down</Text>
                             <Dropdown

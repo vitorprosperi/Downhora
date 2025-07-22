@@ -1,9 +1,10 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
 import { useState } from "react";
-import { ActivityIndicator, SafeAreaView, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { buscarcep } from "../API Correios/endereco";
 import { cadastropacTres } from "../routes/rotas";
 import { unidades } from "../unidades/unidades";
