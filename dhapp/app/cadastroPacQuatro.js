@@ -1,8 +1,10 @@
-import { View, Text, TextInput } from "react-native";
-import { useState } from "react";
-import { Dropdown } from 'react-native-element-dropdown';
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
+import { useState } from "react";
+import { SafeAreaView, Text, TextInput, View } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import styles from './styleForms';
 
 export default function CadastroPacQuatro() {
 
@@ -41,13 +43,12 @@ const itens3 =[
 ];
 
     return(
-        <View style={{ padding: 16 }}>
-            {/* View da header*/}
-            <View>
-                <Text>Cadastro de Pessoas com SD. Down</Text>
-                <Text>Informações Complementares</Text>
-            </View>
-            {/* View do form*/}
+        <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+
+        <View style={styles.container}>
+          {/* View do formulário */}
+          <View style={styles.containerForm}>
             <View>
                 <Text>Escolaridade</Text>
                 <Dropdown
@@ -101,5 +102,8 @@ const itens3 =[
             </View>
             <ButtonP label="FInalizar cadastro" onPress={verTodos}/>
         </View>
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
     )
 }

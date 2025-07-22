@@ -1,9 +1,11 @@
-import { View, Text, TextInput, ScrollView } from "react-native";
-import { useState } from "react";
-import { Dropdown } from 'react-native-element-dropdown';
 import ButtonP from '@/components/ButtonP';
-import { CadastroPacQuatro } from "../routes/rotas";
 import { usePaciente } from '@/context/context';
+import { useState } from "react";
+import { SafeAreaView, Text, TextInput, View } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { CadastroPacQuatro } from "../routes/rotas";
+import styles from './styleForms';
 
 export default function CadastroPacTres() {
 
@@ -42,18 +44,21 @@ const itens3 = [
 ];
 
     return(
-    <ScrollView nestedScrollEnabled={true}>
-        <View style={{ padding: 16 }}>
-            {/* View da header*/}
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+
+        <View style={styles.container}>
+          {/* View do formulário */}
+          <View style={styles.containerForm}>
             <View>
-                <Text>Cadastro de Pessoas com SD. Down</Text>
-                <Text>Histórico Médico</Text>
-            </View>
-            {/* View do Form*/}
-            <View>
-                <Text>Diagnóstico confirmado de Sindrome de Down</Text>
+                <Text style={styles.textForm}>Diagnóstico confirmado de Sindrome de Down</Text>
                 <Dropdown
-                 style={{ borderWidth: 1, marginBottom: 8 }}
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
                  data={itens1}
                  labelField="label"
                  valueField="value"
@@ -65,9 +70,14 @@ const itens3 = [
                 }}          
                 />         
 
-                <Text>Acompanhamento Médico</Text>
+                <Text style={styles.textForm}>Acompanhamento Médico</Text>
                 <Dropdown
-                 style={{ borderWidth: 1, marginBottom: 8 }}
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
                  data={itens1}
                  labelField="label"
                  valueField="value"
@@ -79,9 +89,14 @@ const itens3 = [
                 }}         
                 />
 
-                <Text>Comorbidades</Text>
+                <Text style={styles.textForm}>Comorbidades</Text>
                 <Dropdown
-                 style={{ borderWidth: 1, marginBottom: 8 }}
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
                  data={itens1}
                  labelField="label"
                  valueField="value"
@@ -93,9 +108,14 @@ const itens3 = [
                 }}          
                 />
 
-                <Text>Tipo de comorbidade</Text>
+                <Text style={styles.textForm}>Tipo de comorbidade</Text>
                 <Dropdown
-                 style={{ borderWidth: 1, marginBottom: 8 }}
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
                  data={itens2}
                  labelField="label"
                  valueField="value"
@@ -103,18 +123,23 @@ const itens3 = [
                  value={pacientedados.tipocom}
                  onChange={item => setPacientedados(prev => ({ ...prev, tipocom: item.value }))}/>
 
-                <Text>Medicamento em uso</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }}
+                <Text style={styles.textForm}>Medicamento em uso</Text>
+                <TextInput style={styles.input}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, medicamento: text }))}/>
                 
 
-                <Text>Alergias</Text>
-                <TextInput style={{ borderWidth: 1, marginBottom: 8 }} 
+                <Text style={styles.textForm}>Alergias</Text>
+                <TextInput style={styles.input} 
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, alergia: text }))}/>
 
-                <Text>Tipo sanguíneo</Text>
+                <Text style={styles.textForm}>Tipo sanguíneo</Text>
                 <Dropdown
-                 style={{ borderWidth: 1, marginBottom: 8 }}
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
                  data={itens3}
                  labelField="label"
                  valueField="value"
@@ -128,6 +153,8 @@ const itens3 = [
             </View>
             <ButtonP label="Próximo" onPress={CadastroPacQuatro}/>
         </View>
-    </ScrollView>    
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
     )
 }
