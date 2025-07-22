@@ -27,9 +27,7 @@ export default function CadastroPacDois() {
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
       <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
-
         <View style={styles.container}>
-          {/* View do formulário */}
           <View style={styles.containerForm}>
 
             {/* Formulário */}
@@ -166,7 +164,9 @@ export default function CadastroPacDois() {
                 }}
               />
             </View>
+
             <ButtonP label="Próximo" onPress={cadastropacTres} />
+
           </View>
         </View>
       </KeyboardAwareScrollView>
