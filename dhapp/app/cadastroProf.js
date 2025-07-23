@@ -1,6 +1,7 @@
 import ButtonP from '@/components/ButtonP';
+import { useProfissional } from '@/context/context';
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -125,32 +126,3 @@ export default function CadastroProfissional() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#081221',
-  },
-  containerForm: {
-    justifyContent: 'flex-start',
-    gap: 10,
-    width: '90%',
-  },
-  input: {
-    backgroundColor: '#081221',
-    color: '#fff',
-    paddingVertical: 0,
-    paddingHorizontal: 5,
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 2,
-    width: '100%',
-    fontSize: 16,
-    height: 35,
-  },
-  textForm: {
-    color: '#fff',
-    fontSize: 16,
-  },
-});
