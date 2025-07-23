@@ -22,6 +22,10 @@ export function finalizarCadastro () {
     router.push('/index');
 }
 
+export function testecadastroprof () {
+    router.push('/testeCadastroProf');
+}
+
 export function cadastropac () {
     router.push('/cadastroPac');
 }

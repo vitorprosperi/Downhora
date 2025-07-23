@@ -23,16 +23,19 @@ export default function RootLayout() {
             unidade_saude TEXT NOT NULL
           );
         `);
+        await db.execAsync(`DROP TABLE IF EXISTS Profissional`);
+
         await db.execAsync(`
           CREATE TABLE IF NOT EXISTS Profissional (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome_completo TEXT NOT NULL,
-            cpf TEXT UNIQUE NOT NULL,
-            nome_social TEXT,
-            data_nascimento TEXT,
-            genero TEXT
-          );
-        `);
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          nome_completo TEXT NOT NULL,
+          cpf TEXT UNIQUE NOT NULL,
+          nome_social TEXT,
+          data_nascimento TEXT,
+          genero TEXT,
+          senha_hash TEXT NOT NULL
+        );
+      `);
       }}
     >
       <PacienteProvider>
