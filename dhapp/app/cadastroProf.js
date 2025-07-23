@@ -14,7 +14,7 @@ export default function CadastroProfissional() {
   const { profissionaldados, setProfissionaldados } = useProfissional();
   const [unidadeSelecionada, setUnidadeSelecionada] = useState(null);
   const [funcaoSelecionada, setFuncaoSelecionada] = useState(null);
-  
+
 
   const [valorGenero, setValorGenero] = useState(null);
   const [senha, setSenha] = useState('');
@@ -27,12 +27,12 @@ export default function CadastroProfissional() {
   ];
 
   const funcoes = [
-  { label: "ACS", value: "ACS" },
-  { label: "Enfermeira(o)", value: "Enfermeira(o)" },
-  { label: "Assistente de Enfermagem", value: "Assistente de Enfermagem" },
-  { label: "Administrativo", value: "Administrativo" },
-];
-  
+    { label: "ACS", value: "ACS" },
+    { label: "Enfermeira(o)", value: "Enfermeira(o)" },
+    { label: "Assistente de Enfermagem", value: "Assistente de Enfermagem" },
+    { label: "Administrativo", value: "Administrativo" },
+  ];
+
 
   async function salvarProfissional() {
     const { nomeCompleto, cpf, nomeSocial, dataNascimento, genero } = profissionaldados;
