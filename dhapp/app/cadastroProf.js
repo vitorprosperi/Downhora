@@ -7,6 +7,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { testecadastroprof } from '../routes/rotas';
+import { unidades } from "../unidades/unidades";
 import styles from "./styleForms";
 
 export default function CadastroProfissional() {
