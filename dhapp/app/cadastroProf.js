@@ -21,7 +21,7 @@ export default function CadastroProfissional() {
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={281} enableOnAndroid={true}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
 
