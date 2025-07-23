@@ -4,35 +4,43 @@ import { PacienteProvider, ProfissionalProvider } from '../context/context';
 
 export default function RootLayout() {
   return (
-    <PacienteProvider>
-      <ProfissionalProvider>
-        <SQLiteProvider
-          databaseName="downhora.db"
-          onInit={async (db) => {
-            await db.execAsync(`DROP TABLE IF EXISTS PessoaSindromeDeDown`);
-
-            await db.execAsync(`
-              CREATE TABLE IF NOT EXISTS PessoaSindromeDeDown (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome_completo TEXT NOT NULL,
-                data_nascimento TEXT NOT NULL,
-                genero TEXT NOT NULL,
-                cpf TEXT UNIQUE NOT NULL,
-                cns TEXT,
-                nome_mae TEXT,
-                nome_responsavel TEXT NOT NULL,
-                telefone_responsavel TEXT NOT NULL,
-                email_responsavel TEXT NOT NULL,
-                numero_prontuario TEXT,
-                unidade_saude TEXT NOT NULL
-              );
-            `);
-          }}
-        >
+    <SQLiteProvider
+      databaseName="downhora.db"
+      onInit={async (db) => {
+        await db.execAsync(`
+          CREATE TABLE IF NOT EXISTS PessoaSindromeDeDown (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome_completo TEXT NOT NULL,
+            data_nascimento TEXT NOT NULL,
+            genero TEXT NOT NULL,
+            cpf TEXT UNIQUE NOT NULL,
+            cns TEXT,
+            nome_mae TEXT,
+            nome_responsavel TEXT NOT NULL,
+            telefone_responsavel TEXT NOT NULL,
+            email_responsavel TEXT NOT NULL,
+            numero_prontuario TEXT,
+            unidade_saude TEXT NOT NULL
+          );
+        `);
+        await db.execAsync(`
+          CREATE TABLE IF NOT EXISTS Profissional (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome_completo TEXT NOT NULL,
+            cpf TEXT UNIQUE NOT NULL,
+            nome_social TEXT,
+            data_nascimento TEXT,
+            genero TEXT
+          );
+        `);
+      }}
+    >
+      <PacienteProvider>
+        <ProfissionalProvider>
           <Stack />
-        </SQLiteProvider>
-      </ProfissionalProvider>
-    </PacienteProvider>
+        </ProfissionalProvider>
+      </PacienteProvider>
+    </SQLiteProvider>
   );
 }
 
