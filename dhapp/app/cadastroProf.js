@@ -1,17 +1,20 @@
 import ButtonP from '@/components/ButtonP';
+import { useProfissional } from '@/context/context';
+import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
-import { Text, TextInput, View, StyleSheet } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useProfissional } from '@/context/context';
-import { cadastroprofdois, testecadastroprof, testeCadastroProf } from '../routes/rotas';
-import { useSQLiteContext } from 'expo-sqlite';
+import { testecadastroprof } from '../routes/rotas';
 import styles from "./styleForms";
 
 export default function CadastroProfissional() {
   const db = useSQLiteContext();
   const { profissionaldados, setProfissionaldados } = useProfissional();
+  const [unidadeSelecionada, setUnidadeSelecionada] = useState(null);
+  const [funcaoSelecionada, setFuncaoSelecionada] = useState(null);
+  
 
   const [valorGenero, setValorGenero] = useState(null);
   const [senha, setSenha] = useState('');
@@ -22,6 +25,14 @@ export default function CadastroProfissional() {
     { label: 'Feminino', value: 'feminino' },
     { label: 'Outro', value: 'outro' },
   ];
+
+  const funcoes = [
+  { label: "ACS", value: "ACS" },
+  { label: "Enfermeira(o)", value: "Enfermeira(o)" },
+  { label: "Assistente de Enfermagem", value: "Assistente de Enfermagem" },
+  { label: "Administrativo", value: "Administrativo" },
+];
+  
 
   async function salvarProfissional() {
     const { nomeCompleto, cpf, nomeSocial, dataNascimento, genero } = profissionaldados;
@@ -131,6 +142,55 @@ export default function CadastroProfissional() {
                 onChange={item => {
                   setValorGenero(item.value);
                   setProfissionaldados(prev => ({ ...prev, genero: item.value }));
+                }}
+              />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Unidade de saúde*</Text>
+              <Dropdown
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
+                data={unidades}
+                labelField="label"
+                valueField="value"
+                placeholder="Listagem aqui"
+                value={unidadeSelecionada}
+                onChange={(item) => {
+                  setUnidadeSelecionada(item.value);
+                  setProfissionaldados((prev) => ({
+                    ...prev,
+                    unidadeSaude: item.value,
+                  }));
+                }}
+              />
+            </View>
+
+
+            <View>
+              <Text style={styles.textForm}>Função / Cargo</Text>
+              <Dropdown
+                style={styles.input}
+                placeholderStyle={styles.textForm}
+                selectedTextStyle={styles.textForm}
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.textForm}
+                activeColor='#081221'
+                data={funcoes}
+                labelField="label"
+                valueField="value"
+                placeholder="Selecione"
+                value={funcaoSelecionada}
+                onChange={(item) => {
+                  setFuncaoSelecionada(item.value);
+                  setProfissionaldados((prev) => ({
+                    ...prev,
+                    funcao: item.value,
+                  }));
                 }}
               />
             </View>
