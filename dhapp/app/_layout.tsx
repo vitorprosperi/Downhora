@@ -27,16 +27,18 @@ export default function RootLayout() {
 
         await db.execAsync(`
           CREATE TABLE IF NOT EXISTS Profissional (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          nome_completo TEXT NOT NULL,
-          cpf TEXT UNIQUE NOT NULL,
-          nome_social TEXT,
-          data_nascimento TEXT,
-          genero TEXT,
-          senha_hash TEXT NOT NULL
-        );
-      `);
-      }}
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome_completo TEXT NOT NULL,
+            cpf TEXT UNIQUE NOT NULL,
+            nome_social TEXT,
+            data_nascimento TEXT NOT NULL,
+            genero TEXT NOT NULL,
+            unidadeSaude TEXT NOT NULL,
+            funcao TEXT NOT NULL,
+            senha_hash TEXT NOT NULL
+          );
+        `);
+      }}   
     >
       <PacienteProvider>
         <ProfissionalProvider>

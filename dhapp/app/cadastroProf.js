@@ -13,11 +13,9 @@ import styles from "./styleForms";
 export default function CadastroProfissional() {
   const db = useSQLiteContext();
   const { profissionaldados, setProfissionaldados } = useProfissional();
-  const [unidadeSelecionada, setUnidadeSelecionada] = useState(null);
-  const [funcaoSelecionada, setFuncaoSelecionada] = useState(null);
-
-
-  const [valorGenero, setValorGenero] = useState(null);
+  const [unidadeSelecionada, setUnidadeSelecionada] = useState();
+  const [funcaoSelecionada, setFuncaoSelecionada] = useState();
+  const [valorGenero, setValorGenero] = useState();
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
 
@@ -34,11 +32,10 @@ export default function CadastroProfissional() {
     { label: "Administrativo", value: "Administrativo" },
   ];
 
-
   async function salvarProfissional() {
-    const { nomeCompleto, cpf, nomeSocial, dataNascimento, genero } = profissionaldados;
+    const { nomeCompleto, cpf, nomeSocial, dataNascimento, genero, unidadeSaude, funcao } = profissionaldados;
 
-    if (!nomeCompleto || !cpf || !senha || !confirmarSenha) {
+    if (!nomeCompleto || !cpf || !dataNascimento || !genero || !unidadeSaude || !funcao || !senha || !confirmarSenha) {
       alert("Preencha todos os campos obrigatórios.");
       return;
     }
@@ -53,14 +50,16 @@ export default function CadastroProfissional() {
 
       await db.runAsync(
         `INSERT INTO Profissional 
-          (nome_completo, cpf, nome_social, data_nascimento, genero, senha_hash) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
+          (nome_completo, cpf, nome_social, data_nascimento, genero, unidadeSaude, funcao, senha_Hash) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           nomeCompleto,
           cpf,
           nomeSocial || null,
-          dataNascimento || null,
-          genero || null,
+          dataNascimento,
+          genero,
+          unidadeSaude,
+          funcao,
           senhaHash
         ]
       );
@@ -78,13 +77,12 @@ export default function CadastroProfissional() {
     try {
       const result = await db.getAllAsync(`SELECT * FROM Profissional`);
       console.log("Profissionais cadastrados:", result);
-      alert("Dados listados");
+      alert("Dados listados no console.");
     } catch (error) {
       console.error("Erro ao listar profissionais:", error);
       alert("Erro ao buscar dados.");
     }
   }
-
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
