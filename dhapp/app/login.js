@@ -1,11 +1,40 @@
 import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { useSQLiteContext } from 'expo-sqlite';
+import { testecadastroprof } from '../routes/rotas';
 
 export default function Login (){  
     {/* Controle das variáveis cpf e senha */}
 const[cpf, Setcpf] = useState("");
 const[senha, Setsenha] = useState("");
+
+const db = useSQLiteContext();
+
+const login = async () => {
+  if (cpf === '' || senha === '') {
+    alert('Preencha todos os campos obrigatórios.');
+    return;
+  }
+
+  try {
+    const result = await db.getAllAsync(
+      'SELECT * FROM Profissional WHERE cpf = ? AND senha_hash = ?',
+      [cpf, senha]
+    );
+
+    if (result.length > 0) {
+      const usuario = result[0];
+      console.log('Login bem-sucedido:', usuario);
+      testecadastroprof();
+    } else {
+      alert('CPF ou senha inválidos.');
+    }
+  } catch (error) {
+    console.error('Erro ao fazer login:', error);
+  }
+};
+
 
     return (
         <View style={styles.container}>
@@ -18,7 +47,7 @@ const[senha, Setsenha] = useState("");
                     <Text style={styles.textForm}>Senha</Text>
                     <TextInput value={senha} onChangeText={Setsenha} style={styles.input} placeholder="123456" secureTextEntry={true}/>
                 </View>
-                <ButtonP label='Entrar' onPress={() => console.log (cpf, senha)}></ButtonP>
+                <ButtonP label='Entrar' onPress={login}></ButtonP>
             </View>
         </View>
     )

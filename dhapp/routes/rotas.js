@@ -19,7 +19,7 @@ export function cadastroproftres () {
 }
 
 export function finalizarCadastro () {
-    router.push('/index');
+    router.push('/');
 }
 
 export function testecadastroprof () {
