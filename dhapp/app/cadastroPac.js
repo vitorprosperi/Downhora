@@ -1,12 +1,13 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
+import styles from './styleForms';
 
 
 export default function CadastroPac() {
@@ -28,6 +29,13 @@ export default function CadastroPac() {
       <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
+
+            <View>
+              <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+              <Text style={styles.subTitulo}>Dados pessoais</Text>
+            </View>
+
+            <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>
 
             <View>
               <Text style={styles.textForm}>Nome Completo*</Text>
@@ -119,45 +127,3 @@ export default function CadastroPac() {
 
   );
 }
-
-const styles = StyleSheet.create({
-  corEscura: {
-    flexGrow: 1,
-    backgroundColor: '#081221',
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#081221',
-  },
-  containerForm: {
-    justifyContent: 'flex-start',
-    gap: 10,
-    width: '90%',
-  },
-  dropdownContainer: {
-    backgroundColor: '#081221',
-  },
-  input: {
-    backgroundColor: '#081221',
-    color: '#fff',
-    paddingVertical: 0,
-    paddingHorizontal: 5,
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 2,
-    width: '100%',
-    fontSize: 16,
-    height: 35,
-  },
-  containerTeclado: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textForm: {
-    color: '#fff',
-    fontSize: 16,
-  },
-
-})

@@ -40,7 +40,13 @@ export default function RootLayout() {
     >
       <PacienteProvider>
         <ProfissionalProvider>
-          <Stack />
+          <Stack screenOptions={{
+            headerStyle: {
+              backgroundColor: '#081221',
+            },
+            headerTintColor: '#FFDCDC',
+            headerTitle: '',
+          }} />
         </ProfissionalProvider>
       </PacienteProvider>
     </SQLiteProvider>

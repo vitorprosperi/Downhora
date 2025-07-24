@@ -23,13 +23,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#081221',
         color: '#fff',
         paddingVertical: 0,
-        paddingHorizontal: 5,
+        paddingHorizontal: 1,
         borderWidth: 1,
         borderColor: '#fff',
         borderRadius: 2,
         width: '100%',
         fontSize: 16,
         height: 35,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderTopWidth: 0,
     },
     containerTeclado: {
       justifyContent: 'center',
@@ -39,7 +42,19 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
-
+    titulo: {
+      color: '#fff',
+      fontSize: 20,
+      fontWeight: 700,
+    },
+    subTitulo: {
+      color: '#FFDCDC',
+      fontSize: 18,
+    },
+    textoPequeno: {
+      color: '#FFDCDC',
+      fontSize: 14,
+    },
 })
 
 export default styles;
