@@ -14,7 +14,7 @@ export default function ButtonP({label, onPress}: Props) {
 
     
     return (
-        <View>
+        <View style={{width: '100%'}}>
             <Pressable style={styles.button} onPress={onPress}>
                 <Text style={styles.text}>{label}</Text>
             </Pressable>
@@ -25,14 +25,15 @@ export default function ButtonP({label, onPress}: Props) {
 const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
+        alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: '#FBEC3B',
         width: '100%',
         height: 50,
-        borderRadius: 2,
+        borderRadius: 10,
     },
     text: {
         color: '#081221',
         fontSize: 16,
-    }
+    },
 })

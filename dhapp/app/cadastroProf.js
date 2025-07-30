@@ -90,10 +90,16 @@ export default function CadastroProfissional() {
         <View style={styles.container}>
           <View style={styles.containerForm}>
 
+            <Text style={styles.titulo}>Cadastro de Profissional</Text>
+
+            <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>
+
             <View>
               <Text style={styles.textForm}>Nome completo*</Text>
               <TextInput
                 style={styles.input}
+                placeholder='ex: Rene Vitor França de Melo'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, nomeCompleto: text }))}
               />
             </View>
@@ -102,6 +108,8 @@ export default function CadastroProfissional() {
               <Text style={styles.textForm}>CPF* (Será o método de login)</Text>
               <TextInput
                 style={styles.input}
+                placeholder='ex: 14077796477'
+                placeholderTextColor={'lightgrey'}
                 keyboardType="numeric"
                 onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, cpf: text }))}
               />
@@ -111,6 +119,8 @@ export default function CadastroProfissional() {
               <Text style={styles.textForm}>Nome social</Text>
               <TextInput
                 style={styles.input}
+                placeholder='ex: Rene Vitor França de Melo'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, nomeSocial: text }))}
               />
             </View>
@@ -128,7 +138,7 @@ export default function CadastroProfissional() {
               <Text style={styles.textForm}>Gênero</Text>
               <Dropdown
                 style={styles.input}
-                placeholderStyle={styles.textForm}
+                placeholderStyle={styles.exemplo}
                 selectedTextStyle={styles.textForm}
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
@@ -149,7 +159,7 @@ export default function CadastroProfissional() {
               <Text style={styles.textForm}>Unidade de saúde*</Text>
               <Dropdown
                 style={styles.input}
-                placeholderStyle={styles.textForm}
+                placeholderStyle={styles.exemplo}
                 selectedTextStyle={styles.textForm}
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
@@ -171,10 +181,10 @@ export default function CadastroProfissional() {
 
 
             <View>
-              <Text style={styles.textForm}>Função / Cargo</Text>
+              <Text style={styles.textForm}>Função/Cargo</Text>
               <Dropdown
                 style={styles.input}
-                placeholderStyle={styles.textForm}
+                placeholderStyle={styles.exemplo}
                 selectedTextStyle={styles.textForm}
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
@@ -198,6 +208,8 @@ export default function CadastroProfissional() {
               <Text style={styles.textForm}>Senha*</Text>
               <TextInput
                 style={styles.input}
+                placeholder='ex: senh@123'
+                placeholderTextColor={'lightgrey'}
                 secureTextEntry
                 onChangeText={(text) => setSenha(text)}
               />
@@ -207,14 +219,19 @@ export default function CadastroProfissional() {
               <Text style={styles.textForm}>Confirmar senha*</Text>
               <TextInput
                 style={styles.input}
+                placeholder='ex: senh@123'
+                placeholderTextColor={'lightgrey'}
                 secureTextEntry
                 onChangeText={(text) => setConfirmarSenha(text)}
               />
             </View>
+          </View>
 
+          <View style={{ marginBottom: 20, width: 200 }}>
             <ButtonP label="Continuar" onPress={salvarProfissional} />
             <ButtonP label="Profissionais Cadastrados" onPress={listarProfissionais} />
           </View>
+
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

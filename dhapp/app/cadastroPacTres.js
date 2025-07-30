@@ -51,10 +51,15 @@ export default function CadastroPacTres() {
                     <View style={styles.containerForm}>
 
                         <View>
+                            <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+                            <Text style={styles.subTitulo}>Histórico médico</Text>
+                        </View>
+
+                        <View>
                             <Text style={styles.textForm}>Diagnóstico confirmado de Sindrome de Down</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
+                                placeholderStyle={styles.exemplo}
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
@@ -75,7 +80,7 @@ export default function CadastroPacTres() {
                             <Text style={styles.textForm}>Acompanhamento Médico</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
+                                placeholderStyle={styles.exemplo}
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
@@ -96,7 +101,7 @@ export default function CadastroPacTres() {
                             <Text style={styles.textForm}>Comorbidades</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
+                                placeholderStyle={styles.exemplo}
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
@@ -117,7 +122,7 @@ export default function CadastroPacTres() {
                             <Text style={styles.textForm}>Tipo de comorbidade</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
+                                placeholderStyle={styles.exemplo}
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
@@ -133,12 +138,16 @@ export default function CadastroPacTres() {
                         <View>
                             <Text style={styles.textForm}>Medicamento em uso</Text>
                             <TextInput style={styles.input}
+                                placeholder='ex: Losartana'
+                                placeholderTextColor={'lightgrey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, medicamento: text }))} />
                         </View>
 
                         <View>
                             <Text style={styles.textForm}>Alergias</Text>
                             <TextInput style={styles.input}
+                            placeholder='ex: Rinite alérgica'
+                placeholderTextColor={'lightgrey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, alergia: text }))} />
                         </View>
 
@@ -146,7 +155,7 @@ export default function CadastroPacTres() {
                             <Text style={styles.textForm}>Tipo sanguíneo</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
+                                placeholderStyle={styles.exemplo}
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
@@ -162,10 +171,12 @@ export default function CadastroPacTres() {
                                 }}
                             />
                         </View>
-
-                        <ButtonP label="Próximo" onPress={CadastroPacQuatro} />
-
                     </View>
+
+                    <View style={{ marginBottom: 20, width: 200 }}>
+                        <ButtonP label="Próximo" onPress={CadastroPacQuatro} />
+                    </View>
+
                 </View>
             </KeyboardAwareScrollView>
         </SafeAreaView>

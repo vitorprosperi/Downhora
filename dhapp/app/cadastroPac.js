@@ -40,6 +40,8 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Nome Completo*</Text>
               <TextInput style={styles.input}
+                placeholder='ex: Rene Vitor França de Melo'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome: text }))} />
             </View>
 
@@ -47,6 +49,7 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>Data de Nascimento*</Text>
               <TextInput style={styles.input}
                 keyboardType="numeric"
+                placeholder='ex: 14/10/2001'
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, data: text }))} />
             </View>
 
@@ -54,7 +57,7 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>Gênero*</Text>
               <Dropdown
                 style={styles.input}
-                placeholderStyle={styles.textForm}
+                placeholderStyle={styles.exemplo}
                 selectedTextStyle={styles.textForm}
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
@@ -75,30 +78,40 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>CPF*</Text>
               <TextInput style={styles.input}
                 keyboardType="numeric"
+                placeholder='ex: 14077796477'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, cpf: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>CNS*</Text>
               <TextInput style={styles.input}
+              placeholder='ex: pesqusiar amanha'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
               <TextInput style={styles.input}
+              placeholder='ex: Roseane França de Melo'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeMae: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome do responsável*</Text>
               <TextInput style={styles.input}
+              placeholder='ex: Roseane França de Melo'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeResp: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Telefone do responsável*</Text>
               <TextInput style={styles.input}
+              placeholder='ex: 14999999999'
+                placeholderTextColor={'lightgrey'}
                 keyboardType="numeric"
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, telResp: text }))} />
             </View>
@@ -106,20 +119,29 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>E-mail do responsável*</Text>
               <TextInput style={styles.input}
+              placeholder='ex: roseane@gmail.com'
+                placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, emailResp: text }))} />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nº do Prontuário*</Text>
-              <TextInput style={styles.input} onChangeText={text => handleChange('prontuario', text)} />
+              <TextInput 
+              style={styles.input}
+              placeholder='ex: pesquiasr amanha'
+                placeholderTextColor={'lightgrey'} 
+              onChangeText={text => handleChange('prontuario', text)} />
               <RadioButton.Group onValueChange={setValor} value={valor}>
                 <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="UBS" value="UBS" />
                 <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
               </RadioButton.Group>
             </View>
 
-            <ButtonP label="Próximo" onPress={cadastropacDois} />
+            
 
+          </View>
+          <View style={{marginBottom: 20, width: 200}}>
+          <ButtonP label="Próximo" onPress={cadastropacDois} />
           </View>
         </View>
       </KeyboardAwareScrollView>

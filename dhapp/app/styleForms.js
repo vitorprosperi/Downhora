@@ -7,14 +7,14 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#081221',
     },
     containerForm: {
         justifyContent: 'flex-start',
         gap: 10,
-        width: '90%',
+        width: '80%',
     },
     dropdownContainer: {
       backgroundColor: '#081221',
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#081221',
         color: '#fff',
         paddingVertical: 0,
-        paddingHorizontal: 1,
+        paddingHorizontal: 0,
         borderWidth: 1,
         borderColor: '#fff',
         borderRadius: 2,
@@ -55,6 +55,9 @@ const styles = StyleSheet.create({
       color: '#FFDCDC',
       fontSize: 14,
     },
+    exemplo: {
+      color: 'lightgrey'
+    }
 })
 
 export default styles;

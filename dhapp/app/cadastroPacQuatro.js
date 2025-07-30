@@ -50,6 +50,11 @@ export default function CadastroPacQuatro() {
                     <View style={styles.containerForm}>
 
                         <View>
+                            <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+                            <Text style={styles.subTitulo}>Informações complementares</Text>
+                        </View>
+
+                        <View>
                             <Text style={styles.textForm}>Escolaridade</Text>
                             <Dropdown
                                 style={styles.input}
@@ -73,12 +78,16 @@ export default function CadastroPacQuatro() {
                         <View>
                             <Text style={styles.textForm}>Nome da escola</Text>
                             <TextInput style={styles.input}
+                            placeholder='ex: Colégio Cora Coralina'
+                placeholderTextColor={'lightgrey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, escola: text }))} />
                         </View>
 
                         <View>
                             <Text style={styles.textForm}>Unidade APAE</Text>
                             <TextInput style={styles.input}
+                            placeholder='ex: APAE Botucatu'
+                placeholderTextColor={'lightgrey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uniapae: text }))} />
                         </View>
 
@@ -124,9 +133,12 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
-                        <ButtonP label="FInalizar cadastro" onPress={verTodos} />
-
                     </View>
+
+                    <View style={{ marginBottom: 20, width: 200 }}>
+                        <ButtonP label="Finalizar cadastro" onPress={verTodos} />
+                    </View>
+
                 </View>
             </KeyboardAwareScrollView>
         </SafeAreaView>

@@ -31,11 +31,18 @@ export default function CadastroPacDois() {
         <View style={styles.container}>
           <View style={styles.containerForm}>
 
+            <View>
+              <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+              <Text style={styles.subTitulo}>Endereço</Text>
+            </View>
+
             {/* Formulário */}
             <View>
               <Text style={styles.textForm}>CEP*</Text>
               <TextInput
                 style={styles.input}
+                placeholder='ex: 18640000'
+                placeholderTextColor={'lightgrey'}
                 maxLength={8}
                 value={cep}
                 onChangeText={(text) => {
@@ -83,38 +90,13 @@ export default function CadastroPacDois() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Número*</Text>
+              <Text style={styles.textForm}>Estado*</Text>
               <TextInput
                 style={styles.input}
-                keyboardType="numeric"
-                value={numero}
+                value={estado}
                 onChangeText={(text) => {
-                  setNumero(text);
-                  setPacientedados(prev => ({ ...prev, numero: text }));
-                }}
-              />
-            </View>
-
-            <View>
-              <Text style={styles.textForm}>Complemento*</Text>
-              <TextInput
-                style={styles.input}
-                value={complemento}
-                onChangeText={(text) => {
-                  setComplemento(text);
-                  setPacientedados(prev => ({ ...prev, complemento: text }));
-                }}
-              />
-            </View>
-
-            <View>
-              <Text style={styles.textForm}>Bairro*</Text>
-              <TextInput
-                style={styles.input}
-                value={bairro}
-                onChangeText={(text) => {
-                  setBairro(text);
-                  setPacientedados(prev => ({ ...prev, bairro: text }));
+                  setEstado(text);
+                  setPacientedados(prev => ({ ...prev, estado: text }));
                 }}
               />
             </View>
@@ -132,13 +114,46 @@ export default function CadastroPacDois() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Estado*</Text>
+              <Text style={styles.textForm}>Bairro*</Text>
               <TextInput
                 style={styles.input}
-                value={estado}
+                value={bairro}
                 onChangeText={(text) => {
-                  setEstado(text);
-                  setPacientedados(prev => ({ ...prev, estado: text }));
+                  setBairro(text);
+                  setPacientedados(prev => ({ ...prev, bairro: text }));
+                }}
+              />
+            </View>
+
+
+
+
+
+            <View>
+              <Text style={styles.textForm}>Número*</Text>
+              <TextInput
+                style={styles.input}
+                placeholder='ex: 90'
+                placeholderTextColor={'lightgrey'}
+                keyboardType="numeric"
+                value={numero}
+                onChangeText={(text) => {
+                  setNumero(text);
+                  setPacientedados(prev => ({ ...prev, numero: text }));
+                }}
+              />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Complemento</Text>
+              <TextInput
+                style={styles.input}
+                placeholder='ex: Apartamento 10'
+                placeholderTextColor={'lightgrey'}
+                value={complemento}
+                onChangeText={(text) => {
+                  setComplemento(text);
+                  setPacientedados(prev => ({ ...prev, complemento: text }));
                 }}
               />
             </View>
@@ -147,7 +162,7 @@ export default function CadastroPacDois() {
               <Text style={styles.textForm}>Unidade de Saúde*</Text>
               <Dropdown
                 style={styles.input}
-                placeholderStyle={styles.textForm}
+                placeholderStyle={styles.exemplo}
                 selectedTextStyle={styles.textForm}
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
@@ -165,10 +180,13 @@ export default function CadastroPacDois() {
                 }}
               />
             </View>
-
-            <ButtonP label="Próximo" onPress={cadastropacTres} />
-
           </View>
+
+          <View style={{ marginBottom: 20, width: 200 }}>
+            <ButtonP label="Próximo" onPress={cadastropacTres} />
+          </View>
+
+
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
