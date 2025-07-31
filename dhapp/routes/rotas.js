@@ -38,6 +38,10 @@ export function cadastropacTres () {
     router.push('/cadastroPacTres');
 }
 
-export function CadastroPacQuatro () {
+export function cadastropacQuatro () {
     router.push('/cadastroPacQuatro');
+}
+
+export function telaInicial () {
+    router.push('/telaInicial');
 }

@@ -8,9 +8,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { buscarcep } from "../API Correios/endereco";
 import { cadastropacTres } from "../routes/rotas";
 import { unidades } from "../unidades/unidades";
+import MaskInput from 'react-native-mask-input';
 import styles from './styleForms';
 
 export default function CadastroPacDois() {
+
+  const cepMask = [/\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/];
 
   const { setPacientedados } = usePaciente();
 
@@ -39,20 +42,21 @@ export default function CadastroPacDois() {
             {/* Formulário */}
             <View>
               <Text style={styles.textForm}>CEP*</Text>
-              <TextInput
+              <MaskInput
                 style={styles.input}
-                placeholder='ex: 18640000'
-                placeholderTextColor={'lightgrey'}
-                maxLength={8}
-                value={cep}
-                onChangeText={(text) => {
-                  setCep(text);
-                  setPacientedados(prev => ({ ...prev, cep: text }));
-                }}
+                placeholder='ex: 18640-000'
+                placeholderTextColor='lightgrey'
                 keyboardType="numeric"
+                mask={cepMask}
+                maxLength={9}
+                value={cep}
+                onChangeText={(masked, unmasked) => {
+                  setCep(masked); // mostra formatado com traço
+                  setPacientedados(prev => ({ ...prev, cep: unmasked })); // salva sem o traço
+                }}
                 onBlur={() =>
                   buscarcep(
-                    cep,
+                    cep.replace('-', ''), // 🔧 tira o traço antes de buscar
                     (rua) => {
                       setRua(rua);
                       setPacientedados(prev => ({ ...prev, rua }));
@@ -124,10 +128,6 @@ export default function CadastroPacDois() {
                 }}
               />
             </View>
-
-
-
-
 
             <View>
               <Text style={styles.textForm}>Número*</Text>

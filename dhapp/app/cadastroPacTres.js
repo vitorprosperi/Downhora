@@ -5,7 +5,7 @@ import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CadastroPacQuatro } from "../routes/rotas";
+import { cadastropacQuatro } from "../routes/rotas";
 import styles from './styleForms';
 
 export default function CadastroPacTres() {
@@ -174,7 +174,7 @@ export default function CadastroPacTres() {
                     </View>
 
                     <View style={{ marginBottom: 20, width: 200 }}>
-                        <ButtonP label="Próximo" onPress={CadastroPacQuatro} />
+                        <ButtonP label="Próximo" onPress={cadastropacQuatro} />
                     </View>
 
                 </View>

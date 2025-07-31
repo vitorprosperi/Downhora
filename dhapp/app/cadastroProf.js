@@ -6,11 +6,16 @@ import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { finalizarCadastro } from '../routes/rotas';
+import { finalizarCadastro, telaInicial } from '../routes/rotas';
 import { unidades } from "../unidades/unidades";
 import styles from "./styleForms";
+import MaskInput from 'react-native-mask-input';
 
 export default function CadastroProfissional() {
+  const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
+  const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [cpf, setCpf] = useState('');
   const db = useSQLiteContext();
   const { profissionaldados, setProfissionaldados } = useProfissional();
   const [unidadeSelecionada, setUnidadeSelecionada] = useState();
@@ -65,7 +70,7 @@ export default function CadastroProfissional() {
       );
 
       alert("Profissional cadastrado com sucesso!");
-      finalizarCadastro();
+      telaInicial();
 
     } catch (error) {
       console.error("Erro ao salvar no banco:", error);
@@ -106,12 +111,18 @@ export default function CadastroProfissional() {
 
             <View>
               <Text style={styles.textForm}>CPF* (Será o método de login)</Text>
-              <TextInput
+              <MaskInput
                 style={styles.input}
-                placeholder='ex: 14077796477'
+                mask={cpfMask}
+                value={cpf}
+                maxLength={14}
+                placeholder='ex: 123.456.789-00'
                 placeholderTextColor={'lightgrey'}
                 keyboardType="numeric"
-                onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, cpf: text }))}
+                onChangeText={(masked, unmasked) => {
+                setCpf(masked); // mostra formatado
+                setProfissionaldados(prev => ({ ...prev, cpf: unmasked })); // salva limpo no contexto
+                }}
               />
             </View>
 
@@ -121,16 +132,29 @@ export default function CadastroProfissional() {
                 style={styles.input}
                 placeholder='ex: Rene Vitor França de Melo'
                 placeholderTextColor={'lightgrey'}
-                onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, nomeSocial: text }))}
+                onChangeText={(text) =>
+                  setProfissionaldados(prev => ({ ...prev, nomeSocial: text }))
+                }
               />
             </View>
 
             <View>
               <Text style={styles.textForm}>Data de nascimento</Text>
-              <TextInput
+              <MaskInput
                 style={styles.input}
                 keyboardType="numeric"
-                onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, dataNascimento: text }))}
+                maxLength={10}
+                mask={dateMask}
+                value={dataNascimento}
+                placeholder="ex: 15/04/1993"
+                placeholderTextColor="lightgrey"
+                onChangeText={(masked, unmasked) => {
+                  setDataNascimento(masked); // mostra com a máscara
+                  setProfissionaldados(prev => ({
+                    ...prev,
+                    dataNascimento: unmasked
+                  })); // salva sem a máscara
+                }}
               />
             </View>
 
@@ -150,7 +174,10 @@ export default function CadastroProfissional() {
                 value={valorGenero}
                 onChange={item => {
                   setValorGenero(item.value);
-                  setProfissionaldados(prev => ({ ...prev, genero: item.value }));
+                  setProfissionaldados(prev => ({
+                    ...prev,
+                    genero: item.value
+                  }));
                 }}
               />
             </View>
