@@ -11,6 +11,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#081221',
     },
+    telaInicio: {
+      flex: 1,
+      backgroundColor: '#081221',
+      width: '80%',
+    },
     containerForm: {
         justifyContent: 'flex-start',
         gap: 10,
@@ -57,7 +62,15 @@ const styles = StyleSheet.create({
     },
     exemplo: {
       color: 'lightgrey'
-    }
+    },
+    fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 20,
+    borderCurve: 30,
+    backgroundColor: '#FBEC3B',
+  },
 })
 
 export default styles;

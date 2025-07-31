@@ -1,7 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { login } from '@/routes/rotas';
 import { StyleSheet, Text, View } from 'react-native';
-import { cadastropac, cadastroprof } from '../routes/rotas';
+import { cadastroprof, telaInicial } from '../routes/rotas';
 
 export default function App (){
     
@@ -12,7 +12,8 @@ export default function App (){
             <View style={styles.containerBotoes}>
                 <ButtonP label='Entrar' onPress={login}></ButtonP>
                 {/* Eu só to usando o botão cadastre-se para checar a tela que to fazendo, só mudar o onPress pra tela correta quando for mexer*/}
-                <ButtonP label='Cadastre-se' onPress={cadastropac}></ButtonP>
+                <ButtonP label='Cadastre-se' onPress={cadastroprof}></ButtonP>
+                <ButtonP label='Tela Inicial' onPress={telaInicial}></ButtonP>
             </View>     
         </View>
     )
