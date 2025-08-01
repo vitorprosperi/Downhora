@@ -69,7 +69,7 @@ export default function CadastroProfissional() {
         ]
       );
 
-      alert("Profissional cadastrado com sucesso!");
+      alert("Cadastrado concluído!");
       telaInicial();
 
     } catch (error) {

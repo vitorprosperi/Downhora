@@ -2,7 +2,7 @@ import ButtonP from '@/components/ButtonP';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useSQLiteContext } from 'expo-sqlite';
-import { testecadastroprof } from '../routes/rotas';
+import { telaInicial } from '../routes/rotas';
 
 export default function Login (){  
     {/* Controle das variáveis cpf e senha */}
@@ -26,7 +26,7 @@ const login = async () => {
     if (result.length > 0) {
       const usuario = result[0];
       console.log('Login bem-sucedido:', usuario);
-      testecadastroprof();
+      telaInicial();
     } else {
       alert('CPF ou senha inválidos.');
     }
