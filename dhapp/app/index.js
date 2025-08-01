@@ -3,18 +3,18 @@ import { login } from '@/routes/rotas';
 import { StyleSheet, Text, View } from 'react-native';
 import { cadastroprof, telaInicial } from '../routes/rotas';
 
-export default function App (){
-    
+export default function App() {
+
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.textForm}>Projeto Downhora </Text>  
+        <View style={styles.indexEstilo}>
+            <Text style={styles.textForm}>Projeto Downhora </Text>
             <View style={styles.containerBotoes}>
-                <ButtonP label='Entrar' onPress={login}></ButtonP>
-                {/* Eu só to usando o botão cadastre-se para checar a tela que to fazendo, só mudar o onPress pra tela correta quando for mexer*/}
                 <ButtonP label='Cadastre-se' onPress={cadastroprof}></ButtonP>
+                <ButtonP label='Entrar' theme='transparent' onPress={login}></ButtonP>
+                {/* Eu só to usando o botão cadastre-se para checar a tela que to fazendo, só mudar o onPress pra tela correta quando for mexer*/}
                 <ButtonP label='Tela Inicial' onPress={telaInicial}></ButtonP>
-            </View>     
+            </View>
         </View>
     )
 }
@@ -32,5 +32,11 @@ const styles = StyleSheet.create({
     },
     textForm: {
         color: '#fff',
+    },
+    indexEstilo: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#081221',
     },
 });
