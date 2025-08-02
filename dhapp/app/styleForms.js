@@ -72,6 +72,14 @@ const styles = StyleSheet.create({
     borderCurve: 30,
     backgroundColor: '#FBEC3B',
   },
+  imageContainer: {
+    flex: 1,
+  },
+  image: {
+    width: 320,
+    height: 440,
+    borderRadius: 18,
+  },
 })
 
 export default styles;
