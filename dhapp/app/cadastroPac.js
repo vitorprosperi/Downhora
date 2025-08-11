@@ -150,7 +150,7 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>Telefone do responsável*</Text>
               <MaskInput
                 style={styles.input}
-                placeholder='ex: 14999999999'
+                placeholder='ex: (14)12345-6789'
                 placeholderTextColor={'lightgrey'}
                 keyboardType="numeric"
                 mask={phoneMask}
@@ -177,7 +177,7 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>Nº do Prontuário*</Text>
               <TextInput
                 style={styles.input}
-                placeholder='ex: pesquiasr amanha'
+                placeholder='ex: '
                 placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, prontuario: text }))}
               />

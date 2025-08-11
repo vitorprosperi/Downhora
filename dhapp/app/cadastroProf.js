@@ -195,6 +195,8 @@ export default function CadastroProfissional() {
                 labelField="label"
                 valueField="value"
                 placeholder="Listagem aqui"
+                search
+                searchPlaceholder="Pesquisar unidade"
                 value={unidadeSelecionada}
                 onChange={(item) => {
                   setUnidadeSelecionada(item.value);
