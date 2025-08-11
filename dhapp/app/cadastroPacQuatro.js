@@ -107,7 +107,7 @@ export default function CadastroPacQuatro() {
                                 value={valor2}
                                 onChange={item => {
                                     setValor2(item.value);
-                                    setPacientedados(prev => ({ ...prev, acompanhamento: item.value }));
+                                    setPacientedados(prev => ({ ...prev, comunicacao: item.value }));
                                 }}
                             />
                         </View>
@@ -128,7 +128,7 @@ export default function CadastroPacQuatro() {
                                 value={valor3}
                                 onChange={item => {
                                     setValor3(item.value);
-                                    setPacientedados(prev => ({ ...prev, acompanhamento: item.value }));
+                                    setPacientedados(prev => ({ ...prev, acompanhamento_prof: item.value }));
                                 }}
                             />
                         </View>

@@ -6,7 +6,7 @@ import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { finalizarCadastro, telaInicial } from '../routes/rotas';
+import { telaInicial } from '../routes/rotas';
 import { unidades } from "../unidades/unidades";
 import styles from "./styleForms";
 import MaskInput from 'react-native-mask-input';
@@ -255,8 +255,7 @@ export default function CadastroProfissional() {
           </View>
 
           <View style={{ marginBottom: 20, width: 200 }}>
-            <ButtonP label="Continuar" onPress={salvarProfissional} />
-            <ButtonP label="Profissionais Cadastrados" onPress={listarProfissionais} />
+            <ButtonP label="Finalizar" onPress={salvarProfissional} />
           </View>
 
         </View>

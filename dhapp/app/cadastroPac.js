@@ -7,9 +7,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
-import MaskInput from 'react-native-mask-input'; // Importação do MaskInput
+import MaskInput from 'react-native-mask-input';
 import styles from './styleForms';
-
 
 export default function CadastroPac() {
 
@@ -19,15 +18,16 @@ export default function CadastroPac() {
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const phoneMask = [
-  '(', /\d/, /\d/, ')', ' ',
-  /\d/, /\d/, /\d/, /\d/, /\d/, '-', 
-  /\d/, /\d/, /\d/, /\d/
+    '(', /\d/, /\d/, ')', ' ',
+    /\d/, /\d/, /\d/, /\d/, /\d/, '-', 
+    /\d/, /\d/, /\d/, /\d/
   ];
 
-  //Variáveis para o funcionamento do dropdown
-  const [valor, setValor] = useState(null);
+  // Estados separados
+  const [genero, setGenero] = useState(null);
+  const [unidade, setUnidade] = useState(null);
 
-  const itens = [
+  const itensGenero = [
     { label: 'Masculino', value: 'masculino' },
     { label: 'Feminino', value: 'feminino' },
     { label: 'Outro', value: 'outro' },
@@ -87,13 +87,13 @@ export default function CadastroPac() {
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
                 activeColor='#081221'
-                data={itens}
+                data={itensGenero}
                 labelField="label"
                 valueField="value"
                 placeholder="Selecione"
-                value={valor}
+                value={genero}
                 onChange={item => {
-                  setValor(item.value);
+                  setGenero(item.value);
                   setPacientedados(prev => ({ ...prev, genero: item.value }));
                 }}
               />
@@ -120,7 +120,7 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>CNS*</Text>
               <TextInput
                 style={styles.input}
-                placeholder='ex: pesqusiar amanha'
+                placeholder=''
                 placeholderTextColor={'lightgrey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))}
               />
@@ -179,9 +179,15 @@ export default function CadastroPac() {
                 style={styles.input}
                 placeholder='ex: pesquiasr amanha'
                 placeholderTextColor={'lightgrey'}
-                onChangeText={text => handleChange('prontuario', text)}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, prontuario: text }))}
               />
-              <RadioButton.Group onValueChange={setValor} value={valor}>
+              <RadioButton.Group
+                onValueChange={value => {
+                  setUnidade(value);
+                  setPacientedados(prev => ({ ...prev, unidade: value }));
+                }}
+                value={unidade}
+              >
                 <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="UBS" value="UBS" />
                 <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
               </RadioButton.Group>

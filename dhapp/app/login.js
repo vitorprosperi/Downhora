@@ -4,14 +4,16 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { telaInicial } from '../routes/rotas';
+import MaskInput from 'react-native-mask-input';
 
-const LogoImage = require('@/assets/images/logodhredondotrans.png')
+const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
 export default function Login() {
-  {/* Controle das variáveis cpf e senha */ }
-  const [cpf, Setcpf] = useState("");
+  // Controle das variáveis cpf e senha
+  const [cpf, setCpf] = useState("");
+  const [cpfMasked, setCpfMasked] = useState('');
   const [senha, Setsenha] = useState("");
-
+  const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const db = useSQLiteContext();
 
   const login = async () => {
@@ -38,13 +40,11 @@ export default function Login() {
     }
   };
 
-
   return (
     <View style={styles.loginEstilo}>
       <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
         <View style={styles.imageContainer}>
-
-          <Image source={LogoImage} style={styles.image}></Image>
+          <Image source={LogoImage} style={styles.image} />
         </View>
         <View>
           <Text style={styles.titulo}>Login</Text>
@@ -52,19 +52,38 @@ export default function Login() {
         <View style={styles.containerForm}>
           <View>
             <Text style={styles.textForm}>CPF</Text>
-            <TextInput value={cpf} onChangeText={Setcpf} style={styles.input} maxLength={11} keyboardType={"numeric"} placeholder="123.456.789-10" placeholderTextColor={'lightgrey'} />
+            <MaskInput
+              style={styles.input}
+              mask={cpfMask}
+              value={cpfMasked}
+              maxLength={14}
+              placeholder="123.456.789-10"
+              placeholderTextColor="lightgrey"
+              keyboardType="numeric"
+              onChangeText={(masked, unmasked) => {
+                setCpfMasked(masked);
+                setCpf(unmasked);
+              }}
+            />
           </View>
           <View>
             <Text style={styles.textForm}>Senha</Text>
-            <TextInput value={senha} onChangeText={Setsenha} style={styles.input} placeholder="123456" placeholderTextColor={'lightgrey'} secureTextEntry={true} />
+            <TextInput
+              value={senha}
+              onChangeText={Setsenha}
+              style={styles.input}
+              placeholder="ex: senh@123"
+              placeholderTextColor={'lightgrey'}
+              secureTextEntry={true}
+            />
           </View>
-          <View style={{ width: 200, alignSelf: 'center', marginTop: 10}}>
-            <ButtonP label='Entrar' onPress={login}></ButtonP>
+          <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
+            <ButtonP label='Entrar' onPress={login} />
           </View>
         </View>
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -100,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#081221',
-    width: '100%'
+    width: '100%',
   },
   textForm: {
     color: '#fff',
