@@ -21,8 +21,9 @@ export default function App() {
                 </View>
             </View>
             <View style={styles.containerBotoes}>
-                <ButtonP label='Cadastre-se' onPress={cadastroprof}></ButtonP>
                 <ButtonP label='Entrar' theme='transparent' onPress={login}></ButtonP>
+                <ButtonP label='Cadastre-se' onPress={cadastroprof}></ButtonP>
+                <ButtonP label='Tela Inicial' onPress={telaInicial}></ButtonP>
                 {/* Eu só to usando o botão cadastre-se para checar a tela que to fazendo, só mudar o onPress pra tela correta quando for mexer*/}
             </View>
         </View>

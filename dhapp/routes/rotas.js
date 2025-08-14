@@ -41,3 +41,15 @@ export function cadastropacQuatro () {
 export function telaInicial () {
     router.push('/telaInicial');
 }
+
+export function prontuario () {
+    router.push('/prontuario');
+}
+
+export function exames () {
+    router.push('/exames');
+}
+
+export function vacina () {
+    router.push('/vacina');
+}
