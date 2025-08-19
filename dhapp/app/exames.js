@@ -10,7 +10,7 @@ export default function Exames(){
         <View style={styles.telaInicio}>
 
          <FAB
-            icon="pencil"
+            icon="plus"
             style={styles.fab}
             customSize={76}
             onPress={cadastropac}

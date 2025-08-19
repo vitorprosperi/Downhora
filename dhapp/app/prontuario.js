@@ -8,12 +8,7 @@ export default function Prontuario(){
     return (
        <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}> 
         <View style={styles.telaInicio}>    
-         <FAB
-            icon="pencil"
-            style={styles.fab}
-            customSize={76}
-            onPress={cadastropac}
-        />
+         
         </View>
          </SafeAreaView>
     );
