@@ -11,16 +11,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#081221',
   },
+  contInicial: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 40,
+  },
   telaInicio: {
     flex: 1,
     backgroundColor: '#081221',
-    width: '80%',
+    width: '90%',
     position: 'static',
   },
   containerForm: {
     justifyContent: 'flex-start',
     gap: 10,
-    width: '80%',
+    width: '90%',
   },
   dropdownContainer: {
     backgroundColor: '#081221',
@@ -62,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   exemplo: {
-    color: 'lightgrey'
+    color: 'grey'
   },
   fab: {
     position: 'absolute',
@@ -71,14 +77,6 @@ const styles = StyleSheet.create({
     bottom: 20,
     borderCurve: 30,
     backgroundColor: '#FBEC3B',
-  },
-  imageContainer: {
-    flex: 1,
-  },
-  image: {
-    width: 320,
-    height: 440,
-    borderRadius: 18,
   },
 })
 

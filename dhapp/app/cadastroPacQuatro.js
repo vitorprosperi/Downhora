@@ -79,7 +79,7 @@ export default function CadastroPacQuatro() {
                             <Text style={styles.textForm}>Nome da escola</Text>
                             <TextInput style={styles.input}
                             placeholder='ex: Colégio Cora Coralina'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, escola: text }))} />
                         </View>
 
@@ -87,7 +87,7 @@ export default function CadastroPacQuatro() {
                             <Text style={styles.textForm}>Unidade APAE</Text>
                             <TextInput style={styles.input}
                             placeholder='ex: APAE Botucatu'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uniapae: text }))} />
                         </View>
 

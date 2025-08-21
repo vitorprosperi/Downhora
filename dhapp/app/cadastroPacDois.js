@@ -4,11 +4,11 @@ import { useState } from "react";
 import { ActivityIndicator, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import MaskInput from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { buscarcep } from "../API Correios/endereco";
 import { cadastropacTres } from "../routes/rotas";
 import { unidades } from "../unidades/unidades";
-import MaskInput from 'react-native-mask-input';
 import styles from './styleForms';
 
 export default function CadastroPacDois() {
@@ -45,7 +45,7 @@ export default function CadastroPacDois() {
               <MaskInput
                 style={styles.input}
                 placeholder='ex: 18640-000'
-                placeholderTextColor='lightgrey'
+                placeholderTextColor='grey'
                 keyboardType="numeric"
                 mask={cepMask}
                 maxLength={9}
@@ -134,7 +134,7 @@ export default function CadastroPacDois() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: 90'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 keyboardType="numeric"
                 value={numero}
                 onChangeText={(text) => {
@@ -149,7 +149,7 @@ export default function CadastroPacDois() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: Apartamento 10'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 value={complemento}
                 onChangeText={(text) => {
                   setComplemento(text);

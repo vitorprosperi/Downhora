@@ -5,11 +5,11 @@ import { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import MaskInput from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { telaInicial } from '../routes/rotas';
 import { unidades } from "../unidades/unidades";
 import styles from "./styleForms";
-import MaskInput from 'react-native-mask-input';
 
 export default function CadastroProfissional() {
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
@@ -104,7 +104,7 @@ export default function CadastroProfissional() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: Rene Vitor França de Melo'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) => setProfissionaldados(prev => ({ ...prev, nomeCompleto: text }))}
               />
             </View>
@@ -117,7 +117,7 @@ export default function CadastroProfissional() {
                 value={cpf}
                 maxLength={14}
                 placeholder='ex: 123.456.789-00'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 keyboardType="numeric"
                 onChangeText={(masked, unmasked) => {
                 setCpf(masked); // mostra formatado
@@ -131,7 +131,7 @@ export default function CadastroProfissional() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: Rene Vitor França de Melo'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) =>
                   setProfissionaldados(prev => ({ ...prev, nomeSocial: text }))
                 }
@@ -147,7 +147,7 @@ export default function CadastroProfissional() {
                 mask={dateMask}
                 value={dataNascimento}
                 placeholder="ex: 15/04/1993"
-                placeholderTextColor="lightgrey"
+                placeholderTextColor="grey"
                 onChangeText={(masked, unmasked) => {
                   setDataNascimento(masked); // mostra com a máscara
                   setProfissionaldados(prev => ({
@@ -238,7 +238,7 @@ export default function CadastroProfissional() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: senh@123'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 secureTextEntry
                 onChangeText={(text) => setSenha(text)}
               />
@@ -249,7 +249,7 @@ export default function CadastroProfissional() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: senh@123'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 secureTextEntry
                 onChangeText={(text) => setConfirmarSenha(text)}
               />

@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import MaskInput from 'react-native-mask-input';
 import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
-import MaskInput from 'react-native-mask-input';
 import styles from './styleForms';
 
 export default function CadastroPac() {
@@ -56,7 +56,7 @@ export default function CadastroPac() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: Rene Vitor França de Melo'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome: text }))}
               />
             </View>
@@ -70,7 +70,7 @@ export default function CadastroPac() {
                 maxLength={10}
                 value={dataNascimento}
                 placeholder='ex: 14/10/2001'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(masked, unmasked) => {
                   setDataNascimento(masked);
                   setPacientedados(prev => ({ ...prev, data: unmasked }));
@@ -108,7 +108,7 @@ export default function CadastroPac() {
                 maxLength={14}
                 value={cpf}
                 placeholder='ex: 140.777.964-77'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(masked, unmasked) => {
                   setCpf(masked);
                   setPacientedados(prev => ({ ...prev, cpf: unmasked }));
@@ -121,7 +121,7 @@ export default function CadastroPac() {
               <TextInput
                 style={styles.input}
                 placeholder=''
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))}
               />
             </View>
@@ -131,7 +131,7 @@ export default function CadastroPac() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: Roseane França de Melo'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeMae: text }))}
               />
             </View>
@@ -141,7 +141,7 @@ export default function CadastroPac() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: Roseane França de Melo'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeResp: text }))}
               />
             </View>
@@ -151,7 +151,7 @@ export default function CadastroPac() {
               <MaskInput
                 style={styles.input}
                 placeholder='ex: (14)12345-6789'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 keyboardType="numeric"
                 mask={phoneMask}
                 maxLength={15}
@@ -168,7 +168,7 @@ export default function CadastroPac() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: roseane@gmail.com'
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, emailResp: text }))}
               />
             </View>
@@ -178,7 +178,7 @@ export default function CadastroPac() {
               <TextInput
                 style={styles.input}
                 placeholder='ex: '
-                placeholderTextColor={'lightgrey'}
+                placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, prontuario: text }))}
               />
               <RadioButton.Group

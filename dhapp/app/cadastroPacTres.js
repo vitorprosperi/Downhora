@@ -97,13 +97,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valor1 === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataCariotipo}
                                         onChangeText={text => {
                                             setDataCariotipo(text);
@@ -134,13 +134,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valor2 === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataAuditivo}
                                         onChangeText={text => {
                                             setDataAuditivo(text);
@@ -171,13 +171,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valor3 === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataEco}
                                         onChangeText={text => {
                                             setDataEco(text);
@@ -208,13 +208,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valor4 === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataOrtopedica}
                                         onChangeText={text => {
                                             setDataOrtopedica(text);
@@ -245,13 +245,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valor5 === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}> 
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataNeuro}
                                         onChangeText={text => {
                                             setDataNeuro(text);
@@ -283,13 +283,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valorFono === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataFono}
                                         onChangeText={text => {
                                             setDataFono(text);
@@ -320,13 +320,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valorOdonto === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataOdonto}
                                         onChangeText={text => {
                                             setDataOdonto(text);
@@ -357,13 +357,13 @@ export default function CadastroPacTres() {
                                 }}
                             />
                             {valorEndocrino === 'sim' && (
-                                <View>
+                                <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
-                                        placeholderTextColor="lightgrey"
+                                        placeholderTextColor="grey"
                                         value={dataEndocrino}
                                         onChangeText={text => {
                                             setDataEndocrino(text);
@@ -380,7 +380,7 @@ export default function CadastroPacTres() {
                             <TextInput
                                 style={styles.input}
                                 placeholder='ex: Cardíaca, Tireoidiana'
-                                placeholderTextColor={'lightgrey'}
+                                placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, comorbidades: text }))}
                             />
                         </View>
@@ -391,7 +391,7 @@ export default function CadastroPacTres() {
                             <TextInput
                                 style={styles.input}
                                 placeholder='ex: Losartana'
-                                placeholderTextColor={'lightgrey'}
+                                placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, medicamento: text }))}
                             />
                         </View>
@@ -426,7 +426,7 @@ export default function CadastroPacTres() {
                                     <TextInput
                                         style={styles.input}
                                         placeholder='ex: Rinite alérgica'
-                                        placeholderTextColor={'lightgrey'}
+                                        placeholderTextColor={'grey'}
                                         onChangeText={text => setPacientedados(prev => ({ ...prev, alergia: text }))}
                                     />
                                 </View>
