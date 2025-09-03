@@ -1,5 +1,5 @@
 import { View, Text} from "react-native";
-import { Button, FAB } from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 import styles from './styleForms';
 import { exameCad } from "../routes/rotas";
 import { SafeAreaView } from 'react-native-safe-area-context';
