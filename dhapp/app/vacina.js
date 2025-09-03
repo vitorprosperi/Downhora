@@ -1,8 +1,8 @@
-import { View } from "react-native"
+import { View } from "react-native";
 import { FAB } from 'react-native-paper';
-import styles from './styleForms';
-import { cadastropac } from "../routes/rotas";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { cadastropac } from "../routes/rotas";
+import styles from './styleForms';
 
 export default function Vacina(){
     return (

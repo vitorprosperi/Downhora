@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 40,
+    gap: 20,
   },
   telaInicio: {
     flex: 1,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 16,
     right: 30,
-    bottom: 20,
+    bottom: 30,
     borderCurve: 30,
     backgroundColor: '#FBEC3B',
   },
