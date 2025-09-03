@@ -53,3 +53,7 @@ export function exames () {
 export function vacina () {
     router.push('/vacina');
 }
+
+export function exameCad () {
+    router.push('/exameCad');
+}
