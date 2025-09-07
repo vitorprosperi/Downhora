@@ -86,7 +86,7 @@ export default function CadastroPac() {
                 selectedTextStyle={styles.textForm}
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
-                activeColor='#081221'
+                activeColor='#F5F5FF'
                 data={itensGenero}
                 labelField="label"
                 valueField="value"
@@ -188,13 +188,13 @@ export default function CadastroPac() {
                 }}
                 value={unidade}
               >
-                <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="UBS" value="UBS" />
-                <RadioButton.Item uncheckedColor='#fff' color="#fff" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
+                <RadioButton.Item uncheckedColor='#231F20' color="#231F20" labelStyle={styles.textForm} label="UBS" value="UBS" />
+                <RadioButton.Item uncheckedColor='#231F20' color="#231F20" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
               </RadioButton.Group>
             </View>
 
           </View>
-          <View style={{ marginBottom: 20, width: 200 }}>
+          <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
             <ButtonP label="Próximo" onPress={cadastropacDois} />
           </View>
         </View>

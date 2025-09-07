@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FBEC3B',
+        backgroundColor: '#2261C1',
         width: '100%',
         height: 50,
         borderRadius: 10,
@@ -37,20 +37,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         justifyContent: 'center',
-        backgroundColor: '#081221',
+        backgroundColor: '#F2AA08',
         width: '100%',
         height: 50,
         borderRadius: 10,
-        borderColor: 'lightgrey',
-        borderStyle: 'solid',
-        borderWidth: 2,
     },
     text: {
-        color: '#081221',
+        color: '#FAFAFF',
         fontSize: 16,
     },
     textTrans: {
-        color: 'white',
+        color: '#231F20',
         fontSize: 16,
     }
 })

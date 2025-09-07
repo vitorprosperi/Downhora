@@ -62,7 +62,7 @@ export default function CadastroPacQuatro() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itens1}
                                 labelField="label"
                                 valueField="value"
@@ -99,7 +99,7 @@ export default function CadastroPacQuatro() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itens2}
                                 labelField="label"
                                 valueField="value"
@@ -120,7 +120,7 @@ export default function CadastroPacQuatro() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itens3}
                                 labelField="label"
                                 valueField="value"
@@ -135,7 +135,7 @@ export default function CadastroPacQuatro() {
 
                     </View>
 
-                    <View style={{ marginBottom: 20, width: 200 }}>
+                    <View style={{ marginBottom: 10, width: 200 }}>
                         <ButtonP label="Finalizar cadastro" onPress={verTodos} />
                     </View>
 

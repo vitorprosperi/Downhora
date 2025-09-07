@@ -3,13 +3,13 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   corEscura: {
     flexGrow: 1,
-    backgroundColor: '#081221',
+    backgroundColor: '#FAFAFF',
   },
   container: {
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#081221',
+    backgroundColor: '#FAFAFF',
   },
   contInicial: {
     flex: 1,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   telaInicio: {
     flex: 1,
-    backgroundColor: '#081221',
+    backgroundColor: '#FAFAFF',
     width: '90%',
     position: 'static',
   },
@@ -29,15 +29,15 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   dropdownContainer: {
-    backgroundColor: '#081221',
+    backgroundColor: '#FAFAFF',
   },
   input: {
-    backgroundColor: '#081221',
-    color: '#fff',
+    backgroundColor: '#FAFAFF',
+    color: '#231F20',
     paddingVertical: 0,
     paddingHorizontal: 0,
     borderWidth: 1,
-    borderColor: '#fff',
+    borderColor: '#231F20',
     borderRadius: 2,
     width: '100%',
     fontSize: 16,
@@ -51,20 +51,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textForm: {
-    color: '#fff',
+    color: '#231F20',
     fontSize: 16,
   },
   titulo: {
-    color: '#fff',
+    color: '#231F20',
     fontSize: 20,
     fontWeight: 700,
   },
   subTitulo: {
-    color: '#FFDCDC',
+    color: '#231F20',
     fontSize: 18,
   },
   textoPequeno: {
-    color: '#FFDCDC',
+    color: '#231F20',
     fontSize: 14,
   },
   exemplo: {
@@ -73,10 +73,10 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     margin: 16,
-    right: 30,
-    bottom: 30,
+    right: 10,
+    bottom: 35,
     borderCurve: 30,
-    backgroundColor: '#FBEC3B',
+    backgroundColor: '#2261C1',
   },
 })
 

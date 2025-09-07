@@ -44,10 +44,11 @@ export default function RootLayout() {
         <ProfissionalProvider>
           <Stack screenOptions={{
             headerStyle: {
-              backgroundColor: '#081221',
+              backgroundColor: '#FAFAFF',
             },
-            headerTintColor: '#FFDCDC',
+            headerTintColor: '#231F20',
             headerTitle: '',
+            headerShadowVisible: false,
           }} />
         </ProfissionalProvider>
       </PacienteProvider>

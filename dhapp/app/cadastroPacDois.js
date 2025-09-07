@@ -166,7 +166,7 @@ export default function CadastroPacDois() {
                 selectedTextStyle={styles.textForm}
                 containerStyle={styles.dropdownContainer}
                 itemTextStyle={styles.textForm}
-                activeColor='#081221'
+                activeColor='#f5f5ff'
                 data={itens}
                 labelField="label"
                 valueField="value"
@@ -182,7 +182,7 @@ export default function CadastroPacDois() {
             </View>
           </View>
 
-          <View style={{ marginBottom: 20, width: 200 }}>
+          <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
             <ButtonP label="Próximo" onPress={cadastropacTres} />
           </View>
 

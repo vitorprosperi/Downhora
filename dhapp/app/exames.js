@@ -1,10 +1,10 @@
-import { View, Text} from "react-native";
-import { FAB } from 'react-native-paper';
-import styles from './styleForms';
-import { exameCad } from "../routes/rotas";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from "expo-router";
 import ButtonP from '@/components/ButtonP';
+import { useLocalSearchParams } from "expo-router";
+import { Text, View } from "react-native";
+import { FAB } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { exameCad } from "../routes/rotas";
+import styles from './styleForms';
 
 export default function Exames() {
 
@@ -28,9 +28,11 @@ export default function Exames() {
 
          <FAB
             icon="plus"
+            color="#FAFAFF"
             style={styles.fab}
             customSize={76}
             onPress={exameCad}
+            mode="flat"
         />
         </View>
         </SafeAreaView>
