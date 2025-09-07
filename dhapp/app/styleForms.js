@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     margin: 16,
-    right: 10,
+    right: 12,
     bottom: 35,
     borderCurve: 30,
     backgroundColor: '#2261C1',
