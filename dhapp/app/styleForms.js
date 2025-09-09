@@ -78,6 +78,11 @@ const styles = StyleSheet.create({
     borderCurve: 30,
     backgroundColor: '#2261C1',
   },
+  telaExames: {
+    flex: 1,
+    width: '90%',
+    position: 'static',
+  }
 })
 
 export default styles;
