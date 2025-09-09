@@ -25,29 +25,14 @@ export default function Exames() {
           <View style={cstyle.card}>
             <Pressable >
               <View>
-                <Text>Médico: {medico}</Text>
+                <Text style={cstyle.textoSecundario}>{medico}</Text>
               </View>
               <View>
-                <Text>Exame: {exame}</Text>
+                <Text style={cstyle.textoPrincipal}>{exame}</Text>
               </View>
               <View style={cstyle.bottomBar}>
                 
-                <Text>Data: {data}</Text>
-                <Text>Observações: {obs}</Text>
-              </View>
-            </Pressable>
-          </View>
-          <View style={cstyle.card}>
-            <Pressable >
-              <View>
-                <Text>Médico: {medico}</Text>
-              </View>
-              <View>
-                <Text>Exame: {exame}</Text>
-              </View>
-              <View style={cstyle.bottomBar}>
-                
-                <Text>Data: {data}</Text>
+                <Text style={cstyle.textoSecundario}>{data}</Text>
                 <Text>Observações: {obs}</Text>
               </View>
             </Pressable>
@@ -69,9 +54,10 @@ export default function Exames() {
 
 const cstyle = StyleSheet.create({
   card: {
-    backgroundColor: 'hsla(216, 70%, 45%, 0.3)',
-    borderRadius: 2,
+    backgroundColor: 'hsla(216, 70%, 45%, 0.2)',
+    borderRadius: 4,
     minWidth: '100%',
+    padding: 10,
   },
   container: {
     width: '100%',
@@ -81,5 +67,14 @@ const cstyle = StyleSheet.create({
   },
   bottomBar: {
     flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  textoPrincipal: {
+    fontSize: 18,
+    fontWeight: 500,
+    color: "#231F20",
+  },
+  textoSecundario: {
+    color: 'hsla(345, 6%, 13%, 0.8)',
   }
 })
