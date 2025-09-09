@@ -25,13 +25,14 @@ export default function Exames() {
           <View style={cstyle.card}>
             <Pressable >
               <View>
-                <Text>Data: {data}</Text>
+                <Text>Médico: {medico}</Text>
               </View>
               <View>
                 <Text>Exame: {exame}</Text>
               </View>
               <View style={cstyle.bottomBar}>
-                <Text>Médico: {medico}</Text>
+                
+                <Text>Data: {data}</Text>
                 <Text>Observações: {obs}</Text>
               </View>
             </Pressable>
@@ -39,13 +40,14 @@ export default function Exames() {
           <View style={cstyle.card}>
             <Pressable >
               <View>
-                <Text>Data: {data}</Text>
+                <Text>Médico: {medico}</Text>
               </View>
               <View>
                 <Text>Exame: {exame}</Text>
               </View>
               <View style={cstyle.bottomBar}>
-                <Text>Médico: {medico}</Text>
+                
+                <Text>Data: {data}</Text>
                 <Text>Observações: {obs}</Text>
               </View>
             </Pressable>
