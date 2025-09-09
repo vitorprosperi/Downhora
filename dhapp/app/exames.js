@@ -14,7 +14,7 @@ export default function Exames() {
   const { obs } = useLocalSearchParams();
 
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.corEscura, {alignItems: "center"}]}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.corEscura, { alignItems: "center" }]}>
       <View style={styles.telaExames}>
 
         <View>
@@ -25,15 +25,16 @@ export default function Exames() {
           <View style={cstyle.card}>
             <Pressable >
               <View>
-                <Text style={cstyle.textoSecundario}>{medico}</Text>
+                <Text style={cstyle.textoSecundario}>Dr. {medico}</Text>
+              </View>
+              <View style={cstyle.midBar}>
+                <Text style={cstyle.textoPrincipal}>{exame}</Text>
+                  <Text style={[cstyle.textoSecundario, {fontSize: 20}]}>{data}</Text>
               </View>
               <View>
-                <Text style={cstyle.textoPrincipal}>{exame}</Text>
-              </View>
-              <View style={cstyle.bottomBar}>
-                
-                <Text style={cstyle.textoSecundario}>{data}</Text>
-                <Text>Observações: {obs}</Text>
+
+
+                <Text>{obs}</Text>
               </View>
             </Pressable>
           </View>
@@ -55,9 +56,10 @@ export default function Exames() {
 const cstyle = StyleSheet.create({
   card: {
     backgroundColor: 'hsla(216, 70%, 45%, 0.2)',
-    borderRadius: 4,
-    minWidth: '100%',
-    padding: 10,
+    borderRadius: 1,
+    minWidth: '99%',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
   },
   container: {
     width: '100%',
@@ -65,16 +67,17 @@ const cstyle = StyleSheet.create({
     gap: 10,
     flex: 1,
   },
-  bottomBar: {
+  midBar: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
   textoPrincipal: {
-    fontSize: 18,
+    fontSize: 21,
     fontWeight: 500,
     color: "#231F20",
   },
   textoSecundario: {
-    color: 'hsla(345, 6%, 13%, 0.8)',
+    color: 'hsla(345, 6%, 33%, 1)',
+    fontSize: 17,
   }
 })
