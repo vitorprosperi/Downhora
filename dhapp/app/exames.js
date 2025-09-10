@@ -1,11 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-<<<<<<< HEAD
-import { View, Text } from "react-native";
 import { FAB } from 'react-native-paper';
+import { useEffect, useState } from "react";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from "expo-router";
 import ButtonP from '@/components/ButtonP';
+import styles from "./styleForms";
+import { exameCad } from '../routes/rotas';
 
 export default function Exames() {
   const { exame, data, medico, obs } = useLocalSearchParams();
