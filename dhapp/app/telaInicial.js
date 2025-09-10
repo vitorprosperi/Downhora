@@ -17,6 +17,7 @@ export default function telaInicial() {
                             <Pressable style={btstyle.button} onPress={prontuario}>
                                 <Icon
                                     source="content-paste"
+                                    color='#2261c1'
                                     size={45}
                                 />
                                 <Text style={btstyle.text}>Prontuário</Text>
@@ -26,6 +27,7 @@ export default function telaInicial() {
                             <Pressable style={btstyle.button} onPress={exames}>
                                 <Icon
                                     source="calendar-multiselect"
+                                    color='#2261c1'
                                     size={45}
                                 />
                                 <Text style={btstyle.text}>Exames</Text>
@@ -37,6 +39,7 @@ export default function telaInicial() {
                             <Pressable style={btstyle.button} onPress={vacina}>
                                 <Icon
                                     source="needle"
+                                    color='#2261c1'
                                     size={45}
                                 />
                                 <Text style={btstyle.text}>Vacinação</Text>
@@ -46,6 +49,7 @@ export default function telaInicial() {
                             <Pressable style={btstyle.button} onPress={prontuario}>
                                 <Icon
                                     source="information-outline"
+                                    color='#2261c1'
                                     size={45}
                                 />
                                 <Text style={btstyle.text}>Informações</Text>
@@ -64,14 +68,14 @@ const btstyle = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FBEC3B',
+        backgroundColor: '#FFFFFF',
         width: 'auto',
         aspectRatio: '1/1',
         height: 160,
         borderRadius: 10,
     },
     text: {
-        color: '#081221',
+        color: '#2261C1',
         fontSize: 25,
     },
     botoesContainer: {

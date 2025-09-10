@@ -85,7 +85,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -122,7 +122,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -159,7 +159,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -196,7 +196,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -233,7 +233,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -271,7 +271,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -308,7 +308,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -345,7 +345,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -405,7 +405,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -442,7 +442,7 @@ export default function CadastroPacTres() {
                                 selectedTextStyle={styles.textForm}
                                 containerStyle={styles.dropdownContainer}
                                 itemTextStyle={styles.textForm}
-                                activeColor='#081221'
+                                activeColor='#F5F5FF'
                                 data={itensTipoSangue}
                                 labelField="label"
                                 valueField="value"
@@ -456,7 +456,7 @@ export default function CadastroPacTres() {
                         </View>
                     </View>
 
-                    <View style={{ marginBottom: 20, width: 200 }}>
+                    <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
                         <ButtonP label="Próximo" onPress={cadastropacQuatro} />
                     </View>
 

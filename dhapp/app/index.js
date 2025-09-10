@@ -21,8 +21,8 @@ export default function App() {
                 </View>
             </View>
             <View style={styles.containerBotoes}>
-                <ButtonP label='Entrar' theme='transparent' onPress={login}></ButtonP>
-                <ButtonP label='Cadastre-se' onPress={cadastroprof}></ButtonP>
+                <ButtonP label='Login' theme='transparent' onPress={login}></ButtonP>
+                <ButtonP label='Cadastro' onPress={cadastroprof}></ButtonP>
                 <ButtonP label='Tela Inicial' onPress={telaInicial}></ButtonP>
                 {/* Eu só to usando o botão cadastre-se para checar a tela que to fazendo, só mudar o onPress pra tela correta quando for mexer*/}
             </View>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#081221',
+        backgroundColor: '#FAFAFF',
     },
     containerBotoes: {
         gap: 10,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: '#081221',
+        backgroundColor: '#FAFAFF',
     },
     imageContainer: {
         width: 350,

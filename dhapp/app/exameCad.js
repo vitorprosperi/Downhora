@@ -81,7 +81,7 @@ export default function ExameCad() {
 
         <View style={{ marginBottom: 20, width: 200 }}>
             <ButtonP label="Finalizar" 
-            onPress = {() => router.push({ pathname: "/exames", params: { exame, data, medico, obs } })} />
+            onPress = {() => router.replace({ pathname: "/exames", params: { exame, data, medico, obs } })} />
         </View>
 
         </SafeAreaView>

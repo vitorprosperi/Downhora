@@ -11,9 +11,11 @@ export default function Vacina(){
 
          <FAB
             icon="upload"
+            color="#FAFAFF"
             style={styles.fab}
             customSize={76}
             onPress={cadastropac}
+            mode="flat"
         />
         </View>
         </SafeAreaView>
