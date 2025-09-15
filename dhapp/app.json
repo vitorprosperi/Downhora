@@ -3,6 +3,7 @@
     "name": "dhapp",
     "slug": "dhapp",
     "version": "1.0.0",
+    "sdkVersion": "54.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "dhapp",

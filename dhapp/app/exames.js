@@ -1,83 +1,45 @@
 import { useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { FAB } from 'react-native-paper';
+import { useEffect, useState } from "react";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { exameCad } from "../routes/rotas";
-import styles from './styleForms';
+import ButtonP from '@/components/ButtonP';
+import styles from "./styleForms";
+import { exameCad } from '../routes/rotas';
 
 export default function Exames() {
+  const { exame, data, medico, obs } = useLocalSearchParams();
+  const [exames, setExames] = useState([]);
 
-  //recuperando o parâmetro "exame" da tela exameCad
-  const { exame } = useLocalSearchParams();
-  const { data } = useLocalSearchParams();
-  const { medico } = useLocalSearchParams();
-  const { obs } = useLocalSearchParams();
+  // toda vez que vier novo exame via params, adiciona na lista
+  useEffect(() => {
+    if (exame || data || medico || obs) {
+      setExames((prev) => [
+        ...prev,
+        { exame, data, medico, obs }
+      ]);
+    }
+  }, [exame, data, medico, obs]);
 
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.corEscura, { alignItems: "center" }]}>
-      <View style={styles.telaExames}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+        <View style={styles.telaInicio}>
 
-        <View>
-          <Text style={styles.titulo}>Exames Cadastrados</Text>
-        </View>
-
-        <View style={cstyle.container}>
-          <View style={cstyle.card}>
-            <Pressable >
-              <View>
-                <Text style={cstyle.textoSecundario}>Dr. {medico}</Text>
-              </View>
-              <View style={cstyle.midBar}>
-                <Text style={cstyle.textoPrincipal}>{exame}</Text>
-                  <Text style={[cstyle.textoSecundario, {fontSize: 20}]}>{data}</Text>
-              </View>
-              <View>
-
-
-                <Text>{obs}</Text>
-              </View>
-            </Pressable>
+          <View>
+            <Text style={styles.titulo}>Exames Cadastrados</Text>
           </View>
-        </View>
 
-        <FAB
-          icon="plus"
-          color="#FAFAFF"
-          style={styles.fab}
-          customSize={76}
-          onPress={exameCad}
-          mode="flat"
+          <ButtonP
+            label={`Exame: ${exame}\nData: ${data}\nMédico: ${medico}\nObservações: ${obs}`} 
+          />
+
+         <FAB
+            icon="plus"
+            style={styles.fab}
+            customSize={76}
+            onPress={exameCad}
         />
       </View>
     </SafeAreaView>
   );
 }
-
-const cstyle = StyleSheet.create({
-  card: {
-    backgroundColor: 'hsla(216, 70%, 45%, 0.2)',
-    borderRadius: 1,
-    minWidth: '99%',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-  },
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    gap: 10,
-    flex: 1,
-  },
-  midBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  textoPrincipal: {
-    fontSize: 21,
-    fontWeight: 500,
-    color: "#231F20",
-  },
-  textoSecundario: {
-    color: 'hsla(345, 6%, 33%, 1)',
-    fontSize: 17,
-  }
-})
