@@ -1,11 +1,11 @@
-import { View, Text } from "react-native";
-import { useState } from "react";
-import { SafeAreaView} from 'react-native-safe-area-context';
-import styles from "./styleForms";
-import { TextInput } from "react-native-paper";
-import MaskInput from 'react-native-mask-input';
 import ButtonP from '@/components/ButtonP';
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Text, View } from "react-native";
+import MaskInput from 'react-native-mask-input';
+import { TextInput } from "react-native-paper";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import styles from "./styleForms";
 
 
 export default function ExameCad() {
@@ -22,6 +22,8 @@ export default function ExameCad() {
 
     return(
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+          <View style={styles.container}>
+          <View style={styles.containerForm}>
 
             <View>
               <Text style={styles.titulo}>Cadastro de exames</Text>
@@ -79,11 +81,12 @@ export default function ExameCad() {
               />
             </View>
 
+</View>
         <View style={{ marginBottom: 20, width: 200 }}>
             <ButtonP label="Finalizar" 
             onPress = {() => router.push({ pathname: "/exames", params: { exame, data, medico, obs } })} />
         </View>
-
+</View>
         </SafeAreaView>
     );
 }
