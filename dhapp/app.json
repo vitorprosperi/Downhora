@@ -10,8 +10,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.dhapp"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
@@ -19,8 +18,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "softwareKeyboardLayoutMode": "pan",
-      "package": "com.anonymous.dhapp"
+      "softwareKeyboardLayoutMode" : "pan"
     },
     "web": {
       "bundler": "metro",
@@ -42,12 +40,6 @@
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "d197a128-044e-471a-9231-f156b33e0a1c"
-      }
     }
   }
 }
