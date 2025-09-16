@@ -9,9 +9,9 @@ import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
 import styles from './styleForms';
+import { supabase } from "../supabaseserver"; 
 
 export default function CadastroPac() {
-
   const { pacientedados, setPacientedados } = usePaciente();
 
   // Máscaras
@@ -37,6 +37,21 @@ export default function CadastroPac() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
+
+  // Função para enviar ao Supabase
+  const salvarNoSupabase = async () => {
+    console.log("Tentando salvar no Supabase:", pacientedados);
+
+    const { data, error } = await supabase
+      .from("usuarios") // substitua pelo nome da sua tabela
+      .insert([pacientedados]);
+
+    if (error) {
+      console.log("Erro ao salvar:", error);
+    } else {
+      console.log("Salvo com sucesso:", data);
+    }
+  };
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -73,7 +88,7 @@ export default function CadastroPac() {
                 placeholderTextColor={'grey'}
                 onChangeText={(masked, unmasked) => {
                   setDataNascimento(masked);
-                  setPacientedados(prev => ({ ...prev, data: unmasked }));
+                  setPacientedados(prev => ({ ...prev, data_nascimento: unmasked }));
                 }}
               />
             </View>
@@ -132,7 +147,7 @@ export default function CadastroPac() {
                 style={styles.input}
                 placeholder='ex: Roseane França de Melo'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeMae: text }))}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome_mae: text }))}
               />
             </View>
 
@@ -142,7 +157,7 @@ export default function CadastroPac() {
                 style={styles.input}
                 placeholder='ex: Roseane França de Melo'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, nomeResp: text }))}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome_responsavel: text }))}
               />
             </View>
 
@@ -158,7 +173,7 @@ export default function CadastroPac() {
                 value={telResp}
                 onChangeText={(masked, unmasked) => {
                   setTelResp(masked);
-                  setPacientedados(prev => ({ ...prev, telResp: unmasked }));
+                  setPacientedados(prev => ({ ...prev, telefone_responsavel: unmasked }));
                 }}
               />
             </View>
@@ -169,7 +184,7 @@ export default function CadastroPac() {
                 style={styles.input}
                 placeholder='ex: roseane@gmail.com'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, emailResp: text }))}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, email_responsavel: text }))}
               />
             </View>
 
@@ -179,12 +194,12 @@ export default function CadastroPac() {
                 style={styles.input}
                 placeholder='ex: '
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, prontuario: text }))}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, n_prontuario: text }))}
               />
               <RadioButton.Group
                 onValueChange={value => {
                   setUnidade(value);
-                  setPacientedados(prev => ({ ...prev, unidade: value }));
+                  setPacientedados(prev => ({ ...prev, unidade_prontuario: value }));
                 }}
                 value={unidade}
               >
@@ -195,11 +210,11 @@ export default function CadastroPac() {
 
           </View>
           <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
+            <ButtonP label="Salvar no Supabase" onPress={salvarNoSupabase} />
             <ButtonP label="Próximo" onPress={cadastropacDois} />
           </View>
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
-
   );
 }
