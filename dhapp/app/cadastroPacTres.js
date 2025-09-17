@@ -447,6 +447,7 @@ export default function CadastroPacTres() {
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Selecione"
+                                dropdownPosition='top'
                                 value={valor7}
                                 onChange={item => {
                                     setValor7(item.value);
