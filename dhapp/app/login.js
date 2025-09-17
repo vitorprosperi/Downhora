@@ -3,8 +3,8 @@ import { Image } from 'expo-image';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { telaInicial } from '../routes/rotas';
 import MaskInput from 'react-native-mask-input';
+import { telaInicial } from '../routes/rotas';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -58,7 +58,7 @@ export default function Login() {
               value={cpfMasked}
               maxLength={14}
               placeholder="123.456.789-10"
-              placeholderTextColor="lightgrey"
+              placeholderTextColor="grey"
               keyboardType="numeric"
               onChangeText={(masked, unmasked) => {
                 setCpfMasked(masked);
@@ -73,7 +73,7 @@ export default function Login() {
               onChangeText={Setsenha}
               style={styles.input}
               placeholder="ex: senh@123"
-              placeholderTextColor={'lightgrey'}
+              placeholderTextColor={'grey'}
               secureTextEntry={true}
             />
           </View>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#081221',
+    backgroundColor: '#FAFAFF',
   },
   containerForm: {
     justifyContent: 'flex-start',
@@ -100,12 +100,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
-    backgroundColor: '#081221',
-    color: '#fff',
+    backgroundColor: '#FAFAFF',
+    color: '#231F20',
     paddingVertical: 0,
     paddingHorizontal: 0,
     borderWidth: 1,
-    borderColor: '#fff',
+    borderColor: '#231F20',
     borderRadius: 2,
     width: '100%',
     fontSize: 16,
@@ -118,11 +118,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#081221',
+    backgroundColor: '#FAFAFF',
     width: '100%',
   },
   textForm: {
-    color: '#fff',
+    color: '#231F20',
     fontSize: 16,
   },
   imageContainer: {
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   titulo: {
-    color: '#fff',
+    color: '#231F20',
     fontSize: 20,
     fontWeight: 700,
   },
