@@ -9,7 +9,6 @@ import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacDois } from '../routes/rotas';
 import styles from './styleForms';
-import { supabase } from "../supabaseserver"; 
 
 export default function CadastroPac() {
   const { pacientedados, setPacientedados } = usePaciente();
@@ -37,21 +36,6 @@ export default function CadastroPac() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
-
-  // Função para enviar ao Supabase
-  const salvarNoSupabase = async () => {
-    console.log("Tentando salvar no Supabase:", pacientedados);
-
-    const { data, error } = await supabase
-      .from("usuarios") // substitua pelo nome da sua tabela
-      .insert([pacientedados]);
-
-    if (error) {
-      console.log("Erro ao salvar:", error);
-    } else {
-      console.log("Salvo com sucesso:", data);
-    }
-  };
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -210,7 +194,6 @@ export default function CadastroPac() {
 
           </View>
           <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
-            <ButtonP label="Salvar no Supabase" onPress={salvarNoSupabase} />
             <ButtonP label="Próximo" onPress={cadastropacDois} />
           </View>
         </View>

@@ -1,69 +1,155 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
+import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styleForms';
+import NetInfo from '@react-native-community/netinfo'; // para checar internet
+import { supabase } from "../supabaseserver";  // ajuste o caminho do seu client do supabase
 
 export default function CadastroPacQuatro() {
 
     const { pacientedados, setPacientedados } = usePaciente();
+    const db = useSQLiteContext();
 
     const [valor1, setValor1] = useState(null);
-
     const [valor2, setValor2] = useState(null);
-
     const [valor3, setValor3] = useState(null);
 
-    const verTodos = () => {
-        console.log('Dados do paciente até agora:', pacientedados);
-        console.log('Cadastro finalizado com sucesso!');
+    const salvarPaciente = async () => {
+        try {
+            // 1. Salva localmente no SQLite
+            const result = await db.runAsync(
+                `INSERT INTO PessoaSindromeDeDown 
+                  (nome_completo, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, numero_prontuario, unidade_saude)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    pacientedados.nome,
+                    pacientedados.data_nascimento,
+                    pacientedados.genero,
+                    pacientedados.cpf,
+                    pacientedados.cns,
+                    pacientedados.nome_mae,
+                    pacientedados.nome_responsavel,
+                    pacientedados.telefone_responsavel,
+                    pacientedados.email_responsavel,
+                    pacientedados.n_prontuario,
+                    pacientedados.unidade_prontuario
+                ]
+            );
+
+            const usuarioId = result.lastInsertRowId;
+
+            await db.runAsync(
+                `INSERT INTO Endereco (pessoa_id, cep, rua, estado, cidade, bairro, numero, complemento, unidade_saude)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    usuarioId,
+                    pacientedados.cep,
+                    pacientedados.rua,
+                    pacientedados.estado,
+                    pacientedados.cidade,
+                    pacientedados.bairro,
+                    pacientedados.numero,
+                    pacientedados.complemento,
+                    pacientedados.unidadeSaude
+                ]
+            );
+
+            await db.runAsync(
+                `INSERT INTO HistoricoMedico 
+                  (pessoa_id, exame_cariotipo, triagem_auditiva, consulta_cardiologista, teste_pezinho, consulta_oftalmologista, consulta_fonoaudiologia, consulta_odontologia, consulta_endocrinologia, comorbidades, medicamento_em_uso, alergias, tipo_sanguineo)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    usuarioId,
+                    pacientedados.cariotipo,
+                    pacientedados.exameAuditivo,
+                    pacientedados.consultCardio,
+                    pacientedados.testePe,
+                    pacientedados.oftalmo,
+                    pacientedados.consultaFono,
+                    pacientedados.consultaOdonto,
+                    pacientedados.consultaEndocrino,
+                    pacientedados.comorbidades,
+                    pacientedados.medicamento,
+                    pacientedados.alergia,
+                    pacientedados.tiposangue
+                ]
+            );
+
+            await db.runAsync(
+                `INSERT INTO InformacoesComplementares (pessoa_id, escolaridade, nome_escola, unidade_apae, autonomia_comunicacao, acompanhamento_multiprofissional)
+                 VALUES (?, ?, ?, ?, ?, ?)`,
+                [
+                    usuarioId,
+                    pacientedados.escolaridade,
+                    pacientedados.escola,
+                    pacientedados.uniapae,
+                    pacientedados.comunicacao,
+                    pacientedados.acompanhamento_prof
+                ]
+            );
+
+            console.log("✅ Paciente salvo no SQLite");
+
+            // 2. Checa conexão e tenta sincronizar com Supabase
+            const netState = await NetInfo.fetch();
+            if (netState.isConnected) {
+                const { error } = await supabase
+                    .from("usuarios") // nome da tabela no Supabase
+                    .insert([{
+                        nome: pacientedados.nome,
+                        data_nascimento: pacientedados.data_nascimento,
+                        genero: pacientedados.genero,
+                        cpf: pacientedados.cpf,
+                        cns: pacientedados.cns,
+                        nome_mae: pacientedados.nome_mae,
+                        nome_responsavel: pacientedados.nome_responsavel,
+                        telefone_responsavel: pacientedados.telefone_responsavel,
+                        email_responsavel: pacientedados.email_responsavel,
+                        n_prontuario: pacientedados.n_prontuario,
+                        unidade_prontuario: pacientedados.unidade_prontuario,
+                    }]);
+
+                if (error) {
+                    console.error("⚠️ Erro ao sincronizar com Supabase:", error);
+                } else {
+                    console.log("✅ Paciente também salvo no Supabase");
+                }
+            } else {
+                console.log("📴 Sem internet: paciente será sincronizado depois");
+            }
+
+        } catch (error) {
+            console.error("Erro ao salvar paciente:", error);
+        }
     };
-
-    const itens1 = [
-        { label: 'Ensino fundamental incompleto', value: 'ensino_fundamental_incompleto' },
-        { label: 'Ensino fundamental completo', value: 'ensino_fundamental_completo' },
-        { label: 'Ensino médio incompleto', value: 'ensino_medio_incompleto' },
-        { label: 'Ensino médio completo', value: 'ensino_medio_completo' },
-        { label: 'Ensino superior incompleto', value: 'ensino_superior_incompleto' },
-        { label: 'Ensino superior completo', value: 'ensino_superior_completo' },
-        { label: 'Pós graduação', value: 'pos_graduacao' },
-    ];
-
-    const itens2 = [
-        { label: 'Total', value: 'total' },
-        { label: 'Parcial', value: 'parcial' },
-        { label: 'Não', value: 'nao' },
-    ];
-
-    const itens3 = [
-        { label: 'Sim', value: 'sim' },
-        { label: 'Não', value: 'nao' },
-    ];
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
                 <View style={styles.container}>
-                    <View style={styles.containerForm}>
+                    <View className={styles.containerForm}>
+                        <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+                        <Text style={styles.subTitulo}>Informações complementares</Text>
 
-                        <View>
-                            <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
-                            <Text style={styles.subTitulo}>Informações complementares</Text>
-                        </View>
-
+                        {/* Escolaridade */}
                         <View>
                             <Text style={styles.textForm}>Escolaridade</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
-                                data={itens1}
+                                data={[
+                                    { label: 'Ensino fundamental incompleto', value: 'ensino_fundamental_incompleto' },
+                                    { label: 'Ensino fundamental completo', value: 'ensino_fundamental_completo' },
+                                    { label: 'Ensino médio incompleto', value: 'ensino_medio_incompleto' },
+                                    { label: 'Ensino médio completo', value: 'ensino_medio_completo' },
+                                    { label: 'Ensino superior incompleto', value: 'ensino_superior_incompleto' },
+                                    { label: 'Ensino superior completo', value: 'ensino_superior_completo' },
+                                    { label: 'Pós graduação', value: 'pos_graduacao' },
+                                ]}
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Selecione"
@@ -75,32 +161,38 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
+                        {/* Escola */}
                         <View>
                             <Text style={styles.textForm}>Nome da escola</Text>
-                            <TextInput style={styles.input}
-                            placeholder='ex: Colégio Cora Coralina'
-                placeholderTextColor={'grey'}
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, escola: text }))} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder='ex: Colégio Cora Coralina'
+                                placeholderTextColor={'grey'}
+                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, escola: text }))}
+                            />
                         </View>
 
+                        {/* APAE */}
                         <View>
                             <Text style={styles.textForm}>Unidade APAE</Text>
-                            <TextInput style={styles.input}
-                            placeholder='ex: APAE Botucatu'
-                placeholderTextColor={'grey'}
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uniapae: text }))} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder='ex: APAE Botucatu'
+                                placeholderTextColor={'grey'}
+                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uniapae: text }))}
+                            />
                         </View>
 
+                        {/* Comunicação */}
                         <View>
                             <Text style={styles.textForm}>Autonomia de comunicação</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
-                                data={itens2}
+                                data={[
+                                    { label: 'Total', value: 'total' },
+                                    { label: 'Parcial', value: 'parcial' },
+                                    { label: 'Não', value: 'nao' },
+                                ]}
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Selecione"
@@ -112,16 +204,15 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
+                        {/* Multiprofissional */}
                         <View>
                             <Text style={styles.textForm}>Acompanhamento multiprofissional</Text>
                             <Dropdown
                                 style={styles.input}
-                                placeholderStyle={styles.textForm}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
-                                data={itens3}
+                                data={[
+                                    { label: 'Sim', value: 'sim' },
+                                    { label: 'Não', value: 'nao' },
+                                ]}
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Selecione"
@@ -132,15 +223,13 @@ export default function CadastroPacQuatro() {
                                 }}
                             />
                         </View>
-
                     </View>
 
                     <View style={{ marginBottom: 10, width: 200 }}>
-                        <ButtonP label="Finalizar cadastro" onPress={verTodos} />
+                        <ButtonP label="Finalizar cadastro" onPress={salvarPaciente} />
                     </View>
-
                 </View>
             </KeyboardAwareScrollView>
         </SafeAreaView>
-    )
+    );
 }
