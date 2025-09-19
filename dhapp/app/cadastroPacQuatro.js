@@ -21,7 +21,7 @@ export default function CadastroPacQuatro() {
 
     const salvarPaciente = async () => {
         try {
-            // 1. Salva localmente no SQLite
+            //Salva localmente no SQLite
             const result = await db.runAsync(
                 `INSERT INTO PessoaSindromeDeDown 
                   (nome_completo, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, numero_prontuario, unidade_saude)
@@ -95,7 +95,7 @@ export default function CadastroPacQuatro() {
 
             console.log("✅ Paciente salvo no SQLite");
 
-            // 2. Checa conexão e tenta sincronizar com Supabase
+            // Checa conexão e tenta sincronizar com Supabase
             const netState = await NetInfo.fetch();
             if (netState.isConnected) {
                 const { error } = await supabase
