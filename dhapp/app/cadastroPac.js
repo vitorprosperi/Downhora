@@ -1,7 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, View, Alert } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
@@ -36,6 +36,39 @@ export default function CadastroPac() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+
+  function Proximo() {
+    // Lista de campos obrigatórios
+    const obrigatorios = [
+      { nome: 'nome', label: 'Nome Completo' },
+      { nome: 'data_nascimento', label: 'Data de Nascimento' },
+      { nome: 'genero', label: 'Gênero' },
+      { nome: 'cpf', label: 'CPF' },
+      { nome: 'senha', label: 'Senha' },
+      { nome: 'cns', label: 'CNS' },
+      { nome: 'nome_mae', label: 'Nome da mãe' },
+      { nome: 'nome_responsavel', label: 'Nome do responsável' },
+      { nome: 'telefone_responsavel', label: 'Telefone do responsável' },
+      { nome: 'email_responsavel', label: 'E-mail do responsável' },
+      { nome: 'n_prontuario', label: 'Nº do Prontuário' },
+      { nome: 'unidade_prontuario', label: 'Unidade do Prontuário' },
+    ];
+
+    // Verifica se algum campo obrigatório está vazio
+    const vazio = obrigatorios.find(campo => !pacientedados[campo.nome] || pacientedados[campo.nome].toString().trim() === '');
+
+    if (vazio) {
+      Alert.alert("Atenção", `O campo "${vazio.label}" é obrigatório.`);
+      return;
+    }
+
+    if (pacientedados.senha !== confirmarSenha) {
+      Alert.alert("Atenção", "As senhas não coincidem. Por favor, verifique e tente novamente.");
+      return;
+    }
+    cadastropacDois();
+  }
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -112,6 +145,30 @@ export default function CadastroPac() {
                   setCpf(masked);
                   setPacientedados(prev => ({ ...prev, cpf: unmasked }));
                 }}
+              />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Senha*</Text>
+              <TextInput
+                style={styles.input}
+                placeholder='ex: s&nh@Segur@123$'
+                placeholderTextColor={'grey'}
+                onChangeText={(text) => 
+                  setPacientedados(prev => ({ ...prev, senha: text }))}
+                secureTextEntry
+              />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Confirmar senha*</Text>
+              <TextInput
+                style={styles.input}
+                placeholder='Digite novamente a senha'
+                placeholderTextColor={'grey'}
+                value={confirmarSenha}
+                onChangeText={setConfirmarSenha}
+                secureTextEntry
               />
             </View>
 
@@ -194,7 +251,7 @@ export default function CadastroPac() {
 
           </View>
           <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
-            <ButtonP label="Próximo" onPress={cadastropacDois} />
+            <ButtonP label="Próximo" onPress={Proximo} />
           </View>
         </View>
       </KeyboardAwareScrollView>

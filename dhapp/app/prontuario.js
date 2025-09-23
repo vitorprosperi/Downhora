@@ -42,6 +42,14 @@ export default function Prontuario(){
               <Text style={{ color: 'black' }}>Email responsável: {item.email_responsavel}</Text>
               <Text style={{ color: 'black' }}>Número Prontuario: {item.numero_prontuario}</Text>
               <Text style={{ color: 'black' }}>Unidade: {item.unidade_saude}</Text>
+
+              <Text style={{ color: 'black' }}>CEP: {item.cep}</Text>
+              <Text style={{ color: 'black' }}>Rua: {item.rua}</Text>
+              <Text style={{ color: 'black' }}>Estado: {item.estado}</Text>
+              <Text style={{ color: 'black' }}>Cidade: {item.cidade}</Text>
+              <Text style={{ color: 'black' }}>Bairro: {item.bairro}</Text>
+              <Text style={{ color: 'black' }}>Número: {item.numero}</Text>
+              <Text style={{ color: 'black' }}>Unidade de Saúde: {item.complemento}</Text>
             </View>
           )}
         />

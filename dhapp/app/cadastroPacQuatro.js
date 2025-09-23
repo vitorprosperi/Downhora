@@ -120,7 +120,7 @@ export default function CadastroPacQuatro() {
                     console.log("✅ Paciente também salvo no Supabase");
                 }
             } else {
-                console.log("📴 Sem internet: paciente será sincronizado depois");
+                console.log("Sem internet: paciente será sincronizado depois");
             }
 
         } catch (error) {
