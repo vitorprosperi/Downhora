@@ -8,7 +8,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styleForms';
 import NetInfo from '@react-native-community/netinfo'; // para checar internet
-import { supabase } from "../supabaseserver";  // ajuste o caminho do seu client do supabase
+import { supabase } from "../supabaseserver";  
 
 export default function CadastroPacQuatro() {
 
