@@ -15,6 +15,7 @@ export default function CadastroPac() {
 
   // Máscaras
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
+  const cnsMask = [/\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/];
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const phoneMask = [
     '(', /\d/, /\d/, ')', ' ',
@@ -34,6 +35,7 @@ export default function CadastroPac() {
 
   // Estados para os campos mascarados
   const [dataNascimento, setDataNascimento] = useState('');
+  const [cns, setCns] = useState('');
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
@@ -174,13 +176,18 @@ export default function CadastroPac() {
 
             <View>
               <Text style={styles.textForm}>CNS*</Text>
-              <TextInput
+              <MaskInput
                 style={styles.input}
                 keyboardType='numeric'
-                maxLength={15}
+                maxLength={18}
+                mask={cnsMask}
+                value={cns}
                 placeholder='ex: 123 4567 8901 2345'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))}
+                onChangeText={(masked, unmasked) => {
+                  setCns(masked);
+                  setPacientedados(prev => ({ ...prev, cns: unmasked }));
+                }}
               />
             </View>
 
