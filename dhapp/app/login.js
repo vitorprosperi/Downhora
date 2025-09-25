@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import MaskInput from 'react-native-mask-input';
 import { supabase } from "../supabaseserver";
+import { useRouter } from 'expo-router';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -13,6 +14,7 @@ export default function Login() {
   const [cpfMasked, setCpfMasked] = useState('');
   const [senha, setSenha] = useState("");
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
+  const router = useRouter(); // Adicione esta linha
 
   const login = async () => {
     if (cpf === '' || senha === '') {
