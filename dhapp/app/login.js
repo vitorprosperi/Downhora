@@ -2,19 +2,42 @@ import ButtonP from '@/components/ButtonP';
 import { Image } from 'expo-image';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import MaskInput from 'react-native-mask-input';
 import { telaInicial } from '../routes/rotas';
+import { supabase } from "../supabaseserver";
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
 export default function Login() {
-  // Controle das variáveis cpf e senha
   const [cpf, setCpf] = useState("");
   const [cpfMasked, setCpfMasked] = useState('');
   const [senha, Setsenha] = useState("");
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const db = useSQLiteContext();
+
+  // Função de login no Supabase Auth
+  const loginAuth = async (cpf, senha) => {
+    try {
+      const emailFake = `${cpf}@meuapp.com`;
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: emailFake,
+        password: senha,
+      });
+
+      if (error) {
+        console.error("⚠️ Erro Supabase Auth:", error.message);
+        return null;
+      }
+
+      console.log("✅ Login Supabase:", data.session);
+      return data.session;
+    } catch (err) {
+      console.error("Erro inesperado Supabase:", err);
+      return null;
+    }
+  };
 
   const login = async () => {
     if (cpf === '' || senha === '') {
@@ -23,17 +46,23 @@ export default function Login() {
     }
 
     try {
+      // 1. Valida localmente no SQLite
       const result = await db.getAllAsync(
-        'SELECT * FROM Profissional WHERE cpf = ? AND senha_hash = ?',
+        'SELECT * FROM PessoaSindromeDeDown WHERE cpf = ? AND senha_hash = ?',
         [cpf, senha]
       );
 
-      if (result.length > 0) {
+      // 2. Tenta login no Supabase Auth
+      const session = await loginAuth(cpf, senha);
+
+      if (result.length > 0 && session) {
         const usuario = result[0];
-        console.log('Login bem-sucedido:', usuario);
+        console.log('Login bem-sucedido (SQLite + Supabase):', usuario);
         telaInicial();
+      } else if (!session) {
+        Alert.alert("Erro", "CPF ou senha inválidos no Supabase.");
       } else {
-        alert('CPF ou senha inválidos.');
+        Alert.alert("Erro", "Usuário não encontrado no dispositivo.");
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
@@ -142,4 +171,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 700,
   },
-})
+});

@@ -1,14 +1,14 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
+import NetInfo from '@react-native-community/netinfo'; // para checar internet
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Alert, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from "../supabaseserver";
 import styles from './styleForms';
-import NetInfo from '@react-native-community/netinfo'; // para checar internet
-import { supabase } from "../supabaseserver";  
 
 export default function CadastroPacQuatro() {
 
@@ -18,6 +18,33 @@ export default function CadastroPacQuatro() {
     const [valor1, setValor1] = useState(null);
     const [valor2, setValor2] = useState(null);
     const [valor3, setValor3] = useState(null);
+
+    // Função para registrar usuário no Supabase Auth
+    const registrarAuth = async (cpf, senha) => {
+        try {
+            const emailFake = `${cpf}@meuapp.com`;
+
+            const { data, error } = await supabase.auth.signUp({
+                email: emailFake,
+                password: senha,
+                options: {
+                    data: { cpf: cpf },
+                },
+            });
+
+            if (error) {
+                console.error("Erro no Auth:", error.message);
+                Alert.alert("Erro", "Não foi possível criar o usuário no Supabase Auth");
+                return null;
+            }
+
+            console.log("Usuário Auth criado:", data.user);
+            return data.user;
+        } catch (err) {
+            console.error("Erro inesperado:", err);
+            return null;
+        }
+    };
 
     const salvarPaciente = async () => {
         try {
@@ -103,6 +130,11 @@ export default function CadastroPacQuatro() {
 
             console.log("Paciente salvo no SQLite");
 
+            // Cria usuário também no Supabase Auth
+            if (pacientedados.cpf && pacientedados.senha) {
+                await registrarAuth(pacientedados.cpf, pacientedados.senha);
+            }
+
             // Checa conexão e tenta sincronizar com Supabase
             const netState = await NetInfo.fetch();
             if (netState.isConnected) {
@@ -123,9 +155,9 @@ export default function CadastroPacQuatro() {
                     }]);
 
                 if (error) {
-                    console.error("⚠️ Erro ao sincronizar com Supabase:", error);
+                    console.error("Erro ao sincronizar com Supabase:", error);
                 } else {
-                    console.log("✅ Paciente também salvo no Supabase");
+                    console.log("Paciente também salvo no Supabase");
                 }
             } else {
                 console.log("Sem internet: paciente será sincronizado depois");
