@@ -9,7 +9,8 @@ export default function Prontuario(){
   const db = useSQLiteContext();
   const [pacientes, setPacientes] = useState([]);
   const [enderecos, setEnderecos] = useState([]);
-  const [historicos, setHistoricos] = useState([]); // Novo estado para histórico
+  const [historicos, setHistoricos] = useState([]);
+  const [complementares, setComplementares] = useState([]);
 
   // Buscar pacientes salvos no SQLite
   const carregarPacientes = async () => {
@@ -38,11 +39,21 @@ export default function Prontuario(){
       console.error("Erro ao buscar histórico médico:", error);
     }
   };
+  // Buscar informações complementares salvos no SQLite
+  const carregarComplementares = async () => {
+    try {
+      const result = await db.getAllAsync("SELECT * FROM InformacoesComplementares");
+      setComplementares(result);
+    } catch (error) {
+      console.error("Erro ao buscar informações complementares:", error);
+    }
+  };
 
   useEffect(() => {
     carregarPacientes();
     carregarEnderecos();
     carregarHistorico();
+    carregarComplementares();
   }, []);
 
   // Função para buscar endereço pelo id do paciente
@@ -55,6 +66,11 @@ export default function Prontuario(){
     return historicos.find(h => h.pessoa_id === pacienteId);
   }
 
+  // Função para buscar informações complementares pelo id do paciente
+  function InformacaoPorPacienteId(pacienteId) {
+    return complementares.find(h => h.pessoa_id === pacienteId);
+  }
+
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}> 
       <View style={styles.telaInicio}>    
@@ -64,6 +80,7 @@ export default function Prontuario(){
           renderItem={({ item }) => {
             const endereco = EnderecoPorPacienteId(item.id);
             const historico = HistoricoPorPacienteId(item.id);
+            const infoComp = InformacaoPorPacienteId(item.id);
             return (
               <View style={{ marginBottom: 10, padding: 10, backgroundColor: '#eee', borderRadius: 8 }}>
                 <Text style={{ color: 'black' }}>Nome: {item.nome_completo}</Text>
@@ -93,6 +110,7 @@ export default function Prontuario(){
                     <Text style={{ color: 'black' }}>Bairro: {endereco.bairro}</Text>
                     <Text style={{ color: 'black' }}>Número: {endereco.numero}</Text>
                     <Text style={{ color: 'black' }}>Complemento: {endereco.complemento}</Text>
+                    <Text style={{ color: 'black' }}>Unidade de Saúde: {endereco.unidade_saude}</Text>
                   </>
                 ) : (
                   <Text style={{ color: 'black' }}>Endereço não cadastrado.</Text>
@@ -106,14 +124,30 @@ export default function Prontuario(){
                 {/* Dados do histórico médico, se existir */}
                 {historico ? (
                   <>
-                    <Text style={{ color: 'black' }}>Exame cariótipo: {historico.exame_cariotipo}</Text>
-                    <Text style={{ color: 'black' }}>Triagem auditiva: {historico.triagem_auditiva}</Text>
-                    <Text style={{ color: 'black' }}>Consulta cardiologista: {historico.consulta_cardiologista}</Text>
-                    <Text style={{ color: 'black' }}>Teste do pezinho: {historico.teste_pezinho}</Text>
-                    <Text style={{ color: 'black' }}>Consulta oftalmologista: {historico.consulta_oftalmologista}</Text>
-                    <Text style={{ color: 'black' }}>Consulta fonoaudiologia: {historico.consulta_fonoaudiologia}</Text>
-                    <Text style={{ color: 'black' }}>Consulta odontologia: {historico.consulta_odontologia}</Text>
-                    <Text style={{ color: 'black' }}>Consulta endocrinologia: {historico.consulta_endocrinologia}</Text>
+                    <Text style={{ color: 'black' }}>
+                      Exame cariótipo: {historico.exame_cariotipo} {historico.data_cariotipo ? `(Data: ${historico.data_cariotipo})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Triagem auditiva: {historico.triagem_auditiva} {historico.data_triagem ? `(Data: ${historico.data_triagem})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta cardiologista: {historico.consulta_cardiologista} {historico.data_cardiologista ? `(Data: ${historico.data_cardiologista})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Teste do pezinho: {historico.teste_pezinho} {historico.data_pezinho ? `(Data: ${historico.data_pezinho})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta oftalmologista: {historico.consulta_oftalmologista} {historico.data_oftalmo ? `(Data: ${historico.data_oftalmo})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta fonoaudiologia: {historico.consulta_fonoaudiologia} {historico.data_fono ? `(Data: ${historico.data_fono})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta odontologia: {historico.consulta_odontologia} {historico.data_odonto ? `(Data: ${historico.data_odonto})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta endocrinologia: {historico.consulta_endocrinologia} {historico.data_endocrinologia ? `(Data: ${historico.data_endocrinologia})` : ''}
+                    </Text>
                     <Text style={{ color: 'black' }}>Comorbidades: {historico.comorbidades}</Text>
                     <Text style={{ color: 'black' }}>Medicamento em uso: {historico.medicamento_em_uso}</Text>
                     <Text style={{ color: 'black' }}>Alergias: {historico.alergias}</Text>
@@ -121,6 +155,22 @@ export default function Prontuario(){
                   </>
                 ) : (
                   <Text style={{ color: 'black' }}>Histórico médico não cadastrado.</Text>
+                )}
+
+                {/* Parágrafo para informações complementares */}
+                <Text style={{ color: 'black', marginVertical: 8 }}>
+                  Informações complementares:
+                </Text>
+                {infoComp ? (
+                  <>
+                    <Text style={{ color: 'black' }}>Escolaridade: {infoComp.escolaridade}</Text>
+                    <Text style={{ color: 'black' }}>Nome da escola: {infoComp.nome_escola}</Text>
+                    <Text style={{ color: 'black' }}>Unidade APAE: {infoComp.unidade_apae}</Text>
+                    <Text style={{ color: 'black' }}>Autonomia/comunicação: {infoComp.autonomia_comunicacao}</Text>
+                    <Text style={{ color: 'black' }}>Acompanhamento multiprofissional: {infoComp.acompanhamento_multiprofissional}</Text>
+                  </>
+                ) : (
+                  <Text style={{ color: 'black' }}>Informações complementares não cadastradas.</Text>
                 )}
               </View>
             );

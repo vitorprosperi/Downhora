@@ -61,18 +61,26 @@ export default function CadastroPacQuatro() {
 
             await db.runAsync(
                 `INSERT INTO HistoricoMedico 
-                  (pessoa_id, exame_cariotipo, triagem_auditiva, consulta_cardiologista, teste_pezinho, consulta_oftalmologista, consulta_fonoaudiologia, consulta_odontologia, consulta_endocrinologia, comorbidades, medicamento_em_uso, alergias, tipo_sanguineo)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                  (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmologista, data_oftalmo, consulta_fonoaudiologia, data_fono, consulta_odontologia, data_odonto, consulta_endocrinologia, data_endocrinologia, comorbidades, medicamento_em_uso, alergias, tipo_sanguineo)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     usuarioId,
                     pacientedados.cariotipo,
+                    pacientedados.dataCariotipo,
                     pacientedados.exameAuditivo,
+                    pacientedados.dataAuditivo,
                     pacientedados.consultCardio,
+                    pacientedados.dataCard,
                     pacientedados.testePe,
+                    pacientedados.dataPe,
                     pacientedados.oftalmo,
+                    pacientedados.dataOftal,
                     pacientedados.consultaFono,
+                    pacientedados.dataFono,
                     pacientedados.consultaOdonto,
+                    pacientedados.dataOdonto,
                     pacientedados.consultaEndocrino,
+                    pacientedados.dataEndocrino,
                     pacientedados.comorbidades,
                     pacientedados.medicamento,
                     pacientedados.alergia,
@@ -93,7 +101,7 @@ export default function CadastroPacQuatro() {
                 ]
             );
 
-            console.log("✅ Paciente salvo no SQLite");
+            console.log("Paciente salvo no SQLite");
 
             // Checa conexão e tenta sincronizar com Supabase
             const netState = await NetInfo.fetch();

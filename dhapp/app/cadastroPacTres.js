@@ -413,11 +413,11 @@ export default function CadastroPacTres() {
                                 value={valor6}
                                 onChange={item => {
                                     setValor6(item.value);
-                                    setPacientedados(prev => ({ ...prev, possuiAlergia: item.value }));
-                                    // Limpa o campo de alergia se marcar "não"
-                                    if (item.value !== 'sim') {
-                                        setPacientedados(prev => ({ ...prev, alergia: '' }));
-                                    }
+                                    setPacientedados(prev => ({
+                                        ...prev,
+                                        possuiAlergia: item.value,
+                                        alergia: item.value === 'sim' ? prev.alergia || '' : 'não'
+                                    }));
                                 }}
                             />
                             {valor6 === 'sim' && (
@@ -427,6 +427,7 @@ export default function CadastroPacTres() {
                                         style={styles.input}
                                         placeholder='ex: Rinite alérgica'
                                         placeholderTextColor={'grey'}
+                                        value={pacientedados.alergia === 'não' ? '' : pacientedados.alergia || ''}
                                         onChangeText={text => setPacientedados(prev => ({ ...prev, alergia: text }))}
                                     />
                                 </View>
