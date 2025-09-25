@@ -172,15 +172,21 @@ export default function CadastroPacQuatro() {
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
                 <View style={styles.container}>
-                    <View className={styles.containerForm}>
+                    <View style={styles.containerForm}>
+                        <View>
                         <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
                         <Text style={styles.subTitulo}>Informações complementares</Text>
-
+                        </View>
                         {/* Escolaridade */}
                         <View>
                             <Text style={styles.textForm}>Escolaridade</Text>
                             <Dropdown
                                 style={styles.input}
+                                placeholderStyle={styles.exemplo}
+                                selectedTextStyle={styles.textForm}
+                                containerStyle={styles.dropdownContainer}
+                                itemTextStyle={styles.textForm}
+                                activeColor='#F5F5FF'
                                 data={[
                                     { label: 'Ensino fundamental incompleto', value: 'ensino_fundamental_incompleto' },
                                     { label: 'Ensino fundamental completo', value: 'ensino_fundamental_completo' },
@@ -228,6 +234,11 @@ export default function CadastroPacQuatro() {
                             <Text style={styles.textForm}>Autonomia de comunicação</Text>
                             <Dropdown
                                 style={styles.input}
+                                placeholderStyle={styles.exemplo}
+                                selectedTextStyle={styles.textForm}
+                                containerStyle={styles.dropdownContainer}
+                                itemTextStyle={styles.textForm}
+                                activeColor='#F5F5FF'
                                 data={[
                                     { label: 'Total', value: 'total' },
                                     { label: 'Parcial', value: 'parcial' },
@@ -249,6 +260,11 @@ export default function CadastroPacQuatro() {
                             <Text style={styles.textForm}>Acompanhamento multiprofissional</Text>
                             <Dropdown
                                 style={styles.input}
+                                placeholderStyle={styles.exemplo}
+                                selectedTextStyle={styles.textForm}
+                                containerStyle={styles.dropdownContainer}
+                                itemTextStyle={styles.textForm}
+                                activeColor='#F5F5FF'
                                 data={[
                                     { label: 'Sim', value: 'sim' },
                                     { label: 'Não', value: 'nao' },

@@ -4,11 +4,14 @@ import { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import MaskInput from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacQuatro } from "../routes/rotas";
 import styles from './styleForms';
 
 export default function CadastroPacTres() {
+
+    const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
     const { pacientedados, setPacientedados } = usePaciente();
 
@@ -99,15 +102,17 @@ export default function CadastroPacTres() {
                             {valor1 === 'sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataCariotipo}
-                                        onChangeText={text => {
-                                            setDataCariotipo(text);
-                                            setPacientedados(prev => ({ ...prev, dataCariotipo: text }));
+                                        mask={dateMask}
+                                        maxLength={10}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataCariotipo(masked);
+                                            setPacientedados(prev => ({ ...prev, dataCariotipo: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -136,15 +141,17 @@ export default function CadastroPacTres() {
                             {valor2 === 'sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
+                                        maxLength={10}
+                                        mask={dateMask}
                                         value={dataAuditivo}
-                                        onChangeText={text => {
-                                            setDataAuditivo(text);
-                                            setPacientedados(prev => ({ ...prev, dataAuditivo: text }));
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataAuditivo(masked);
+                                            setPacientedados(prev => ({ ...prev, dataAuditivo: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -173,15 +180,17 @@ export default function CadastroPacTres() {
                             {valor3 === 'sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataEco}
-                                        onChangeText={text => {
-                                            setDataEco(text);
-                                            setPacientedados(prev => ({ ...prev, dataCard: text }));
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataEco(masked);
+                                            setPacientedados(prev => ({ ...prev, dataCard: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -210,15 +219,17 @@ export default function CadastroPacTres() {
                             {valor4 === 'sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
+                                        maxLength={10}
+                                        mask={dateMask}
                                         value={dataOrtopedica}
-                                        onChangeText={text => {
-                                            setDataOrtopedica(text);
-                                            setPacientedados(prev => ({ ...prev, dataPe: text }));
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataOrtopedica(masked);
+                                            setPacientedados(prev => ({ ...prev, dataPe: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -247,15 +258,17 @@ export default function CadastroPacTres() {
                             {valor5 === 'sim' && (
                                 <View style={{marginTop: 10}}> 
                                     <Text style={styles.textForm}>Data da avaliação</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
+                                        maxLength={10}
+                                        mask={dateMask}
                                         value={dataNeuro}
-                                        onChangeText={text => {
-                                            setDataNeuro(text);
-                                            setPacientedados(prev => ({ ...prev, dataOftal: text }));
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataNeuro(masked);
+                                            setPacientedados(prev => ({ ...prev, dataOftal: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -285,15 +298,17 @@ export default function CadastroPacTres() {
                             {valorFono === 'sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataFono}
-                                        onChangeText={text => {
-                                            setDataFono(text);
-                                            setPacientedados(prev => ({ ...prev, dataFono: text }));
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataFono(masked);
+                                            setPacientedados(prev => ({ ...prev, dataFono: unmasked}));
                                         }}
                                     />
                                 </View>
@@ -322,15 +337,17 @@ export default function CadastroPacTres() {
                             {valorOdonto === 'sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataOdonto}
-                                        onChangeText={text => {
-                                            setDataOdonto(text);
-                                            setPacientedados(prev => ({ ...prev, dataOdonto: text }));
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataOdonto(masked);
+                                            setPacientedados(prev => ({ ...prev, dataOdonto: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -359,15 +376,17 @@ export default function CadastroPacTres() {
                             {valorEndocrino === 'sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <TextInput
+                                    <MaskInput
                                         style={styles.input}
                                         placeholder="ex: 01/01/2023"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataEndocrino}
-                                        onChangeText={text => {
-                                            setDataEndocrino(text);
-                                            setPacientedados(prev => ({ ...prev, dataEndocrino: text }));
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataEndocrino(masked);
+                                            setPacientedados(prev => ({ ...prev, dataEndocrino: unmasked }));
                                         }}
                                     />
                                 </View>
