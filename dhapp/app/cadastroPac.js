@@ -1,7 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
 import { useState } from "react";
-import { Text, TextInput, View, Alert } from "react-native";
+import { Alert, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
@@ -176,7 +176,9 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>CNS*</Text>
               <TextInput
                 style={styles.input}
-                placeholder=''
+                keyboardType='numeric'
+                maxLength={15}
+                placeholder='ex: 123 4567 8901 2345'
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))}
               />
@@ -233,7 +235,7 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>Nº do Prontuário*</Text>
               <TextInput
                 style={styles.input}
-                placeholder='ex: '
+                placeholder='ex: 123456789'
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, n_prontuario: text }))}
               />
