@@ -177,6 +177,7 @@ export default function CadastroPac() {
               <TextInput
                 style={styles.input}
                 keyboardType='numeric'
+                maxLength={15}
                 placeholder='ex: 123 4567 8901 2345'
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, cns: text }))}
