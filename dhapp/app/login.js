@@ -2,6 +2,7 @@ import ButtonP from '@/components/ButtonP';
 import { Image } from 'expo-image';
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
 import { supabase } from "../supabaseserver";
 
@@ -44,8 +45,11 @@ export default function Login() {
   };
 
   return (
+    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
     <View style={styles.loginEstilo}>
+      
       <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
+        
         <View style={styles.imageContainer}>
           <Image source={LogoImage} style={styles.image} />
         </View>
@@ -88,8 +92,11 @@ export default function Login() {
             <ButtonP label='Entrar' onPress={login} />
           </View>
         </View>
+        
       </View>
+      
     </View>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -140,5 +147,9 @@ const styles = StyleSheet.create({
     color: '#231F20',
     fontSize: 20,
     fontWeight: "700",
+  },
+  corEscura: {
+    flexGrow: 1,
+    backgroundColor: '#FAFAFF',
   },
 });
