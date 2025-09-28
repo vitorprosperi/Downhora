@@ -5,7 +5,7 @@ import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import MaskInput from 'react-native-mask-input';
 import { supabase } from "../supabaseserver";
 import { useRouter } from 'expo-router';
-import { useUsuario } from '@/context/context'; // ⬅️ importe o contexto do usuário
+import { useUsuario } from '@/context/context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
@@ -16,9 +16,9 @@ export default function Login() {
   const [cpfMasked, setCpfMasked] = useState('');
   const [senha, setSenha] = useState("");
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
-  const router = useRouter(); // Adicione esta linha
+  const router = useRouter();
 
-  const { setUserId } = useUsuario(); // ⬅️ use o setter do contexto
+  const { setUserId } = useUsuario();
 
   const login = async () => {
     if (cpf === '' || senha === '') {
