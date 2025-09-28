@@ -1,6 +1,6 @@
 import ButtonP from '@/components/ButtonP';
 import { usePaciente } from '@/context/context';
-import NetInfo from '@react-native-community/netinfo'; // para checar internet
+import NetInfo from '@react-native-community/netinfo';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
 import { Alert, Text, TextInput, View } from "react-native";
@@ -11,7 +11,6 @@ import { supabase } from "../supabaseserver";
 import styles from './styleForms';
 
 export default function CadastroPacQuatro() {
-
     const { pacientedados, setPacientedados } = usePaciente();
     const db = useSQLiteContext();
 
@@ -27,9 +26,7 @@ export default function CadastroPacQuatro() {
             const { data, error } = await supabase.auth.signUp({
                 email: emailFake,
                 password: senha,
-                options: {
-                    data: { cpf: cpf },
-                },
+                options: { data: { cpf } }
             });
 
             if (error) {
@@ -38,8 +35,100 @@ export default function CadastroPacQuatro() {
                 return null;
             }
 
-            console.log("Usuário Auth criado:", data.user);
-            return data.user;
+            const authUserId = data.user.id;
+
+            const { error: errorUsuario } = await supabase
+                .from("usuarios")
+                .insert([{
+                    id: authUserId,
+                    nome: pacientedados.nome,
+                    data_nascimento: pacientedados.data_nascimento,
+                    genero: pacientedados.genero,
+                    cpf: pacientedados.cpf,
+                    cns: pacientedados.cns,
+                    nome_mae: pacientedados.nome_mae,
+                    nome_responsavel: pacientedados.nome_responsavel,
+                    telefone_responsavel: pacientedados.telefone_responsavel,
+                    email_responsavel: pacientedados.email_responsavel,
+                    n_prontuario: pacientedados.n_prontuario,
+                    unidade_prontuario: pacientedados.unidade_prontuario,
+                }]);
+
+            if (errorUsuario) {
+                console.error("Erro ao sincronizar com Supabase (usuarios):", errorUsuario);
+            } else {
+                console.log("Paciente salvo no Supabase (usuarios)");
+            }
+
+            const { error: errorEndereco } = await supabase
+                .from("endereco")
+                .insert([{
+                    usuario_id: authUserId,
+                    cep: pacientedados.cep,
+                    rua: pacientedados.rua,
+                    estado: pacientedados.estado,
+                    cidade: pacientedados.cidade,
+                    bairro: pacientedados.bairro,
+                    numero: pacientedados.numero,
+                    complemento: pacientedados.complemento,
+                    unidade_saude: pacientedados.unidadeSaude
+                }]);
+
+            if (errorEndereco) {
+                console.error("Erro ao sincronizar com Supabase (endereco):", errorEndereco);
+            } else {
+                console.log("Endereço salvo no Supabase (endereco)");
+            }
+
+            const { error: errorHistorico } = await supabase
+                .from("historico_medico")
+                .insert([{
+                    usuario_id: authUserId,
+                    exame_cariotipo: pacientedados.cariotipo,
+                    data_cariotipo: pacientedados.dataCariotipo,
+                    triagem_auditiva: pacientedados.exameAuditivo,
+                    data_triagem: pacientedados.dataAuditivo,
+                    consulta_cardiologista: pacientedados.consultCardio,
+                    data_cardiologista: pacientedados.dataCard,
+                    teste_pezinho: pacientedados.testePe,
+                    data_pezinho: pacientedados.dataPe,
+                    consulta_oftalmo: pacientedados.oftalmo,
+                    data_oftalmo: pacientedados.dataOftal,
+                    consulta_fono: pacientedados.consultaFono,
+                    data_fono: pacientedados.dataFono,
+                    consulta_odonto: pacientedados.consultaOdonto,
+                    data_odonto: pacientedados.dataOdonto,
+                    consulta_endocrinologia: pacientedados.consultaEndocrino,
+                    data_endocrinologia: pacientedados.dataEndocrino,
+                    comorbidades: pacientedados.comorbidades,
+                    medicamentos: pacientedados.medicamento,
+                    alergias: pacientedados.alergia,
+                    tipo_sanguineo: pacientedados.tiposangue
+                }]);
+
+            if (errorHistorico) {
+                console.error("Erro ao sincronizar com Supabase (historico):", errorHistorico);
+            } else {
+                console.log("Histórico salvo no Supabase (historico)");
+            }
+
+            const { error: errorComplementar } = await supabase
+                .from("complementares")
+                .insert([{
+                    usuario_id: authUserId,
+                    escolaridade: pacientedados.escolaridade,
+                    nome_escola: pacientedados.escola,
+                    unidade_apae: pacientedados.uniapae,
+                    autonomia_comunicacao: pacientedados.comunicacao,
+                    acompanhamento_prof: pacientedados.acompanhamento_prof
+                }]);
+
+            if (errorComplementar) {
+                console.error("Erro ao sincronizar com Supabase (complementar):", errorComplementar);
+            } else {
+                console.log("Complementar salvo no Supabase (complementar)");
+            }
+
         } catch (err) {
             console.error("Erro inesperado:", err);
             return null;
@@ -47,8 +136,11 @@ export default function CadastroPacQuatro() {
     };
 
     const salvarPaciente = async () => {
+        let usuarioId = null;
+
         try {
-            //Salva localmente no SQLite
+            await db.execAsync('BEGIN TRANSACTION');
+
             const result = await db.runAsync(
                 `INSERT INTO PessoaSindromeDeDown 
                   (nome_completo, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, numero_prontuario, unidade_saude)
@@ -67,8 +159,7 @@ export default function CadastroPacQuatro() {
                     pacientedados.unidade_prontuario
                 ]
             );
-
-            const usuarioId = result.lastInsertRowId;
+            usuarioId = result.lastInsertRowId;
 
             await db.runAsync(
                 `INSERT INTO Endereco (pessoa_id, cep, rua, estado, cidade, bairro, numero, complemento, unidade_saude)
@@ -128,42 +219,22 @@ export default function CadastroPacQuatro() {
                 ]
             );
 
+            await db.execAsync('COMMIT');
             console.log("Paciente salvo no SQLite");
 
-            // Cria usuário também no Supabase Auth
             if (pacientedados.cpf && pacientedados.senha) {
                 await registrarAuth(pacientedados.cpf, pacientedados.senha);
             }
 
-            // Checa conexão e tenta sincronizar com Supabase
             const netState = await NetInfo.fetch();
             if (netState.isConnected) {
-                const { error } = await supabase
-                    .from("usuarios") // nome da tabela no Supabase
-                    .insert([{
-                        nome: pacientedados.nome,
-                        data_nascimento: pacientedados.data_nascimento,
-                        genero: pacientedados.genero,
-                        cpf: pacientedados.cpf,
-                        cns: pacientedados.cns,
-                        nome_mae: pacientedados.nome_mae,
-                        nome_responsavel: pacientedados.nome_responsavel,
-                        telefone_responsavel: pacientedados.telefone_responsavel,
-                        email_responsavel: pacientedados.email_responsavel,
-                        n_prontuario: pacientedados.n_prontuario,
-                        unidade_prontuario: pacientedados.unidade_prontuario,
-                    }]);
-
-                if (error) {
-                    console.error("Erro ao sincronizar com Supabase:", error);
-                } else {
-                    console.log("Paciente também salvo no Supabase");
-                }
+                console.log("Tem internet, dados enviados ao Supabase");
             } else {
                 console.log("Sem internet: paciente será sincronizado depois");
             }
 
         } catch (error) {
+            await db.execAsync('ROLLBACK');
             console.error("Erro ao salvar paciente:", error);
         }
     };
@@ -174,9 +245,10 @@ export default function CadastroPacQuatro() {
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
                         <View>
-                        <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
-                        <Text style={styles.subTitulo}>Informações complementares</Text>
+                            <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+                            <Text style={styles.subTitulo}>Informações complementares</Text>
                         </View>
+
                         {/* Escolaridade */}
                         <View>
                             <Text style={styles.textForm}>Escolaridade</Text>
@@ -279,10 +351,8 @@ export default function CadastroPacQuatro() {
                                 }}
                             />
                         </View>
-                    </View>
 
-                    <View style={{ marginBottom: 10, width: 200 }}>
-                        <ButtonP label="Finalizar cadastro" onPress={salvarPaciente} />
+                        <ButtonP onPress={salvarPaciente} title="Salvar" />
                     </View>
                 </View>
             </KeyboardAwareScrollView>

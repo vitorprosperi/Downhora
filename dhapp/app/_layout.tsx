@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
-import { PacienteProvider, ProfissionalProvider } from '../context/context';
+import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅️ importe o UsuarioProvider
 
-const DB_VERSION = 2; // 👉 aumente esse número quando mudar a estrutura
+const DB_VERSION = 2; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
   return (
@@ -110,8 +110,8 @@ export default function RootLayout() {
         }
       }}
     >
-      <PacienteProvider>
-        <ProfissionalProvider>
+      <UsuarioProvider> 
+        <PacienteProvider>
           <Stack
             screenOptions={{
               headerStyle: { backgroundColor: '#FAFAFF' },
@@ -120,8 +120,8 @@ export default function RootLayout() {
               headerShadowVisible: false,
             }}
           />
-        </ProfissionalProvider>
-      </PacienteProvider>
+        </PacienteProvider>
+      </UsuarioProvider>
     </SQLiteProvider>
   );
 }

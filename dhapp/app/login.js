@@ -2,10 +2,11 @@ import ButtonP from '@/components/ButtonP';
 import { Image } from 'expo-image';
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
 import { supabase } from "../supabaseserver";
 import { useRouter } from 'expo-router';
+import { useUsuario } from '@/context/context'; // ⬅️ importe o contexto do usuário
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -16,6 +17,8 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const router = useRouter(); // Adicione esta linha
+
+  const { setUserId } = useUsuario(); // ⬅️ use o setter do contexto
 
   const login = async () => {
     if (cpf === '' || senha === '') {
@@ -36,6 +39,9 @@ export default function Login() {
         Alert.alert("Erro", "CPF ou senha inválidos");
         return;
       }
+
+      setUserId(data.user.id); // salva o id do usuário logado no contexto
+      console.log("ID do usuário logado:", data.user.id);
 
       console.log("Usuário logado:", data.user);
       Alert.alert("Sucesso", "Login realizado com sucesso!");

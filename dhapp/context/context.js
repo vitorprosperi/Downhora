@@ -14,17 +14,17 @@ export const PacienteProvider = ({ children }) => {
 
 export const usePaciente = () => useContext(PacienteContext);
 
+// Contexto para usuário logado
+const UsuarioContext = createContext();
 
-const ProfissionalContext = createContext();
-
-export const ProfissionalProvider = ({ children }) => {
-    const [profissionaldados, setProfissionaldados] = useState({});
+export const UsuarioProvider = ({ children }) => {
+    const [userId, setUserId] = useState(null);
 
     return (
-        <ProfissionalContext.Provider value={{ profissionaldados, setProfissionaldados}}>
+        <UsuarioContext.Provider value={{ userId, setUserId }}>
             {children}
-        </ProfissionalContext.Provider>
+        </UsuarioContext.Provider>
     );
 };
 
-export const useProfissional = () => useContext(ProfissionalContext);
+export const useUsuario = () => useContext(UsuarioContext);
