@@ -1,4 +1,5 @@
 import ButtonP from '@/components/ButtonP';
+import { useUsuario } from '@/context/context';
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -7,7 +8,6 @@ import { TextInput } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
-import { useUsuario } from '@/context/context';
 
 
 export default function ExameCad() {
@@ -57,7 +57,7 @@ export default function ExameCad() {
                 <Text style={styles.textForm}>Tipo de exame*</Text>
                 <TextInput
                 style={styles.input}
-                placeholder='ex: Rene Vitor França de Melo'
+                placeholder='ex: Teste do Pézinho'
                 placeholderTextColor={'grey'}
                 value={exame}
                 onChangeText={setExame}
