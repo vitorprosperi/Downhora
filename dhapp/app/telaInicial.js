@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { exames, prontuario, vacina } from "../routes/rotas";
+import { desenvolvimento, exames, prontuario, vacina } from "../routes/rotas";
 import styles from './styleForms';
 
 
@@ -46,7 +46,7 @@ export default function telaInicial() {
                             </Pressable>
                         </View>
                         <View >
-                            <Pressable style={btstyle.button} onPress={prontuario}>
+                            <Pressable style={btstyle.button} onPress={desenvolvimento}>
                                 <Icon
                                     source="information-outline"
                                     color='#2261c1'

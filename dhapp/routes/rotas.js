@@ -1,4 +1,4 @@
-import {router} from 'expo-router';
+import { router } from 'expo-router';
 
 // Funções para navegação entre telas
 
@@ -44,4 +44,8 @@ export function vacina () {
 
 export function exameCad () {
     router.push('/exameCad');
+}
+
+export function desenvolvimento () {
+    router.navigate('/(top-tabs)');
 }

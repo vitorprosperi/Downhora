@@ -5,6 +5,10 @@ import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅�
 const DB_VERSION = 2; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
+  return <RootLayoutNav />;
+}
+
+function RootLayoutNav() {
   return (
     <SQLiteProvider
       databaseName="downhora.db"
@@ -113,13 +117,14 @@ export default function RootLayout() {
       <UsuarioProvider> 
         <PacienteProvider>
           <Stack
-            screenOptions={{
-              headerStyle: { backgroundColor: '#FAFAFF' },
+             screenOptions={{
+             headerStyle: { backgroundColor: '#FAFAFF' },
               headerTintColor: '#231F20',
               headerTitle: '',
-              headerShadowVisible: false,
-            }}
-          />
+             headerShadowVisible: false,
+           }}
+          >
+          </Stack>
         </PacienteProvider>
       </UsuarioProvider>
     </SQLiteProvider>
