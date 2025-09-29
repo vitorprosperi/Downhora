@@ -5,12 +5,15 @@ import { Text, View } from "react-native";
 import MaskInput from 'react-native-mask-input';
 import { TextInput } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
+import { useUsuario } from '@/context/context';
 
 
 export default function ExameCad() {
 
     const router = useRouter();
+    const { userId } = useUsuario();
 
     const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
@@ -18,6 +21,24 @@ export default function ExameCad() {
     const [exame, setExame] = useState('');
     const [medico, setMedico] = useState('');
     const [obs, setObs] = useState('');
+
+    const salvarExame = async () => {
+      try {
+        const { data: supaData, error } = await supabase
+          .from('exames')
+          .insert([
+            { usuario_id: userId, tipo_exame: exame, data_exame: data, medico_responsavel: medico, obs: obs }
+          ]);
+        if (error) {
+          console.error("Erro ao salvar exame no Supabase:", error);
+          return;
+        }
+        console.log("Exame salvo no Supabase:", supaData);
+        router.replace({ pathname: "/exames" });
+      } catch (err) {
+        console.error("Erro inesperado:", err);
+      }
+    }
 
 
     return(
@@ -83,8 +104,7 @@ export default function ExameCad() {
 
 </View>
         <View style={{ marginBottom: 20, width: 200 }}>
-            <ButtonP label="Finalizar" 
-            onPress = {() => router.replace({ pathname: "/exames", params: { exame, data, medico, obs } })} />
+            <ButtonP label="Finalizar" onPress={salvarExame} />
         </View>
 </View>
         </SafeAreaView>
