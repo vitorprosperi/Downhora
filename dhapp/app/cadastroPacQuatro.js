@@ -352,7 +352,7 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
-                        <ButtonP onPress={salvarPaciente} title="Salvar" />
+                        <ButtonP onPress={salvarPaciente} label="Salvar" />
                     </View>
                 </View>
             </KeyboardAwareScrollView>

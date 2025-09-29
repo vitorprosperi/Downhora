@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View, FlatList } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { FAB } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { exameCad } from "../routes/rotas";
-import styles from './styleForms';
 import { supabase } from "../supabaseserver";
+import styles from './styleForms';
 
 export default function Exames() {
   const [exames, setExames] = useState([]);
@@ -81,6 +81,7 @@ const cstyle = StyleSheet.create({
     minWidth: '99%',
     paddingVertical: 10,
     paddingHorizontal: 30,
+    marginBottom: 5,
   },
   container: {
     width: '100%',
