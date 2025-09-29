@@ -23,7 +23,6 @@ export default function App() {
             <View style={styles.containerBotoes}>
                 <ButtonP label='Login' theme='transparent' onPress={login}></ButtonP>
                 <ButtonP label='Cadastro' onPress={cadastropac}></ButtonP>
-                <ButtonP label='Tela Inicial' onPress={telaInicial}></ButtonP>
                 {/* Eu só to usando o botão cadastre-se para checar a tela que to fazendo, só mudar o onPress pra tela correta quando for mexer*/}
             </View>
         </View>

@@ -194,7 +194,7 @@ export default function Prontuario(){
                     <Text style={{ color: 'black' }}>Nome da escola: {infoComp.nome_escola}</Text>
                     <Text style={{ color: 'black' }}>Unidade APAE: {infoComp.unidade_apae}</Text>
                     <Text style={{ color: 'black' }}>Autonomia/comunicação: {infoComp.autonomia_comunicacao}</Text>
-                    <Text style={{ color: 'black' }}>Acompanhamento multiprofissional: {infoComp.acompanhamento_multiprofissional}</Text>
+                    <Text style={{ color: 'black' }}>Acompanhamento multiprofissional: {infoComp.acompanhamento_prof}</Text>
                   </>
                 ) : (
                   <Text style={{ color: 'black' }}>Informações complementares não cadastradas.</Text>
