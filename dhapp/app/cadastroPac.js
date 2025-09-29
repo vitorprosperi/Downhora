@@ -109,7 +109,7 @@ export default function CadastroPac() {
                 mask={dateMask}
                 maxLength={10}
                 value={dataNascimento}
-                placeholder='ex: 14/10/2001'
+                placeholder='ex: 14/10/2021'
                 placeholderTextColor={'grey'}
                 onChangeText={(masked, unmasked) => {
                   setDataNascimento(masked);
