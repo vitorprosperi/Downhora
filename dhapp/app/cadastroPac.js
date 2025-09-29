@@ -65,6 +65,12 @@ export default function CadastroPac() {
       return;
     }
 
+    // temporario, mudar depois p uma funcao que onchange/onblur da senha ja avise o problema
+    if (pacientedados.senha.length < 6) {
+      Alert.alert("Atenção", "A senha deve ter mais que 6 caracteres.");
+      return;
+    }
+
     if (pacientedados.senha !== confirmarSenha) {
       Alert.alert("Atenção", "As senhas não coincidem. Por favor, verifique e tente novamente.");
       return;
@@ -217,7 +223,7 @@ export default function CadastroPac() {
                 style={styles.input}
                 placeholder='ex: (14)12345-6789'
                 placeholderTextColor={'grey'}
-                keyboardType="numeric"
+                keyboardType="phone-pad"
                 mask={phoneMask}
                 maxLength={15}
                 value={telResp}
@@ -232,6 +238,7 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>E-mail do responsável*</Text>
               <TextInput
                 style={styles.input}
+                keyboardType='email-address'
                 placeholder='ex: roseane@gmail.com'
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, email_responsavel: text }))}
