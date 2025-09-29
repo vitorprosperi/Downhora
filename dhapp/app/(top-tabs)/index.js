@@ -1,4 +1,3 @@
-// app/(top-tabs)/index.tsx
 import { StyleSheet, Text, View } from "react-native";
 
 export default function telaDesenvolvimento() {
@@ -9,6 +8,8 @@ export default function telaDesenvolvimento() {
   );
 }
 
+
+// temporario
 const styles = StyleSheet.create({
   container: {
     flex: 1,

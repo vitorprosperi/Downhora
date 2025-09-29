@@ -1,4 +1,3 @@
-// app/(top-tabs)/two.tsx
 import { StyleSheet, Text, View } from "react-native";
 
 export default function telaDireitos() {

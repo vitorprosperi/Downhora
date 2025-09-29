@@ -1,4 +1,3 @@
-// app/(top-tabs)/_layout.tsx
 import {
     MaterialTopTabNavigationEventMap,
     MaterialTopTabNavigationOptions,
