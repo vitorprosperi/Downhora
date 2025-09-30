@@ -232,7 +232,7 @@ export default function CadastroPacQuatro() {
             } else {
                 console.log("Sem internet: paciente será sincronizado depois");
             }
-
+            Alert.alert("Cadastro concluído!");
         } catch (error) {
             await db.execAsync('ROLLBACK');
             console.error("Erro ao salvar paciente:", error);
@@ -352,7 +352,7 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
-                        <ButtonP onPress={salvarPaciente} label="Salvar" />
+                        <ButtonP onPress={salvarPaciente} label="Finalizar"/>
                     </View>
                 </View>
             </KeyboardAwareScrollView>

@@ -165,19 +165,19 @@ export default function Prontuario(){
                       Teste do pezinho: {historico.teste_pezinho} {historico.data_pezinho ? `(Data: ${historico.data_pezinho})` : ''}
                     </Text>
                     <Text style={{ color: 'black' }}>
-                      Consulta oftalmologista: {historico.consulta_oftalmologista} {historico.data_oftalmo ? `(Data: ${historico.data_oftalmo})` : ''}
+                      Consulta oftalmologista: {historico.consulta_oftalmo} {historico.data_oftalmo ? `(Data: ${historico.data_oftalmo})` : ''}
                     </Text>
                     <Text style={{ color: 'black' }}>
-                      Consulta fonoaudiologia: {historico.consulta_fonoaudiologia} {historico.data_fono ? `(Data: ${historico.data_fono})` : ''}
+                      Consulta fonoaudiologia: {historico.consulta_fono} {historico.data_fono ? `(Data: ${historico.data_fono})` : ''}
                     </Text>
                     <Text style={{ color: 'black' }}>
-                      Consulta odontologia: {historico.consulta_odontologia} {historico.data_odonto ? `(Data: ${historico.data_odonto})` : ''}
+                      Consulta odontologia: {historico.consulta_odonto} {historico.data_odonto ? `(Data: ${historico.data_odonto})` : ''}
                     </Text>
                     <Text style={{ color: 'black' }}>
                       Consulta endocrinologia: {historico.consulta_endocrinologia} {historico.data_endocrinologia ? `(Data: ${historico.data_endocrinologia})` : ''}
                     </Text>
                     <Text style={{ color: 'black' }}>Comorbidades: {historico.comorbidades}</Text>
-                    <Text style={{ color: 'black' }}>Medicamento em uso: {historico.medicamento_em_uso}</Text>
+                    <Text style={{ color: 'black' }}>Medicamento em uso: {historico.medicamentos}</Text>
                     <Text style={{ color: 'black' }}>Alergias: {historico.alergias}</Text>
                     <Text style={{ color: 'black' }}>Tipo sanguíneo: {historico.tipo_sanguineo}</Text>
                   </>
