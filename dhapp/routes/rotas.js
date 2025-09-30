@@ -27,7 +27,7 @@ export function cadastropacQuatro () {
 }
 
 export function telaInicial () {
-    router.push('/telaInicial');
+    router.replace('/telaInicial');
 }
 
 export function prontuario () {

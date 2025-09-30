@@ -1,12 +1,12 @@
 import ButtonP from '@/components/ButtonP';
+import { useUsuario } from '@/context/context';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
 import { supabase } from "../supabaseserver";
-import { useRouter } from 'expo-router';
-import { useUsuario } from '@/context/context';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -45,7 +45,8 @@ export default function Login() {
 
       console.log("Usuário logado:", data.user);
       Alert.alert("Sucesso", "Login realizado com sucesso!");
-      router.push("/telaInicial");
+      router.dismissAll();
+      router.replace("/telaInicial");
     } catch (err) {
       console.error("Erro inesperado:", err);
       Alert.alert("Erro", "Não foi possível realizar o login");
