@@ -45,11 +45,11 @@ const styles = StyleSheet.create({
     text: {
         color: '#FAFAFF',
         fontSize: 16,
-        fontFamily: 'Raleway',
+        fontFamily: 'Raleway-500',
     },
     textTrans: {
         color: '#231F20',
         fontSize: 16,
-        fontFamily: 'Raleway',
+        fontFamily: 'Raleway-500',
     }
 })
