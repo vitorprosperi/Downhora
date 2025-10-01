@@ -1,10 +1,32 @@
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen'; // carregar tela so quando carregar fonte
 import { SQLiteProvider } from 'expo-sqlite';
+import { useEffect } from 'react';
 import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅️ importe o UsuarioProvider
+
+SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
 
 const DB_VERSION = 2; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
+  const [loaded, error] = useFonts({ // mapeia as fontes
+    'Raleway': require('../assets/fonts/raleway-v37-latin-regular.ttf'),
+    'Raleway-500': require('../assets/fonts/raleway-v37-latin-500.ttf'),
+    'Raleway-700': require('../assets/fonts/raleway-v37-latin-700.ttf'),
+    'Roboto': require('../assets/fonts/roboto-v49-latin-regular.ttf'),
+  }); 
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
+
   return <RootLayoutNav />;
 }
 

@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
+    fontFamily: 'Raleway',
   },
   loginEstilo: {
     flex: 1,
@@ -141,6 +142,7 @@ const styles = StyleSheet.create({
   textForm: {
     color: '#231F20',
     fontSize: 16,
+    fontFamily: 'Raleway',
   },
   imageContainer: {
     width: 350,
@@ -156,6 +158,7 @@ const styles = StyleSheet.create({
     color: '#231F20',
     fontSize: 20,
     fontWeight: "700",
+    fontFamily: 'Raleway-700',
   },
   corEscura: {
     flexGrow: 1,

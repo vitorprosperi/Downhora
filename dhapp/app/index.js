@@ -2,7 +2,7 @@ import ButtonP from '@/components/ButtonP';
 import { login } from '@/routes/rotas';
 import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
-import { cadastropac, telaInicial } from '../routes/rotas';
+import { cadastropac } from '../routes/rotas';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png')
 
@@ -43,12 +43,12 @@ const styles = StyleSheet.create({
     textDown: {
         color: '#2261c1',
         fontSize: 40,
-        fontWeight: 700,
+        fontFamily: 'Raleway-700'
     },
     textHora:{
         color: '#f2aa08',
         fontSize: 40,
-        fontWeight: 700,
+        fontFamily: 'Raleway-700'
     },
     indexEstilo: {
         flex: 1,

@@ -45,9 +45,11 @@ const styles = StyleSheet.create({
     text: {
         color: '#FAFAFF',
         fontSize: 16,
+        fontFamily: 'Raleway',
     },
     textTrans: {
         color: '#231F20',
         fontSize: 16,
+        fontFamily: 'Raleway',
     }
 })
