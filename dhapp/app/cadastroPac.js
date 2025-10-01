@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import MaskInput from 'react-native-mask-input';
 import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { cadastropacDois } from '../routes/rotas';
+import { cadastropacTres } from '../routes/rotas';
 import styles from './styleForms';
 
 export default function CadastroPac() {
@@ -75,7 +75,7 @@ export default function CadastroPac() {
       Alert.alert("Atenção", "As senhas não coincidem. Por favor, verifique e tente novamente.");
       return;
     }
-    cadastropacDois();
+    cadastropacTres();
   }
 
   return (

@@ -12,7 +12,6 @@ export default function Prontuario(){
   const db = useSQLiteContext();
   const { userId } = useUsuario();
   const [pacientes, setPacientes] = useState([]);
-  const [enderecos, setEnderecos] = useState([]);
   const [historicos, setHistoricos] = useState([]);
   const [complementares, setComplementares] = useState([]);
 
@@ -27,15 +26,6 @@ export default function Prontuario(){
 
       if (pacienteError) throw pacienteError;
       setPacientes(pacienteData || []);
-
-      // Busca endereço
-      const { data: enderecoData, error: enderecoError } = await supabase
-        .from("endereco")
-        .select("*")
-        .eq("usuario_id", userId);
-
-      if (enderecoError) throw enderecoError;
-      setEnderecos(enderecoData || []);
 
       // Busca histórico médico
       const { data: historicoData, error: historicoError } = await supabase
@@ -66,9 +56,6 @@ export default function Prontuario(){
       const resultPac = await db.getAllAsync("SELECT * FROM PessoaSindromeDeDown");
       setPacientes(resultPac);
 
-      const resultEnd = await db.getAllAsync("SELECT * FROM Endereco");
-      setEnderecos(resultEnd);
-
       const resultHist = await db.getAllAsync("SELECT * FROM HistoricoMedico");
       setHistoricos(resultHist);
 
@@ -95,9 +82,6 @@ export default function Prontuario(){
   }, [userId]);
 
   // Funções para buscar dados relacionados
-  function EnderecoPorPacienteId(pacienteId) {
-    return enderecos.find(e => e.usuario_id === pacienteId || e.pessoa_id === pacienteId);
-  }
   function HistoricoPorPacienteId(pacienteId) {
     return historicos.find(h => h.usuario_id === pacienteId || h.pessoa_id === pacienteId);
   }
@@ -112,7 +96,6 @@ export default function Prontuario(){
           data={pacientes}
           keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           renderItem={({ item }) => {
-            const endereco = EnderecoPorPacienteId(item.id);
             const historico = HistoricoPorPacienteId(item.id);
             const infoComp = InformacaoPorPacienteId(item.id);
             return (
@@ -128,24 +111,6 @@ export default function Prontuario(){
                 <Text style={{ color: 'black' }}>Email responsável: {item.email_responsavel}</Text>
                 <Text style={{ color: 'black' }}>Número Prontuario: {item.numero_prontuario || item.n_prontuario}</Text>
                 <Text style={{ color: 'black' }}>Unidade: {item.unidade_saude || item.unidade_prontuario}</Text>
-
-                <Text style={{ color: 'black', marginVertical: 8 }}>
-                  Dados de endereço do paciente:
-                </Text>
-                {endereco ? (
-                  <>
-                    <Text style={{ color: 'black' }}>CEP: {endereco.cep}</Text>
-                    <Text style={{ color: 'black' }}>Rua: {endereco.rua}</Text>
-                    <Text style={{ color: 'black' }}>Estado: {endereco.estado}</Text>
-                    <Text style={{ color: 'black' }}>Cidade: {endereco.cidade}</Text>
-                    <Text style={{ color: 'black' }}>Bairro: {endereco.bairro}</Text>
-                    <Text style={{ color: 'black' }}>Número: {endereco.numero}</Text>
-                    <Text style={{ color: 'black' }}>Complemento: {endereco.complemento}</Text>
-                    <Text style={{ color: 'black' }}>Unidade de Saúde: {endereco.unidade_saude}</Text>
-                  </>
-                ) : (
-                  <Text style={{ color: 'black' }}>Endereço não cadastrado.</Text>
-                )}
 
                 <Text style={{ color: 'black', marginVertical: 8 }}>
                   Histórico médico do paciente:
@@ -194,7 +159,6 @@ export default function Prontuario(){
                     <Text style={{ color: 'black' }}>Nome da escola: {infoComp.nome_escola}</Text>
                     <Text style={{ color: 'black' }}>Unidade APAE: {infoComp.unidade_apae}</Text>
                     <Text style={{ color: 'black' }}>Autonomia/comunicação: {infoComp.autonomia_comunicacao}</Text>
-                    <Text style={{ color: 'black' }}>Acompanhamento multiprofissional: {infoComp.acompanhamento_prof}</Text>
                   </>
                 ) : (
                   <Text style={{ color: 'black' }}>Informações complementares não cadastradas.</Text>

@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
-import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅️ importe o UsuarioProvider
+import { PacienteProvider, UsuarioProvider } from '../context/context'; // importe o UsuarioProvider
 
-const DB_VERSION = 2; // aumente esse número quando mudar a estrutura
+const DB_VERSION = 4; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
   return <RootLayoutNav />;
@@ -27,10 +27,9 @@ function RootLayoutNav() {
         const row = await db.getFirstAsync<MetaRow>("SELECT versao FROM Meta LIMIT 1");
 
         if (!row || row.versao < DB_VERSION) {
-          // 👉 Se não existir versão ou for antiga, dropa e recria as tabelas
+          // Se não existir versão ou for antiga, dropa e recria as tabelas
           await db.execAsync("DROP TABLE IF EXISTS InformacoesComplementares;");
           await db.execAsync("DROP TABLE IF EXISTS HistoricoMedico;");
-          await db.execAsync("DROP TABLE IF EXISTS Endereco;");
           await db.execAsync("DROP TABLE IF EXISTS PessoaSindromeDeDown;");
 
           // Recria tabelas
@@ -48,22 +47,6 @@ function RootLayoutNav() {
               email_responsavel TEXT NOT NULL,
               numero_prontuario TEXT NOT NULL,
               unidade_saude TEXT NOT NULL
-            );
-          `);
-
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS Endereco (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              pessoa_id INTEGER NOT NULL,
-              cep TEXT NOT NULL,
-              rua TEXT NOT NULL,
-              estado TEXT NOT NULL,
-              cidade TEXT NOT NULL,
-              bairro TEXT NOT NULL,
-              numero TEXT NOT NULL,
-              complemento TEXT,
-              unidade_saude TEXT NOT NULL,
-              FOREIGN KEY (pessoa_id) REFERENCES PessoaSindromeDeDown(id)
             );
           `);
 
@@ -100,10 +83,10 @@ function RootLayoutNav() {
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               pessoa_id INTEGER NOT NULL,
               escolaridade TEXT,
-              nome_escola TEXT,
-              unidade_apae TEXT,
+              unidade_1 TEXT,
+              unidade_2 TEXT,
+              unidade_3 TEXT,
               autonomia_comunicacao TEXT,
-              acompanhamento_multiprofissional TEXT,
               FOREIGN KEY (pessoa_id) REFERENCES PessoaSindromeDeDown(id)
             );
           `);

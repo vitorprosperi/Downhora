@@ -16,7 +16,6 @@ export default function CadastroPacQuatro() {
 
     const [valor1, setValor1] = useState(null);
     const [valor2, setValor2] = useState(null);
-    const [valor3, setValor3] = useState(null);
 
     // Função para registrar usuário no Supabase Auth
     const registrarAuth = async (cpf, senha) => {
@@ -60,26 +59,6 @@ export default function CadastroPacQuatro() {
                 console.log("Paciente salvo no Supabase (usuarios)");
             }
 
-            const { error: errorEndereco } = await supabase
-                .from("endereco")
-                .insert([{
-                    usuario_id: authUserId,
-                    cep: pacientedados.cep,
-                    rua: pacientedados.rua,
-                    estado: pacientedados.estado,
-                    cidade: pacientedados.cidade,
-                    bairro: pacientedados.bairro,
-                    numero: pacientedados.numero,
-                    complemento: pacientedados.complemento,
-                    unidade_saude: pacientedados.unidadeSaude
-                }]);
-
-            if (errorEndereco) {
-                console.error("Erro ao sincronizar com Supabase (endereco):", errorEndereco);
-            } else {
-                console.log("Endereço salvo no Supabase (endereco)");
-            }
-
             const { error: errorHistorico } = await supabase
                 .from("historico_medico")
                 .insert([{
@@ -117,10 +96,10 @@ export default function CadastroPacQuatro() {
                 .insert([{
                     usuario_id: authUserId,
                     escolaridade: pacientedados.escolaridade,
-                    nome_escola: pacientedados.escola,
-                    unidade_apae: pacientedados.uniapae,
-                    autonomia_comunicacao: pacientedados.comunicacao,
-                    acompanhamento_prof: pacientedados.acompanhamento_prof
+                    unidade_1: pacientedados.uni1,
+                    unidade_2: pacientedados.uni2,
+                    unidade_3: pacientedados.uni3,
+                    autonomia_comunicacao: pacientedados.comunicacao
                 }]);
 
             if (errorComplementar) {
@@ -162,22 +141,6 @@ export default function CadastroPacQuatro() {
             usuarioId = result.lastInsertRowId;
 
             await db.runAsync(
-                `INSERT INTO Endereco (pessoa_id, cep, rua, estado, cidade, bairro, numero, complemento, unidade_saude)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                    usuarioId,
-                    pacientedados.cep,
-                    pacientedados.rua,
-                    pacientedados.estado,
-                    pacientedados.cidade,
-                    pacientedados.bairro,
-                    pacientedados.numero,
-                    pacientedados.complemento,
-                    pacientedados.unidadeSaude
-                ]
-            );
-
-            await db.runAsync(
                 `INSERT INTO HistoricoMedico 
                   (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmologista, data_oftalmo, consulta_fonoaudiologia, data_fono, consulta_odontologia, data_odonto, consulta_endocrinologia, data_endocrinologia, comorbidades, medicamento_em_uso, alergias, tipo_sanguineo)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -207,15 +170,15 @@ export default function CadastroPacQuatro() {
             );
 
             await db.runAsync(
-                `INSERT INTO InformacoesComplementares (pessoa_id, escolaridade, nome_escola, unidade_apae, autonomia_comunicacao, acompanhamento_multiprofissional)
+                `INSERT INTO InformacoesComplementares (pessoa_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
                  VALUES (?, ?, ?, ?, ?, ?)`,
                 [
                     usuarioId,
                     pacientedados.escolaridade,
-                    pacientedados.escola,
-                    pacientedados.uniapae,
-                    pacientedados.comunicacao,
-                    pacientedados.acompanhamento_prof
+                    pacientedados.uni1,
+                    pacientedados.uni2,
+                    pacientedados.uni3,
+                    pacientedados.comunicacao
                 ]
             );
 
@@ -281,23 +244,33 @@ export default function CadastroPacQuatro() {
 
                         {/* Escola */}
                         <View>
-                            <Text style={styles.textForm}>Nome da escola</Text>
+                            <Text style={styles.textForm}>Unidade escolar 1:</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder='ex: Colégio Cora Coralina'
                                 placeholderTextColor={'grey'}
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, escola: text }))}
+                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni1: text }))}
                             />
                         </View>
 
                         {/* APAE */}
                         <View>
-                            <Text style={styles.textForm}>Unidade APAE</Text>
+                            <Text style={styles.textForm}>Unidade escolar 2:</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder='ex: APAE Botucatu'
                                 placeholderTextColor={'grey'}
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uniapae: text }))}
+                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni2: text }))}
+                            />
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Unidade escolar 3:</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder='ex: Rene nao sei qual é a 3 unidade'
+                                placeholderTextColor={'grey'}
+                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni3: text }))}
                             />
                         </View>
 
@@ -323,31 +296,6 @@ export default function CadastroPacQuatro() {
                                 onChange={item => {
                                     setValor2(item.value);
                                     setPacientedados(prev => ({ ...prev, comunicacao: item.value }));
-                                }}
-                            />
-                        </View>
-
-                        {/* Multiprofissional */}
-                        <View>
-                            <Text style={styles.textForm}>Acompanhamento multiprofissional</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
-                                data={[
-                                    { label: 'Sim', value: 'sim' },
-                                    { label: 'Não', value: 'nao' },
-                                ]}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valor3}
-                                onChange={item => {
-                                    setValor3(item.value);
-                                    setPacientedados(prev => ({ ...prev, acompanhamento_prof: item.value }));
                                 }}
                             />
                         </View>
