@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
-    fontFamily: 'Raleway',
+    fontFamily: 'Roboto',
   },
   loginEstilo: {
     flex: 1,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   textForm: {
     color: '#231F20',
     fontSize: 16,
-    fontFamily: 'Raleway',
+    fontFamily: 'Roboto',
   },
   imageContainer: {
     width: 350,

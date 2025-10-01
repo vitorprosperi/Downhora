@@ -89,8 +89,6 @@ export default function CadastroPac() {
               <Text style={styles.subTitulo}>Dados pessoais</Text>
             </View>
 
-            <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>
-
             <View>
               <Text style={styles.textForm}>Nome Completo*</Text>
               <TextInput
