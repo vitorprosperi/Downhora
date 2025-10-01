@@ -41,10 +41,11 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     width: '100%',
     fontSize: 16,
-    height: 35,
+    height: 32,
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
+    fontFamily: 'Roboto',
   },
   containerTeclado: {
     justifyContent: 'center',
@@ -53,19 +54,22 @@ const styles = StyleSheet.create({
   textForm: {
     color: '#231F20',
     fontSize: 16,
+    fontFamily: 'Roboto'
   },
   titulo: {
     color: '#231F20',
     fontSize: 20,
-    fontWeight: 700,
+    fontFamily: 'Raleway-700',
   },
   subTitulo: {
     color: '#231F20',
     fontSize: 18,
+    fontFamily: 'Raleway',
   },
   textoPequeno: {
     color: '#231F20',
-    fontSize: 14,
+    fontSize: 16,
+    fontFamily: 'Raleway'
   },
   exemplo: {
     color: 'grey'

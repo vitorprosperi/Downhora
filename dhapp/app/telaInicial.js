@@ -89,6 +89,7 @@ const btstyle = StyleSheet.create({
   text: {
     color: '#2261C1',
     fontSize: 25,
+    fontFamily: 'Raleway-500',
   },
   botoesContainer: {
     flexDirection: 'row',
@@ -118,6 +119,6 @@ const btstyle = StyleSheet.create({
     color: '#2261C1',
     fontSize: 18,
     marginLeft: 6,
-    fontWeight: '600',
+    fontFamily: 'Raleway-500'
   },
 });
