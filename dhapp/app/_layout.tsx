@@ -7,7 +7,7 @@ import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅�
 
 SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
 
-const DB_VERSION = 2; // aumente esse número quando mudar a estrutura
+const DB_VERSION = 4; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({ // mapeia as fontes
