@@ -41,6 +41,16 @@ export default function CadastroPacTres() {
     const [valorEndocrino, setValorEndocrino] = useState(null);
     const [dataEndocrino, setDataEndocrino] = useState('');
 
+    const [valorFisio, setValorFisio] = useState(null);
+    const [dataFisio, setDataFisio] = useState('');
+
+    const [valorTerapia, setValorTerapia] = useState(null);
+    const [dataTerapia, setDataTerapia] = useState('');
+
+    const [valorPsico, setValorPsico] = useState(null);
+    const [dataPsico, setDataPsico] = useState('');
+
+
     // Outros campos já existentes
     const [valor6, setValor6] = useState(null); // Alergias
     const [valor7, setValor7] = useState(null); // Tipo sanguíneo
@@ -387,6 +397,123 @@ export default function CadastroPacTres() {
                                         onChangeText={(masked, unmasked) => {
                                             setDataEndocrino(masked);
                                             setPacientedados(prev => ({ ...prev, dataEndocrino: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta Fisioterapia*</Text>
+                            <Dropdown
+                                style={styles.input}
+                                placeholderStyle={styles.exemplo}
+                                selectedTextStyle={styles.textForm}
+                                containerStyle={styles.dropdownContainer}
+                                itemTextStyle={styles.textForm}
+                                activeColor='#F5F5FF'
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorFisio}
+                                onChange={item => {
+                                    setValorFisio(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaFisio: item.value }));
+                                }}
+                            />
+                            {valorFisio === 'sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MaskInput
+                                        style={styles.input}
+                                        placeholder="ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataFisio}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataFisio(masked);
+                                            setPacientedados(prev => ({ ...prev, dataFisio: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta Terapia Ocupacional*</Text>
+                            <Dropdown
+                                style={styles.input}
+                                placeholderStyle={styles.exemplo}
+                                selectedTextStyle={styles.textForm}
+                                containerStyle={styles.dropdownContainer}
+                                itemTextStyle={styles.textForm}
+                                activeColor='#F5F5FF'
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorTerapia}
+                                onChange={item => {
+                                    setValorTerapia(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaTerapia: item.value }));
+                                }}
+                            />
+                            {valorTerapia === 'sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MaskInput
+                                        style={styles.input}
+                                        placeholder="ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataTerapia}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataTerapia(masked);
+                                            setPacientedados(prev => ({ ...prev, dataTerapia: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta Psicopedagogo</Text>
+                            <Dropdown
+                                style={styles.input}
+                                placeholderStyle={styles.exemplo}
+                                selectedTextStyle={styles.textForm}
+                                containerStyle={styles.dropdownContainer}
+                                itemTextStyle={styles.textForm}
+                                activeColor='#F5F5FF'
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorPsico}
+                                onChange={item => {
+                                    setValorPsico(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaPsico: item.value }));
+                                }}
+                            />
+                            {valorPsico === 'sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MaskInput
+                                        style={styles.input}
+                                        placeholder="ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataPsico}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataPsico(masked);
+                                            setPacientedados(prev => ({ ...prev, dataPsico: unmasked }));
                                         }}
                                     />
                                 </View>

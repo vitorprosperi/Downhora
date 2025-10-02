@@ -82,7 +82,13 @@ export default function CadastroPacQuatro() {
                     comorbidades: pacientedados.comorbidades,
                     medicamentos: pacientedados.medicamento,
                     alergias: pacientedados.alergia,
-                    tipo_sanguineo: pacientedados.tiposangue
+                    tipo_sanguineo: pacientedados.tiposangue,
+                    consulta_terapia: pacientedados.consultaTerapia,
+                    data_terapia: pacientedados.dataTerapia,
+                    consulta_fisio: pacientedados.consultaFisio,
+                    data_fisio: pacientedados.dataFisio,
+                    consulta_psicopedagogo: pacientedados.consultaPsico,
+                    data_psicopedagogo: pacientedados.dataPsico
                 }]);
 
             if (errorHistorico) {
@@ -142,8 +148,8 @@ export default function CadastroPacQuatro() {
 
             await db.runAsync(
                 `INSERT INTO HistoricoMedico 
-                  (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmologista, data_oftalmo, consulta_fonoaudiologia, data_fono, consulta_odontologia, data_odonto, consulta_endocrinologia, data_endocrinologia, comorbidades, medicamento_em_uso, alergias, tipo_sanguineo)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                  (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmologista, data_oftalmo, consulta_fonoaudiologia, data_fono, consulta_odontologia, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamento_em_uso, alergias, tipo_sanguineo)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     usuarioId,
                     pacientedados.cariotipo,
@@ -162,6 +168,12 @@ export default function CadastroPacQuatro() {
                     pacientedados.dataOdonto,
                     pacientedados.consultaEndocrino,
                     pacientedados.dataEndocrino,
+                    pacientedados.consultaFisio,
+                    pacientedados.dataFisio,
+                    pacientedados.consultaTerapia,
+                    pacientedados.dataTerapia,
+                    pacientedados.consultaPsico,
+                    pacientedados.dataPsico,
                     pacientedados.comorbidades,
                     pacientedados.medicamento,
                     pacientedados.alergia,
@@ -285,9 +297,9 @@ export default function CadastroPacQuatro() {
                                 itemTextStyle={styles.textForm}
                                 activeColor='#F5F5FF'
                                 data={[
-                                    { label: 'Total', value: 'total' },
-                                    { label: 'Parcial', value: 'parcial' },
-                                    { label: 'Não', value: 'nao' },
+                                    { label: 'Total', value: 'Total' },
+                                    { label: 'Parcial', value: 'Parcial' },
+                                    { label: 'Não', value: 'Não' },
                                 ]}
                                 labelField="label"
                                 valueField="value"

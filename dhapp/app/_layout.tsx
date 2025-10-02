@@ -7,7 +7,7 @@ import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅�
 
 SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
 
-const DB_VERSION = 4; // aumente esse número quando mudar a estrutura
+const DB_VERSION = 5; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({ // mapeia as fontes
@@ -92,6 +92,12 @@ function RootLayoutNav() {
               data_odonto TEXT,
               consulta_endocrinologia TEXT NOT NULL,
               data_endocrinologia TEXT,
+              consulta_fisio TEXT NOT NULL,
+              data_fisio TEXT,
+              consulta_terapia TEXT NOT NULL,
+              data_terapia TEXT,
+              consulta_psicopedagogo TEXT NOT NULL,
+              data_psicopedagogo TEXT,
               comorbidades TEXT,
               medicamento_em_uso TEXT,
               alergias TEXT,
