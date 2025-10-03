@@ -141,6 +141,15 @@ export default function Prontuario(){
                     <Text style={{ color: 'black' }}>
                       Consulta endocrinologia: {historico.consulta_endocrinologia} {historico.data_endocrinologia ? `(Data: ${historico.data_endocrinologia})` : ''}
                     </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta fisioterapia: {historico.consulta_fisio} {historico.data_fisio ? `(Data: ${historico.data_fisio})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta terapia ocupacional: {historico.consulta_terapia} {historico.data_terapia ? `(Data: ${historico.data_terapia})` : ''}
+                    </Text>
+                    <Text style={{ color: 'black' }}>
+                      Consulta psicopedagogo: {historico.consulta_psicopedagogo} {historico.data_psicopedagogo ? `(Data: ${historico.data_psicopedagogo})` : ''}
+                    </Text>
                     <Text style={{ color: 'black' }}>Comorbidades: {historico.comorbidades}</Text>
                     <Text style={{ color: 'black' }}>Medicamento em uso: {historico.medicamentos}</Text>
                     <Text style={{ color: 'black' }}>Alergias: {historico.alergias}</Text>
@@ -156,8 +165,9 @@ export default function Prontuario(){
                 {infoComp ? (
                   <>
                     <Text style={{ color: 'black' }}>Escolaridade: {infoComp.escolaridade}</Text>
-                    <Text style={{ color: 'black' }}>Nome da escola: {infoComp.nome_escola}</Text>
-                    <Text style={{ color: 'black' }}>Unidade APAE: {infoComp.unidade_apae}</Text>
+                    <Text style={{ color: 'black' }}>Unidade escolar 1: {infoComp.unidade_1}</Text>
+                    <Text style={{ color: 'black' }}>Unidade escolar 2: {infoComp.unidade_2}</Text>
+                    <Text style={{ color: 'black' }}>Unidade escolar 3: {infoComp.unidade_3}</Text>
                     <Text style={{ color: 'black' }}>Autonomia/comunicação: {infoComp.autonomia_comunicacao}</Text>
                   </>
                 ) : (
