@@ -1,7 +1,7 @@
 import {
-    MaterialTopTabNavigationEventMap,
-    MaterialTopTabNavigationOptions,
-    createMaterialTopTabNavigator,
+  MaterialTopTabNavigationEventMap,
+  MaterialTopTabNavigationOptions,
+  createMaterialTopTabNavigator,
 } from "@react-navigation/material-top-tabs";
 import { ParamListBase, TabNavigationState } from "@react-navigation/native";
 import { withLayoutContext } from "expo-router";
@@ -20,6 +20,7 @@ export default function TabLayout() {
     <MaterialTopTabs>
       <MaterialTopTabs.Screen name="index" options={{ title: "Desenvolvimento", tabBarStyle: {backgroundColor: "#FAFAFF"} }} />
       <MaterialTopTabs.Screen name="direitos" options={{ title: "Direitos", tabBarStyle: {backgroundColor: "#FAFAFF"}}} />
+      <MaterialTopTabs.Screen name="alimentacao" options={{ title: "Alimentos", tabBarStyle: {backgroundColor: "#FAFAFF"}}} />
     </MaterialTopTabs>
   );
 }
