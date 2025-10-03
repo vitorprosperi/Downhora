@@ -7,7 +7,7 @@ import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅�
 
 SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
 
-const DB_VERSION = 5; // aumente esse número quando mudar a estrutura
+const DB_VERSION = 7; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({ // mapeia as fontes
@@ -50,6 +50,7 @@ function RootLayoutNav() {
 
         if (!row || row.versao < DB_VERSION) {
           // Se não existir versão ou for antiga, dropa e recria as tabelas
+          await db.execAsync("DROP TABLE IF EXISTS Exames;");
           await db.execAsync("DROP TABLE IF EXISTS InformacoesComplementares;");
           await db.execAsync("DROP TABLE IF EXISTS HistoricoMedico;");
           await db.execAsync("DROP TABLE IF EXISTS PessoaSindromeDeDown;");
@@ -115,6 +116,18 @@ function RootLayoutNav() {
               unidade_2 TEXT,
               unidade_3 TEXT,
               autonomia_comunicacao TEXT,
+              FOREIGN KEY (pessoa_id) REFERENCES PessoaSindromeDeDown(id)
+            );
+          `);
+
+          await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS Exames (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              pessoa_id INTEGER NOT NULL,
+              tipo_exame TEXT NOT NULL,
+              data_exame TEXT NOT NULL,
+              medico_responsavel TEXT,
+              observacoes TEXT,
               FOREIGN KEY (pessoa_id) REFERENCES PessoaSindromeDeDown(id)
             );
           `);
