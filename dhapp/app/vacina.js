@@ -1,7 +1,6 @@
-import { View, Text, TextInput, FlatList } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
 import { useState, useEffect } from "react";
 import { useSQLiteContext } from "expo-sqlite";
@@ -18,7 +17,7 @@ export default function Vacina() {
   // Recuperar exames do SQLite
   async function carregarExames() {
     try {
-      const result = await db.getAllAsync("SELECT * FROM Exames");
+      const result = await db.getAllAsync("SELECT * FROM exames");
       setExames(result);
       console.log("Exames recuperados do SQLite:", result);
     } catch (err) {
@@ -28,7 +27,7 @@ export default function Vacina() {
 // Recuperar pessoas com síndrome de Down do SQLite
   async function carregarPessoaSindromeDeDown() {
     try {
-      const result = await db.getAllAsync("SELECT * FROM PessoaSindromeDeDown");
+      const result = await db.getAllAsync("SELECT * FROM usuarios");
       setPessoaSindromedeDown(result);
       console.log("Pessoas com síndrome de Down recuperadas do SQLite:", result);
     } catch (err) {
@@ -39,7 +38,7 @@ export default function Vacina() {
   // Recuperar histórico de vacinas do SQLite
   async function carregarHistorico() {
     try {
-      const result = await db.getAllAsync("SELECT * FROM HistoricoMedico");
+      const result = await db.getAllAsync("SELECT * FROM historico_medico");
       setHistorico(result);
       console.log("Histórico de exames recuperado do SQLite:", result);
     } catch (err) {
@@ -50,7 +49,7 @@ export default function Vacina() {
   // Recuperar informações complementares do SQLite
   async function carregarComplementares() {
     try {
-      const result = await db.getAllAsync("SELECT * FROM InformacoesComplementares");
+      const result = await db.getAllAsync("SELECT * FROM complementares");
       setComplementares(result);
       console.log("Informações complementares recuperadas do SQLite:", result);
     } catch (err) {
@@ -101,7 +100,7 @@ export default function Vacina() {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={{ backgroundColor: "#555", marginVertical: 5, padding: 10, borderRadius: 8 }}>
-              <Text style={{ color: "white" }}>Nome: {item.nome_completo}</Text>
+              <Text style={{ color: "white" }}>Nome: {item.nome}</Text>
               <Text style={{ color: "white" }}>Nascimento: {item.data_nascimento}</Text>
               <Text style={{ color: "white" }}>Gênero: {item.genero}</Text>
               <Text style={{ color: "white" }}>CPF: {item.cpf}</Text>
@@ -110,8 +109,8 @@ export default function Vacina() {
               <Text style={{ color: "white" }}>Responsável: {item.nome_responsavel}</Text>
               <Text style={{ color: "white" }}>Tel: {item.telefone_responsavel}</Text>
               <Text style={{ color: "white" }}>Email: {item.email_responsavel}</Text>
-              <Text style={{ color: "white" }}>Prontuário: {item.numero_prontuario}</Text>
-              <Text style={{ color: "white" }}>Unidade de saúde: {item.unidade_saude}</Text>
+              <Text style={{ color: "white" }}>Prontuário: {item.n_prontuario}</Text>
+              <Text style={{ color: "white" }}>Unidade de saúde: {item.unidade_prontuario}</Text>
             </View>
           )}
         />
@@ -129,16 +128,16 @@ export default function Vacina() {
             <Text style={{ color: "white" }}>Triagem auditiva: {item.triagem_auditiva} - {item.data_triagem}</Text>
             <Text style={{ color: "white" }}>Teste do pezinho: {item.teste_pezinho} - {item.data_pezinho}</Text>
             <Text style={{ color: "white" }}>Cardiologista: {item.consulta_cardiologista} - {item.data_cardiologista}     </Text>
-            <Text style={{ color: "white" }}>Oftalmologista: {item.consulta_oftalmologista} - {item.data_oftalmo}</Text>
-            <Text style={{ color: "white" }}>Fonoaudiologia: {item.consulta_fonoaudiologia} - {item.data_fono}</Text>
-            <Text style={{ color: "white" }}>Odontologia: {item.consulta_odontologia} - {item.data_odonto}</Text>
+            <Text style={{ color: "white" }}>Oftalmologista: {item.consulta_oftalmo} - {item.data_oftalmo}</Text>
+            <Text style={{ color: "white" }}>Fonoaudiologia: {item.consulta_fono} - {item.data_fono}</Text>
+            <Text style={{ color: "white" }}>Odontologia: {item.consulta_odonto} - {item.data_odonto}</Text>
             <Text style={{ color: "white" }}>Endocrinologia: {item.consulta_endocrinologia} - {item.      data_endocrinologia}</Text>
             <Text style={{ color: "white" }}>Fisioterapia: {item.consulta_fisio} - {item.data_fisio}</Text>
             <Text style={{ color: "white" }}>Terapia ocupacional: {item.consulta_terapia} - {item.data_terapia}</Text>
             <Text style={{ color: "white" }}>Psicopedagogo: {item.consulta_psicopedagogo} - {item.data_psicopedagogo}     </Text>
             <Text style={{ color: "white", marginTop: 5, fontWeight: "bold" }}></Text>
             <Text style={{ color: "white" }}>Comorbidades: {item.comorbidades}</Text>
-            <Text style={{ color: "white" }}>Medicamentos em uso: {item.medicamento_em_uso}</Text>
+            <Text style={{ color: "white" }}>Medicamentos em uso: {item.medicamentos}</Text>
             <Text style={{ color: "white" }}>Alergias: {item.alergias}</Text>
             <Text style={{ color: "white" }}>Tipo sanguíneo: {item.tipo_sanguineo}</Text>
           </View>
