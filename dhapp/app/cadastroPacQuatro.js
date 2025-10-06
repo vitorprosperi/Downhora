@@ -127,8 +127,8 @@ export default function CadastroPacQuatro() {
             await db.execAsync('BEGIN TRANSACTION');
 
             const result = await db.runAsync(
-                `INSERT INTO PessoaSindromeDeDown 
-                  (nome_completo, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, numero_prontuario, unidade_saude)
+                `INSERT INTO usuarios 
+                  (nome, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, n_prontuario, unidade_prontuario)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     pacientedados.nome,
@@ -147,8 +147,8 @@ export default function CadastroPacQuatro() {
             usuarioId = result.lastInsertRowId;
 
             await db.runAsync(
-                `INSERT INTO HistoricoMedico 
-                  (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmologista, data_oftalmo, consulta_fonoaudiologia, data_fono, consulta_odontologia, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamento_em_uso, alergias, tipo_sanguineo)
+                `INSERT INTO historico_medico 
+                  (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmo, data_oftalmo, consulta_fono, data_fono, consulta_odonto, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamentos, alergias, tipo_sanguineo)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     usuarioId,
@@ -182,7 +182,7 @@ export default function CadastroPacQuatro() {
             );
 
             await db.runAsync(
-                `INSERT INTO InformacoesComplementares (pessoa_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
+                `INSERT INTO complementares (pessoa_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
                  VALUES (?, ?, ?, ?, ?, ?)`,
                 [
                     usuarioId,
