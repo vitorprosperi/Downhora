@@ -15,6 +15,7 @@ export default function RootLayout() {
     'Raleway-500': require('../assets/fonts/raleway-v37-latin-500.ttf'),
     'Raleway-700': require('../assets/fonts/raleway-v37-latin-700.ttf'),
     'Roboto': require('../assets/fonts/roboto-v49-latin-regular.ttf'),
+    'Roboto-500': require('../assets/fonts/roboto-v49-latin-500.ttf'),
   }); 
 
   useEffect(() => {
