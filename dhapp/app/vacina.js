@@ -1,9 +1,8 @@
-import { View, Text, FlatList } from "react-native";
+import { useState } from "react";
+import { Text, View } from "react-native";
 import { FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styleForms";
-import { useState, useEffect } from "react";
-import { useSQLiteContext } from "expo-sqlite";
 
 export default function Vacina() {
 
