@@ -69,7 +69,7 @@ const escolherEEnviarImagem = async () => {
       return;
     }
 
-    const userId = user.id; // ✅ UUID válido
+    const userId = user.id;
 
     const fileExt = file.uri.split(".").pop() || "jpg";
     const fileName = `${Date.now()}.${fileExt}`;
