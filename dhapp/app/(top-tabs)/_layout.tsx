@@ -18,9 +18,9 @@ export const MaterialTopTabs = withLayoutContext<
 export default function TabLayout() {
   return (
     <MaterialTopTabs>
-      <MaterialTopTabs.Screen name="index" options={{ title: "Desenvolvimento", tabBarStyle: {backgroundColor: "#FAFAFF"} }} />
-      <MaterialTopTabs.Screen name="direitos" options={{ title: "Direitos", tabBarStyle: {backgroundColor: "#FAFAFF"}}} />
-      <MaterialTopTabs.Screen name="alimentacao" options={{ title: "Alimentos", tabBarStyle: {backgroundColor: "#FAFAFF"}}} />
+      <MaterialTopTabs.Screen name="index" options={{ title: "Desenvolvimento", tabBarStyle: {backgroundColor: "#FAFAFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12}}} />
+      <MaterialTopTabs.Screen name="direitos" options={{ title: "Direitos", tabBarStyle: {backgroundColor: "#FAFAFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12}}} />
+      <MaterialTopTabs.Screen name="alimentacao" options={{ title: "Alimentos", tabBarStyle: {backgroundColor: "#FAFAFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12}}} />
     </MaterialTopTabs>
   );
 }

@@ -5,44 +5,46 @@ export default function telaDireitos() {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scrollView}>
+        <View style={styles.cardTitle}>
         <Text style={styles.title}>Direitos garantidos da criança com Síndrome de Down</Text>
+        </View>
         <View style={styles.contTexto}>
             <View style={styles.cardImpar}>
           <Text style={styles.title}>Saúde</Text>
           </View>
           <Text style={styles.text}>
-            Consultas regulares no SUS com médicos de família, enfermeiros, pediatra e especialistas
+            ✅ Consultas regulares no <Text style={styles.textHeavy}>SUS</Text> com médicos de família, enfermeiros, pediatra e especialistas
             (cardiologista, endocrinologista, oftalmologista, otorrino, entre outros, conforme necessidade).
           </Text>
-          <Text style={styles.text}>Acesso a vacinas do calendário básico.</Text>
-          <Text style={styles.text}>Terapias gratuitas de estimulação precoce (fonoaudiologia, fisioterapia, terapia ocupacional, psicologia).</Text>
-          <Text style={styles.text}>Fornecimento de medicamentos e insumos pelo SUS, quando prescritos.</Text>
-          <Text style={styles.text}>Acompanhamento pelo Programa de Saúde da Pessoa com Deficiência em municípios que possuem o programa.</Text>
+          <Text style={styles.text}>✅ Acesso a <Text style={styles.textHeavy}>vacinas</Text> do calendário básico.</Text>
+          <Text style={styles.text}><Text style={styles.textHeavy}>✅ Terapias gratuitas</Text> de estimulação precoce (fonoaudiologia, fisioterapia, terapia ocupacional, psicologia).</Text>
+          <Text style={styles.text}>✅ Fornecimento de <Text style={styles.textHeavy}>medicamentos</Text> e insumos pelo SUS, quando prescritos.</Text>
+          <Text style={styles.text}>✅ Acompanhamento pelo <Text style={styles.textHeavy}>Programa de Saúde da Pessoa com Deficiência</Text> em municípios que possuem o programa.</Text>
         </View>
         <View style={styles.contTexto}>
             <View style={styles.cardPar}>
           <Text style={styles.title}>Educação</Text>
           </View>
-          <Text style={styles.text}>Direito de matrícula em escola regular pública ou privada, sem cobrança adicional.</Text>
-          <Text style={styles.text}>Acesso ao Atendimento Educacional Especializado (AEE) em turno complementar.</Text>
-          <Text style={styles.text}>Presença de profissional de apoio escolar quando necessário (ex.: auxiliar de vida escolar).</Text>
-          <Text style={styles.text}>Adaptação de materiais pedagógicos (livros acessíveis, recursos visuais, atividades simplificadas).</Text>
-          <Text style={styles.text}>Participação em todas as atividades escolares, inclusive passeios e projetos.</Text>
+          <Text style={styles.text}>✅ Direito de <Text style={styles.textHeavy}>matrícula em escola regular pública ou privada</Text>, sem cobrança adicional.</Text>
+          <Text style={styles.text}>✅ Acesso ao <Text style={styles.textHeavy}>Atendimento Educacional Especializado (AEE)</Text> em turno complementar.</Text>
+          <Text style={styles.text}>✅ Presença de <Text style={styles.textHeavy}>profissional de apoio</Text> escolar quando necessário (ex.: auxiliar de vida escolar).</Text>
+          <Text style={styles.text}>✅ Adaptação de materiais pedagógicos (livros acessíveis, recursos visuais, atividades simplificadas).</Text>
+          <Text style={styles.text}>✅ Participação em todas as atividades escolares, inclusive passeios e projetos.</Text>
         </View>
         <View style={styles.contTexto}>
             <View style={styles.cardImpar}>
           <Text style={styles.title}>Proteção social</Text>
           </View>
           <Text style={styles.text}>
-            Possibilidade de solicitar o Benefício de Prestação Continuada (BPC),
+            ✅ Possibilidade de solicitar o <Text style={styles.textHeavy}>Benefício de Prestação Continuada (BPC)</Text>,
             que garante um salário-mínimo mensal à criança com deficiência, desde que comprove não possuir meios para garantir o próprio
             sustento e que a renda mensal per capita da família do beneficiário seja inferior a ¼ do salário-mínimo vigente (Lei nº 8.748/93).
           </Text>
-          <Text style={styles.text}>Pessoas com Síndrome de Down estão isentas do recolhimento do Imposto de Renda, conforme prevê a Lei nº 7.713/88.</Text>
-          <Text style={styles.text}>Direito a prioridade em programas sociais (como Bolsa Família, vagas em creches e pré-escolas).</Text>
-          <Text style={styles.text}>Atendimento prioritário em repartições públicas, hospitais e serviços bancários.</Text>
+          <Text style={styles.text}>✅ Pessoas com Síndrome de Down estão isentas do recolhimento do Imposto de Renda, conforme prevê a Lei nº 7.713/88.</Text>
+          <Text style={styles.text}>✅ Direito a <Text style={styles.textHeavy}>prioridade em programas sociais</Text> (como Bolsa Família, vagas em creches e pré-escolas).</Text>
+          <Text style={styles.text}><Text style={styles.textHeavy}>✅ Atendimento prioritário</Text> em repartições públicas, hospitais e serviços bancários.</Text>
           <Text style={styles.text}>
-            Transporte público gratuito em muitas cidades (mediante carteira de gratuidade). O Passe Livre para o transporte interestadual
+            ✅ Transporte público gratuito em muitas cidades (mediante carteira de gratuidade). O Passe Livre para o transporte interestadual
             é direito das pessoas portadoras de deficiência que comprovem insuficiências de recursos financeiros garantido pela Lei nº 8.899/94.
           </Text>
           <Text style={styles.textPequeno}>
@@ -54,27 +56,27 @@ export default function telaDireitos() {
             <View style={styles.cardPar}>
           <Text style={styles.title}>Convivência e lazer</Text>
           </View>
-          <Text style={styles.text}>Participar de atividades esportivas, culturais e de lazer oferecidas em escolas, ONGs, clubes e centros comunitários.</Text>
-          <Text style={styles.text}>Garantia de acessibilidade em espaços públicos (parques, praças, teatros, cinemas).</Text>
-          <Text style={styles.text}>Direito de conviver com a família e a comunidade, não podendo ser segregada ou institucionalizada de forma compulsória.</Text>
-          <Text style={styles.text}>Acesso a programas de inclusão no esporte e lazer adaptado.</Text>
+          <Text style={styles.text}>✅ Participar de <Text style={styles.textHeavy}>atividades esportivas, culturais e de lazer</Text> oferecidas em escolas, ONGs, clubes e centros comunitários.</Text>
+          <Text style={styles.text}>✅ Garantia de <Text style={styles.textHeavy}>acessibilidade em espaços públicos</Text> (parques, praças, teatros, cinemas).</Text>
+          <Text style={styles.text}>✅ Direito de conviver com a família e a comunidade, não podendo ser segregada ou institucionalizada de forma compulsória.</Text>
+          <Text style={styles.text}>✅ Acesso a programas de <Text style={styles.textHeavy}>inclusão no esporte e lazer adaptado.</Text></Text>
         </View>
         <View style={styles.contTexto}>
             <View style={styles.cardImpar}>
           <Text style={styles.title}>Proteção legal</Text>
           </View>
-          <Text style={styles.text}>Amparo pelo Estatuto da Criança e do Adolescente (ECA), que garante prioridade absoluta na proteção da vida, saúde e desenvolvimento.</Text>
-          <Text style={styles.text}>Proteção contra violência, negligência, preconceito e discriminação.</Text>
-          <Text style={styles.text}>Atendimento prioritário em emergências médicas.</Text>
-          <Text style={styles.text}>Acesso à Justiça gratuita para garantir direitos violados (via Defensoria Pública).</Text>
+          <Text style={styles.text}>✅ Amparo pelo <Text style={styles.textHeavy}>Estatuto da Criança e do Adolescente (ECA)</Text>, que garante prioridade absoluta na proteção da vida, saúde e desenvolvimento.</Text>
+          <Text style={styles.text}>✅ Proteção contra <Text style={styles.textHeavy}>violência, negligência, preconceito e discriminação.</Text></Text>
+          <Text style={styles.text}><Text style={styles.textHeavy}>✅ Atendimento prioritário</Text> em emergências médicas.</Text>
+          <Text style={styles.text}>✅ Acesso à <Text style={styles.textHeavy}>Justiça gratuita</Text> para garantir direitos violados (via Defensoria Pública).</Text>
         </View>
         <View style={styles.contTexto}>
           <Text style={styles.subTitulo}>Resumo: </Text>
-          <Text style={styles.text}>Seu filho tem direito a tratamento de saúde completo pelo SUS, incluindo terapias.</Text>
-          <Text style={styles.text}>Na escola, tem direito a estar incluído na sala de aula regular, com adaptações e apoio especializado.</Text>
-          <Text style={styles.text}>Pode receber benefícios sociais e transporte gratuito, dependendo da situação da família.</Text>
-          <Text style={styles.text}>Deve ter acesso a lazer e convivência sem barreiras.</Text>
-          <Text style={styles.text}>Está protegido por lei contra qualquer tipo de violência ou exclusão.</Text>
+          <Text style={styles.text}> · Seu filho tem direito a <Text style={styles.textHeavy}>tratamento de saúde completo pelo SUS</Text>, incluindo terapias.</Text>
+          <Text style={styles.text}> · Na escola, tem direito a <Text style={styles.textHeavy}>estar incluído na sala de aula regular</Text>, com adaptações e apoio especializado.</Text>
+          <Text style={styles.text}> · Pode receber <Text style={styles.textHeavy}>benefícios sociais e transporte gratuito</Text>, dependendo da situação da família.</Text>
+          <Text style={styles.text}> · Deve ter acesso a <Text style={styles.textHeavy}>lazer e convivência sem barreiras.</Text></Text>
+          <Text style={styles.text}> · Está protegido por lei contra qualquer tipo de <Text style={styles.textHeavy}>violência ou exclusão.</Text></Text>
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.textPequenoTitulo}>Referências: </Text>
@@ -95,14 +97,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '25',
-    width: '100vw',
+    paddingVertical: 5,
   },
   cardPar: {
     backgroundColor: 'hsla(42 93.6% 49% / 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '25',
+    paddingVertical: 5,
+  },
+  cardTitle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
   },
   container: {
     flex: 1,
@@ -124,6 +130,7 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontFamily: 'Raleway-700',
     color: '#231F20',
+    textAlign: 'center',
   },
   text: {
     fontSize: 15,
@@ -137,10 +144,12 @@ const styles = StyleSheet.create({
   },
   textPequeno: {
     fontSize: 13,
+    color: '#231F20',
     fontFamily: 'Roboto',
   },
   textPequenoTitulo: {
     fontSize: 14,
+    color: '#231F20',
     fontFamily: 'Raleway-500',
   },
   textLinkRef: {
