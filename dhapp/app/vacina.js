@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Text, View } from "react-native";
+import { useState, useEffect } from "react";
+import { Text, View, FlatList } from "react-native";
 import { FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSQLiteContext } from 'expo-sqlite';
 import styles from "./styleForms";
 
 export default function Vacina() {
@@ -88,7 +89,7 @@ export default function Vacina() {
               <Text style={{ color: "white" }}>Tipo: {item.tipo_exame}</Text>
               <Text style={{ color: "white" }}>Data: {item.data_exame}</Text>
               <Text style={{ color: "white" }}>Médico: {item.medico_responsavel}</Text>
-              <Text style={{ color: "white" }}>Obs: {item.observacoes}</Text>
+              <Text style={{ color: "white" }}>Obs: {item.obs}</Text>
             </View>
           )}
         />

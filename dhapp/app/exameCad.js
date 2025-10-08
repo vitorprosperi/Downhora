@@ -40,7 +40,7 @@ export default function ExameCad() {
 
       // 2) Salvar no SQLite local
       await db.runAsync(
-        `INSERT INTO Exames (pessoa_id, tipo_exame, data_exame, medico_responsavel, observacoes)
+        `INSERT INTO exames (pessoa_id, tipo_exame, data_exame, medico_responsavel, obs)
          VALUES (?, ?, ?, ?, ?)`,
         [userId, exame, data, medico, obs]
       );

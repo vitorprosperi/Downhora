@@ -7,7 +7,7 @@ import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅�
 
 SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
 
-const DB_VERSION = 8; // aumente esse número quando mudar a estrutura
+const DB_VERSION = 10; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({ // mapeia as fontes
@@ -52,7 +52,7 @@ function RootLayoutNav() {
 
         if (!row || row.versao < DB_VERSION) {
           // Se não existir versão ou for antiga, dropa e recria as tabelas
-          await db.execAsync("DROP TABLE IF EXISTS Exames;");
+          await db.execAsync("DROP TABLE IF EXISTS exames;");
           await db.execAsync("DROP TABLE IF EXISTS complementares;");
           await db.execAsync("DROP TABLE IF EXISTS historico_medico;");
           await db.execAsync("DROP TABLE IF EXISTS usuarios;");
@@ -65,13 +65,10 @@ function RootLayoutNav() {
               data_nascimento TEXT NOT NULL,
               genero TEXT NOT NULL,
               cpf TEXT UNIQUE NOT NULL,
-              cns TEXT,
               nome_mae TEXT NOT NULL,
               nome_responsavel TEXT NOT NULL,
               telefone_responsavel TEXT NOT NULL,
-              email_responsavel TEXT NOT NULL,
-              n_prontuario TEXT NOT NULL,
-              unidade_prontuario TEXT NOT NULL
+              email_responsavel TEXT NOT NULL
             );
           `);
 

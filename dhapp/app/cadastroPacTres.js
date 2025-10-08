@@ -522,7 +522,7 @@ export default function CadastroPacTres() {
 
                         {/* Tipo de comorbidade */}
                         <View>
-                            <Text style={styles.textForm}>Comorbidades</Text>
+                            <Text style={styles.textForm}>Doenças relacionadas</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder='ex: Cardíaca, Tireoidiana'
@@ -533,7 +533,7 @@ export default function CadastroPacTres() {
 
                         {/* Medicamento em uso */}
                         <View>
-                            <Text style={styles.textForm}>Medicamento em uso</Text>
+                            <Text style={styles.textForm}>Medicamentos em uso</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder='ex: Losartana'

@@ -5,7 +5,6 @@ import { Alert, Text, TextInput, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
-import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacTres } from '../routes/rotas';
 import styles from './styleForms';
@@ -15,7 +14,6 @@ export default function CadastroPac() {
 
   // Máscaras
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
-  const cnsMask = [/\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/];
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const phoneMask = [
     '(', /\d/, /\d/, ')', ' ',
@@ -25,7 +23,6 @@ export default function CadastroPac() {
 
   // Estados separados
   const [genero, setGenero] = useState(null);
-  const [unidade, setUnidade] = useState(null);
 
   const itensGenero = [
     { label: 'Masculino', value: 'masculino' },
@@ -35,7 +32,6 @@ export default function CadastroPac() {
 
   // Estados para os campos mascarados
   const [dataNascimento, setDataNascimento] = useState('');
-  const [cns, setCns] = useState('');
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
@@ -48,13 +44,10 @@ export default function CadastroPac() {
       { nome: 'genero', label: 'Gênero' },
       { nome: 'cpf', label: 'CPF' },
       { nome: 'senha', label: 'Senha' },
-      { nome: 'cns', label: 'CNS' },
       { nome: 'nome_mae', label: 'Nome da mãe' },
       { nome: 'nome_responsavel', label: 'Nome do responsável' },
       { nome: 'telefone_responsavel', label: 'Telefone do responsável' },
       { nome: 'email_responsavel', label: 'E-mail do responsável' },
-      { nome: 'n_prontuario', label: 'Nº do Prontuário' },
-      { nome: 'unidade_prontuario', label: 'Unidade do Prontuário' },
     ];
 
     // Verifica se algum campo obrigatório está vazio
@@ -179,23 +172,6 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>CNS*</Text>
-              <MaskInput
-                style={styles.input}
-                keyboardType='numeric'
-                maxLength={18}
-                mask={cnsMask}
-                value={cns}
-                placeholder='ex: 123 4567 8901 2345'
-                placeholderTextColor={'grey'}
-                onChangeText={(masked, unmasked) => {
-                  setCns(masked);
-                  setPacientedados(prev => ({ ...prev, cns: unmasked }));
-                }}
-              />
-            </View>
-
-            <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
               <TextInput
                 style={styles.input}
@@ -241,26 +217,6 @@ export default function CadastroPac() {
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, email_responsavel: text }))}
               />
-            </View>
-
-            <View>
-              <Text style={styles.textForm}>Nº do Prontuário*</Text>
-              <TextInput
-                style={styles.input}
-                placeholder='ex: 123456789'
-                placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, n_prontuario: text }))}
-              />
-              <RadioButton.Group
-                onValueChange={value => {
-                  setUnidade(value);
-                  setPacientedados(prev => ({ ...prev, unidade_prontuario: value }));
-                }}
-                value={unidade}
-              >
-                <RadioButton.Item uncheckedColor='#231F20' color="#231F20" labelStyle={styles.textForm} label="UBS" value="UBS" />
-                <RadioButton.Item uncheckedColor='#231F20' color="#231F20" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
-              </RadioButton.Group>
             </View>
 
           </View>

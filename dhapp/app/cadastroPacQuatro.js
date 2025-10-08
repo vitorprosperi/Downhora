@@ -44,13 +44,10 @@ export default function CadastroPacQuatro() {
                     data_nascimento: pacientedados.data_nascimento,
                     genero: pacientedados.genero,
                     cpf: pacientedados.cpf,
-                    cns: pacientedados.cns,
                     nome_mae: pacientedados.nome_mae,
                     nome_responsavel: pacientedados.nome_responsavel,
                     telefone_responsavel: pacientedados.telefone_responsavel,
                     email_responsavel: pacientedados.email_responsavel,
-                    n_prontuario: pacientedados.n_prontuario,
-                    unidade_prontuario: pacientedados.unidade_prontuario,
                 }]);
 
             if (errorUsuario) {
@@ -128,20 +125,17 @@ export default function CadastroPacQuatro() {
 
             const result = await db.runAsync(
                 `INSERT INTO usuarios 
-                  (nome, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, n_prontuario, unidade_prontuario)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                  (nome, data_nascimento, genero, cpf, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     pacientedados.nome,
                     pacientedados.data_nascimento,
                     pacientedados.genero,
                     pacientedados.cpf,
-                    pacientedados.cns,
                     pacientedados.nome_mae,
                     pacientedados.nome_responsavel,
                     pacientedados.telefone_responsavel,
-                    pacientedados.email_responsavel,
-                    pacientedados.n_prontuario,
-                    pacientedados.unidade_prontuario
+                    pacientedados.email_responsavel
                 ]
             );
             usuarioId = result.lastInsertRowId;
@@ -235,13 +229,15 @@ export default function CadastroPacQuatro() {
                                 itemTextStyle={styles.textForm}
                                 activeColor='#F5F5FF'
                                 data={[
-                                    { label: 'Ensino fundamental incompleto', value: 'ensino_fundamental_incompleto' },
-                                    { label: 'Ensino fundamental completo', value: 'ensino_fundamental_completo' },
-                                    { label: 'Ensino médio incompleto', value: 'ensino_medio_incompleto' },
-                                    { label: 'Ensino médio completo', value: 'ensino_medio_completo' },
-                                    { label: 'Ensino superior incompleto', value: 'ensino_superior_incompleto' },
-                                    { label: 'Ensino superior completo', value: 'ensino_superior_completo' },
-                                    { label: 'Pós graduação', value: 'pos_graduacao' },
+                                    { label: 'Creche', value: 'Creche' },
+                                    { label: 'Pré escola', value: 'Pré escola' },
+                                    { label: 'Ensino fundamental incompleto', value: 'Ensino fundamental incompleto' },
+                                    { label: 'Ensino fundamental completo', value: 'Ensino fundamental completo' },
+                                    { label: 'Ensino médio incompleto', value: 'Ensino médio incompleto' },
+                                    { label: 'Ensino médio completo', value: 'Ensino médio completo' },
+                                    { label: 'Ensino superior incompleto', value: 'Ensino superior incompleto' },
+                                    { label: 'Ensino superior completo', value: 'Ensino superior completo' },
+                                    { label: 'Pós graduação', value: 'Pós graduação' },
                                 ]}
                                 labelField="label"
                                 valueField="value"
@@ -280,7 +276,7 @@ export default function CadastroPacQuatro() {
                             <Text style={styles.textForm}>Unidade escolar 3:</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder='ex: Rene nao sei qual é a 3 unidade'
+                                placeholder='ex: Apoio'
                                 placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni3: text }))}
                             />
