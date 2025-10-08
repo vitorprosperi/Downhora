@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { View, Text, FlatList } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./styleForms";
-import { useSQLiteContext } from "expo-sqlite";
-import NetInfo from "@react-native-community/netinfo";
+import { useUsuario } from '@/context/context';
+import CollapsibleView from "@eliav2/react-native-collapsible-view";
+import NetInfo from '@react-native-community/netinfo';
+import { useSQLiteContext } from 'expo-sqlite';
+import { useEffect, useState } from "react";
+import { FlatList, Text, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
-import { useUsuario } from "@/context/context";
 
 export default function Prontuario() {
   const db = useSQLiteContext();
@@ -94,8 +94,8 @@ export default function Prontuario() {
   };
 
   return (
-    <SafeAreaView edges={["bottom", "left", "right"]} style={styles.corEscura}>
-      <View style={styles.telaInicio}>
+    <SafeAreaView edges={['bottom', 'left', 'right']}>
+      <View>
         <FlatList
           data={pacientes}
           keyExtractor={(item, index) =>
@@ -106,42 +106,20 @@ export default function Prontuario() {
             const infoComp = InfoPorPacienteId(item.id);
 
             return (
-              <View
-                style={{
-                  marginBottom: 12,
-                  padding: 10,
-                  backgroundColor: "#f3f3f3",
-                  borderRadius: 8,
-                }}
-              >
-                <Text style={{ color: "black" }}>Nome: {item.nome}</Text>
-                <Text style={{ color: "black" }}>CPF: {item.cpf}</Text>
-                <Text style={{ color: "black" }}>
-                  Nascimento: {item.data_nascimento}
-                </Text>
-                <Text style={{ color: "black" }}>Gênero: {item.genero}</Text>
-                <Text style={{ color: "black" }}>
-                  Nome da mãe: {item.nome_mae}
-                </Text>
-                <Text style={{ color: "black" }}>
-                  Responsável: {item.nome_responsavel}
-                </Text>
-                <Text style={{ color: "black" }}>
-                  Telefone: {item.telefone_responsavel}
-                </Text>
-                <Text style={{ color: "black" }}>
-                  Email: {item.email_responsavel}
-                </Text>
+              <View>
+                <Text style={{ color: 'black' }}>Nome: {item.nome}</Text>
+                <CollapsibleView title="Dados pessoais">
+                  <Text style={{ color: 'black' }}>CPF: {item.cpf}</Text>
+                  <Text style={{ color: 'black' }}>Nascimento: {item.data_nascimento}</Text>
+                  <Text style={{ color: 'black' }}>Gênero: {item.genero}</Text>
+                  <Text style={{ color: 'black' }}>CNS: {item.cns}</Text>
+                  <Text style={{ color: 'black' }}>Nome da mãe: {item.nome_mae}</Text>
+                  <Text style={{ color: 'black' }}>Responsável: {item.nome_responsavel}</Text>
+                  <Text style={{ color: 'black' }}>Telefone: {item.telefone_responsavel}</Text>
+                  <Text style={{ color: 'black' }}>Email: {item.email_responsavel}</Text>
+                </CollapsibleView>
 
-                <Text
-                  style={{
-                    color: "black",
-                    marginTop: 8,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Histórico médico:
-                </Text>
+                <CollapsibleView title="Histórico médico">
                 {historico ? (
                   <>
                     {mostrarExame(
@@ -217,16 +195,9 @@ export default function Prontuario() {
                     Histórico não cadastrado.
                   </Text>
                 )}
+                </CollapsibleView>
 
-                <Text
-                  style={{
-                    color: "black",
-                    marginTop: 8,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Informações complementares:
-                </Text>
+                <CollapsibleView title="Informações complementares">
                 {infoComp ? (
                   <>
                     <Text style={{ color: "black" }}>
@@ -250,6 +221,7 @@ export default function Prontuario() {
                     Informações complementares não cadastradas.
                   </Text>
                 )}
+                </CollapsibleView>
               </View>
             );
           }}
