@@ -21,7 +21,7 @@ export default function App() {
                 </View>
             </View>
             <View style={styles.containerBotoes}>
-                <ButtonP label='Login' theme='transparent' onPress={login}></ButtonP>
+                <ButtonP label='Login' theme='yellow' onPress={login}></ButtonP>
                 <ButtonP label='Cadastro' onPress={cadastropac}></ButtonP>
             </View>
         </View>

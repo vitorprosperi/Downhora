@@ -3,7 +3,7 @@ import CollapsibleView from "@eliav2/react-native-collapsible-view";
 import NetInfo from '@react-native-community/netinfo';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
 
@@ -94,7 +94,7 @@ export default function Prontuario() {
   };
 
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={styles.safeView} edges={['bottom']}>
       <View>
         <FlatList
           data={pacientes}
@@ -106,12 +106,29 @@ export default function Prontuario() {
             const infoComp = InfoPorPacienteId(item.id);
 
             return (
-              <View>
-                <Text style={{ color: 'black' }}>Nome: {item.nome}</Text>
-                <CollapsibleView title="Dados pessoais">
-                  <Text style={{ color: 'black' }}>CPF: {item.cpf}</Text>
+              <View style={styles.container}>
+                <Text>{item.nome}</Text>
+                <CollapsibleView
+                  style={styles.cardColap}
+                  initExpanded={true}
+                  arrowStyling={{ color: "#231F20" }}
+                  title={<Text style={styles.titulo}>Dados pessoais</Text>}
+                  >
+                  <View>
+                    <Text style={styles.text}>CPF</Text>
+                    <View>
+                    <Text style={styles.text}>{item.cpf}</Text>
+                    </View>
+                  </View>
+
+                  <View>
                   <Text style={{ color: 'black' }}>Nascimento: {item.data_nascimento}</Text>
+                  </View>
+
+                  <View>
                   <Text style={{ color: 'black' }}>Gênero: {item.genero}</Text>
+                  </View>
+
                   <Text style={{ color: 'black' }}>CNS: {item.cns}</Text>
                   <Text style={{ color: 'black' }}>Nome da mãe: {item.nome_mae}</Text>
                   <Text style={{ color: 'black' }}>Responsável: {item.nome_responsavel}</Text>
@@ -119,108 +136,115 @@ export default function Prontuario() {
                   <Text style={{ color: 'black' }}>Email: {item.email_responsavel}</Text>
                 </CollapsibleView>
 
-                <CollapsibleView title="Histórico médico">
-                {historico ? (
-                  <>
-                    {mostrarExame(
-                      "Exame cariótipo",
-                      historico.exame_cariotipo,
-                      historico.data_cariotipo
-                    )}
-                    {mostrarExame(
-                      "Triagem auditiva",
-                      historico.triagem_auditiva,
-                      historico.data_triagem
-                    )}
-                    {mostrarExame(
-                      "Consulta cardiologista",
-                      historico.consulta_cardiologista,
-                      historico.data_cardiologista
-                    )}
-                    {mostrarExame(
-                      "Teste do pezinho",
-                      historico.teste_pezinho,
-                      historico.data_pezinho
-                    )}
-                    {mostrarExame(
-                      "Consulta oftalmo",
-                      historico.consulta_oftalmo,
-                      historico.data_oftalmo
-                    )}
-                    {mostrarExame(
-                      "Consulta fono",
-                      historico.consulta_fono,
-                      historico.data_fono
-                    )}
-                    {mostrarExame(
-                      "Consulta odonto",
-                      historico.consulta_odonto,
-                      historico.data_odonto
-                    )}
-                    {mostrarExame(
-                      "Consulta endocrinologia",
-                      historico.consulta_endocrinologia,
-                      historico.data_endocrinologia
-                    )}
-                    {mostrarExame(
-                      "Consulta fisio",
-                      historico.consulta_fisio,
-                      historico.data_fisio
-                    )}
-                    {mostrarExame(
-                      "Consulta terapia",
-                      historico.consulta_terapia,
-                      historico.data_terapia
-                    )}
-                    {mostrarExame(
-                      "Consulta psicopedagogo",
-                      historico.consulta_psicopedagogo,
-                      historico.data_psicopedagogo
-                    )}
+                <CollapsibleView
+                  style={styles.cardColap}
+                  arrowStyling={{ color: "#231F20" }}
+                  initExpanded={true}
+                  title={<Text style={styles.titulo}>Histórico médico</Text>}>
+                  {historico ? (
+                    <>
+                      {mostrarExame(
+                        "Exame cariótipo",
+                        historico.exame_cariotipo,
+                        historico.data_cariotipo
+                      )}
+                      {mostrarExame(
+                        "Triagem auditiva",
+                        historico.triagem_auditiva,
+                        historico.data_triagem
+                      )}
+                      {mostrarExame(
+                        "Consulta cardiologista",
+                        historico.consulta_cardiologista,
+                        historico.data_cardiologista
+                      )}
+                      {mostrarExame(
+                        "Teste do pezinho",
+                        historico.teste_pezinho,
+                        historico.data_pezinho
+                      )}
+                      {mostrarExame(
+                        "Consulta oftalmo",
+                        historico.consulta_oftalmo,
+                        historico.data_oftalmo
+                      )}
+                      {mostrarExame(
+                        "Consulta fono",
+                        historico.consulta_fono,
+                        historico.data_fono
+                      )}
+                      {mostrarExame(
+                        "Consulta odonto",
+                        historico.consulta_odonto,
+                        historico.data_odonto
+                      )}
+                      {mostrarExame(
+                        "Consulta endocrinologia",
+                        historico.consulta_endocrinologia,
+                        historico.data_endocrinologia
+                      )}
+                      {mostrarExame(
+                        "Consulta fisio",
+                        historico.consulta_fisio,
+                        historico.data_fisio
+                      )}
+                      {mostrarExame(
+                        "Consulta terapia",
+                        historico.consulta_terapia,
+                        historico.data_terapia
+                      )}
+                      {mostrarExame(
+                        "Consulta psicopedagogo",
+                        historico.consulta_psicopedagogo,
+                        historico.data_psicopedagogo
+                      )}
+                      <Text style={{ color: "black" }}>
+                        Comorbidades: {historico.comorbidades}
+                      </Text>
+                      <Text style={{ color: "black" }}>
+                        Medicamentos: {historico.medicamentos}
+                      </Text>
+                      <Text style={{ color: "black" }}>
+                        Alergias: {historico.alergias}
+                      </Text>
+                      <Text style={{ color: "black" }}>
+                        Tipo sanguíneo: {historico.tipo_sanguineo}
+                      </Text>
+                    </>
+                  ) : (
                     <Text style={{ color: "black" }}>
-                      Comorbidades: {historico.comorbidades}
+                      Histórico não cadastrado.
                     </Text>
-                    <Text style={{ color: "black" }}>
-                      Medicamentos: {historico.medicamentos}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Alergias: {historico.alergias}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Tipo sanguíneo: {historico.tipo_sanguineo}
-                    </Text>
-                  </>
-                ) : (
-                  <Text style={{ color: "black" }}>
-                    Histórico não cadastrado.
-                  </Text>
-                )}
+                  )}
                 </CollapsibleView>
 
-                <CollapsibleView title="Informações complementares">
-                {infoComp ? (
-                  <>
+                <CollapsibleView
+                  style={styles.cardColap}
+                  arrowStyling={{ color: "#231F20" }}
+                  title={<Text style={styles.titulo}>Informações complementares</Text>}>
+                  {infoComp ? (
+                    <>
+                      <Text style={{ color: "black" }}>
+                        Escolaridade: {infoComp.escolaridade}
+                      </Text>
+                      <Text style={{ color: "black" }}>
+                        Unidade escolar 1: {infoComp.unidade_1}
+                      </Text>
+                      <Text style={{ color: "black" }}>
+                        Unidade escolar 2: {infoComp.unidade_2}
+                      </Text>
+                      <Text style={{ color: "black" }}>
+                        Unidade escolar 3: {infoComp.unidade_3}
+                      </Text>
+                      <Text style={{ color: "black" }}>
+                        Autonomia/comunicação: {infoComp.autonomia_comunicacao}
+                      </Text>
+                    </>
+                  ) : (
                     <Text style={{ color: "black" }}>
-                      Escolaridade: {infoComp.escolaridade}
+                      Informações complementares não cadastradas.
                     </Text>
-                    <Text style={{ color: "black" }}>
-                      Unidade escolar 1: {infoComp.unidade_1}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Unidade escolar 2: {infoComp.unidade_2}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Unidade escolar 3: {infoComp.unidade_3}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Autonomia/comunicação: {infoComp.autonomia_comunicacao}
-                    </Text>
-                  </>
-                ) : (
-                  <Text style={{ color: "black" }}>
-                    Informações complementares não cadastradas.
-                  </Text>
-                )}
+                  )}
                 </CollapsibleView>
               </View>
             );
@@ -230,3 +254,31 @@ export default function Prontuario() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  cardColap: {
+    backgroundColor: '#FAFAFF',
+    width: '100%',
+    borderWidth: 0,
+    alignItems: 'flex-start',
+  },
+  safeView: {
+    flex: 1,
+    backgroundColor: '#FAFAFF',
+  },
+  container: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    width: '95%',
+  },
+  titulo: {
+    fontFamily: 'Raleway-500',
+    color: '#2261C1',
+    fontSize: 18,
+  },
+  text: {
+    fontSize: 15,
+    color: '#231F20',
+    fontFamily: 'Roboto',
+  },
+})

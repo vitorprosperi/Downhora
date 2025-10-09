@@ -1,6 +1,6 @@
 import { useUsuario } from '@/context/context';
 import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,13 +35,15 @@ export default function TelaInicial() {
         <View style={styles.contInicial}>
           <View style={btstyle.botoesContainer}>
             <View>
-              <Pressable style={btstyle.button} onPress={prontuario}>
-                <Icon source="content-paste" color="#2261c1" size={45} />
-                <Text style={btstyle.text}>Prontuário</Text>
-              </Pressable>
+              <TouchableOpacity>
+                <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={prontuario}>
+                  <Icon source="content-paste" color="#2261c1" size={45} />
+                  <Text style={btstyle.text}>Prontuário</Text>
+                </Pressable>
+              </TouchableOpacity>
             </View>
             <View>
-              <Pressable style={btstyle.button} onPress={exames}>
+              <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={exames}>
                 <Icon source="calendar-multiselect" color="#2261c1" size={45} />
                 <Text style={btstyle.text}>Exames</Text>
               </Pressable>
@@ -50,13 +52,13 @@ export default function TelaInicial() {
 
           <View style={btstyle.botoesContainer}>
             <View>
-              <Pressable style={btstyle.button} onPress={vacina}>
+              <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={vacina}>
                 <Icon source="needle" color="#2261c1" size={45} />
                 <Text style={btstyle.text}>Vacinação</Text>
               </Pressable>
             </View>
             <View>
-              <Pressable style={btstyle.button} onPress={desenvolvimento}>
+              <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={desenvolvimento}>
                 <Icon source="information-outline" color="#2261c1" size={45} />
                 <Text style={btstyle.text}>Informações</Text>
               </Pressable>
@@ -65,7 +67,7 @@ export default function TelaInicial() {
         </View>
 
         <View style={btstyle.logoutContainer}>
-          <Pressable style={btstyle.logoutButton} onPress={logout}>
+          <Pressable style={({ pressed }) => (pressed ? btstyle.logoutHighlight : btstyle.logoutButton)} onPress={logout}>
             <Icon source="logout" color="#2261c1" size={28} />
             <Text style={btstyle.logoutText}>Sair</Text>
           </Pressable>
@@ -81,6 +83,16 @@ const btstyle = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
+    width: 'auto',
+    aspectRatio: '1/1',
+    height: 160,
+    borderRadius: 10,
+  },
+  highlight: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FBFBFC',
     width: 'auto',
     aspectRatio: '1/1',
     height: 160,
@@ -109,6 +121,17 @@ const btstyle = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: 'white',
+  },
+  logoutHighlight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FBFBFC',
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 12,
