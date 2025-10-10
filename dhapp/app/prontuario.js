@@ -1,5 +1,6 @@
 import { useUsuario } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
+import dayjs from 'dayjs';
 import { Stack } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from "react";
@@ -105,6 +106,9 @@ export default function Prontuario() {
     );
   };
 
+// Formatador de data
+  var customParseFormat = require("dayjs/plugin/customParseFormat");
+  dayjs.extend(customParseFormat)
 
 
   return (
@@ -122,11 +126,15 @@ export default function Prontuario() {
             const historico = HistoricoPorPacienteId(item.id);
             const infoComp = InfoPorPacienteId(item.id);
 
+            const data = `${item.data_nascimento}`
+            const dataFormatada = dayjs(data, 'DDMMYYYY').format('YYYY-MM-DD');
+
+            const idade = dayjs().diff(dataFormatada, 'y');
+            
             return (
               <View style={styles.container}>
                 <View style={styles.contNome}>
-                  <Text style={styles.nome}>{item.nome}</Text>
-                  <Text></Text>
+                  <Text style={styles.nome}>{item.nome}, {idade} anos</Text>
                 </View>
                 <View style={styles.contTitulo}>
                   {<Text style={styles.titulo}>Dados pessoais</Text>}
