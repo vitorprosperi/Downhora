@@ -1,5 +1,5 @@
 import { useUsuario } from '@/context/context';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-paper';
@@ -27,6 +27,14 @@ export default function TelaInicial() {
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+      <Stack.Screen 
+      options={{
+        headerStyle: { backgroundColor: '#FAFAFF' },
+              headerTintColor: '#231F20',
+              headerTitle: '',
+              headerShadowVisible: false,
+      }}
+      />
       <KeyboardAwareScrollView
         contentContainerStyle={[styles.corEscura, { flexGrow: 1, justifyContent: 'space-between' }]}
         extraHeight={280}

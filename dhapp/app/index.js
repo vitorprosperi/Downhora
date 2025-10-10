@@ -1,6 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { login } from '@/routes/rotas';
 import { Image } from 'expo-image';
+import { Stack } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { cadastropac } from '../routes/rotas';
 
@@ -11,6 +12,11 @@ export default function App() {
 
     return (
         <View style={styles.indexEstilo}>
+            <Stack.Screen
+            options={{
+                headerShown: false
+            }}
+            />
             <View style={styles.logoContainer}>
                 <View style={styles.imageContainer}>
                     <Image source={LogoImage} style={styles.image}></Image>
@@ -69,6 +75,7 @@ const styles = StyleSheet.create({
         marginBottom: 0,
     },
     logoContainer: {
+        marginTop: 50,
         justifyContent: 'center'
     },
     titleContainer:{

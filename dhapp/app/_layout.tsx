@@ -141,12 +141,29 @@ function RootLayoutNav() {
         <PacienteProvider>
           <Stack
              screenOptions={{
-             headerStyle: { backgroundColor: '#FAFAFF' },
+             headerStyle: { backgroundColor: '#FAFAFF', },
               headerTintColor: '#231F20',
-              headerTitle: '',
-             headerShadowVisible: false,
+              headerTitleStyle: {
+                fontFamily: 'Raleway-500'
+              },
+              title: '',
+              headerShadowVisible: false,
+
            }}
           >
+            <Stack.Screen 
+            name="index"
+                options={{
+                    title: '',
+                }}
+            /> 
+            <Stack.Screen 
+            name="(top-tabs)"
+                options={{
+                    title: 'Informações',
+                }}
+            /> 
+
           </Stack>
         </PacienteProvider>
       </UsuarioProvider>

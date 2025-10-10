@@ -1,7 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { useUsuario } from '@/context/context';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -55,7 +55,16 @@ export default function Login() {
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+      <Stack.Screen
+        options={{
+            headerStyle: { backgroundColor: '#FAFAFF' },
+              headerTintColor: '#231F20',
+              headerTitle: '',
+              headerShadowVisible: false,
+           }}
+/>
     <View style={styles.loginEstilo}>
+      
       
       <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
         
@@ -147,7 +156,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: 350,
     height: 350,
-    paddingBottom: 400,
+    marginBottom: 50,
   },
   image: {
     width: 350,
