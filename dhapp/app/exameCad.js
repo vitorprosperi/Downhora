@@ -1,20 +1,22 @@
 import ButtonP from '@/components/ButtonP';
 import { useUsuario } from '@/context/context';
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
 import MaskInput from 'react-native-mask-input';
 import { TextInput } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
-import { useSQLiteContext } from "expo-sqlite"; // importa o hook do SQLite
 
 export default function ExameCad() {
 
   const router = useRouter();
   const { userId } = useUsuario();
-  const db = useSQLiteContext(); // acesso ao SQLite
+  const db = useSQLiteContext();
 
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
@@ -22,14 +24,89 @@ export default function ExameCad() {
   const [exame, setExame] = useState('');
   const [medico, setMedico] = useState('');
   const [obs, setObs] = useState('');
+  const [outroExame, setOutroExame] = useState('');
+  const [imagemUrl, setImagemUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const tiposExames = [
+    { label: 'Cariótipo', value: 'Cariótipo' },
+    { label: 'Pezinho', value: 'Pezinho' },
+    { label: 'Outro', value: 'Outro' },
+  ];
+
+  const escolherEEnviarImagem = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permissão necessária", "Conceda acesso à galeria para continuar.");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+        base64: true,
+      });
+
+      if (result.canceled || !result.assets?.length) {
+        Alert.alert("Aviso", "Seleção de imagem cancelada.");
+        return;
+      }
+
+      const file = result.assets[0];
+      const base64Image = file.base64;
+      if (!base64Image) {
+        Alert.alert("Erro", "Não foi possível ler o conteúdo da imagem.");
+        return;
+      }
+
+      setUploading(true);
+
+      const fileExt = file.uri.split(".").pop() || "jpg";
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `exames/${fileName}`;
+
+      const imageBuffer = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
+
+      const { error: uploadError } = await supabase.storage
+        .from("imagens")
+        .upload(filePath, imageBuffer, {
+          contentType: "image/jpeg",
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("imagens").getPublicUrl(filePath);
+      const imageUrl = data.publicUrl;
+
+      setImagemUrl(imageUrl);
+      Alert.alert("Sucesso", "Imagem adicionada ao exame!");
+
+    } catch (error) {
+      console.error("Erro ao enviar imagem:", error.message);
+      Alert.alert("Erro", "Não foi possível enviar a imagem.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const salvarExame = async () => {
     try {
-      // 1) Salvar no Supabase
+      const tipoSelecionado = exame === 'Outro' ? outroExame : exame;
+
       const { data: supaData, error } = await supabase
         .from('exames')
         .insert([
-          { usuario_id: userId, tipo_exame: exame, data_exame: data, medico_responsavel: medico, obs: obs }
+          { 
+            usuario_id: userId,
+            tipo_exame: tipoSelecionado,
+            data_exame: data,
+            medico_responsavel: medico,
+            obs: obs,
+            imagem_url: imagemUrl || null
+          }
         ]);
 
       if (error) {
@@ -38,22 +115,19 @@ export default function ExameCad() {
         console.log("Exame salvo no Supabase:", supaData);
       }
 
-      // 2) Salvar no SQLite local
       await db.runAsync(
-        `INSERT INTO exames (pessoa_id, tipo_exame, data_exame, medico_responsavel, obs)
-         VALUES (?, ?, ?, ?, ?)`,
-        [userId, exame, data, medico, obs]
+        `INSERT INTO exames (pessoa_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [userId, tipoSelecionado, data, medico, obs, imagemUrl]
       );
 
       console.log("Exame salvo no SQLite local");
-
-      // Redireciona após salvar
       router.replace({ pathname: "/exames" });
 
     } catch (err) {
       console.error("Erro inesperado:", err);
     }
-  }
+  };
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -69,14 +143,46 @@ export default function ExameCad() {
 
           <View>
             <Text style={styles.textForm}>Tipo de exame*</Text>
-            <TextInput
-              style={styles.input}
-              placeholder='ex: Teste do Pézinho'
-              placeholderTextColor={'grey'}
+            <Dropdown
+              style={[styles.input, { paddingHorizontal: 10 }]}
+              data={tiposExames}
+              labelField="label"
+              valueField="value"
+              placeholder="Selecione o tipo de exame"
+              placeholderStyle={{ color: 'grey' }}
               value={exame}
-              onChangeText={setExame}
+              onChange={item => setExame(item.value)}
             />
           </View>
+
+          {exame === 'Outro' && (
+            <View>
+              <Text style={styles.textForm}>Informe o exame</Text>
+              <TextInput
+                style={styles.input}
+                placeholder='Digite o nome do exame'
+                placeholderTextColor={'grey'}
+                value={outroExame}
+                onChangeText={setOutroExame}
+              />
+            </View>
+          )}
+
+          {(exame === 'Cariótipo' || exame === 'Pezinho') && (
+            <Pressable
+              style={[styles.botaoUpload, { backgroundColor: '#3478f6', marginTop: 10, borderRadius: 10, padding: 10 }]}
+              onPress={escolherEEnviarImagem}
+              disabled={uploading}
+            >
+              {uploading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={{ color: '#fff', textAlign: 'center', fontSize: 16 }}>
+                  {imagemUrl ? "Imagem adicionada ✅" : "Adicionar imagem do exame"}
+                </Text>
+              )}
+            </Pressable>
+          )}
 
           <View>
             <Text style={styles.textForm}>Data do exame*</Text>
@@ -115,6 +221,7 @@ export default function ExameCad() {
           </View>
 
         </View>
+
         <View style={{ marginBottom: 20, width: 200 }}>
           <ButtonP label="Finalizar" onPress={salvarExame} />
         </View>
