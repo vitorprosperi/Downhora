@@ -2,7 +2,7 @@ import ButtonP from '@/components/ButtonP';
 import { useUsuario } from '@/context/context';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
@@ -21,23 +21,7 @@ export default function Login() {
   const router = useRouter();
   const { setUserId } = useUsuario();
 
-  // 🔁 Verifica se há uma sessão salva
-  useEffect(() => {
-    const restoreSession = async () => {
-      const storedSession = await SecureStore.getItemAsync('supabase_session');
-      if (storedSession) {
-        const { data, error } = await supabase.auth.setSession(JSON.parse(storedSession));
-        if (!error && data.session) {
-          console.log("Sessão restaurada com sucesso!");
-          setUserId(data.session.user.id);
-          router.replace("/telaInicial");
-        }
-      }
-    };
-    restoreSession();
-  }, []);
-
-  // 🔐 Login com opção de manter sessão
+  //  Login com opção de manter sessão
   const login = async () => {
     if (cpf === '' || senha === '') {
       Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
