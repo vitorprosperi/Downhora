@@ -6,6 +6,7 @@ import ButtonP from '@/components/ButtonP';
 import { login } from '@/routes/rotas';
 import { cadastropac } from '../routes/rotas';
 import { supabase } from '@/supabaseserver';
+import * as SecureStore from 'expo-secure-store';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -14,32 +15,34 @@ export default function App() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
+    const checkSavedSession = async () => {
       try {
-        console.log('[Pronto] Iniciando verificação de sessão no supabase...');
-        const { data, error } = await supabase.auth.getSession();
+        console.log('[Pronto] Iniciando verificação de sessão no SecureStore...');
+        const savedSession = await SecureStore.getItemAsync('supabase_session');
 
-        if (error) {
-          console.error('[Erro Supabase]', error.message);
-          return;
-        }
+        if (savedSession) {
+          const session = JSON.parse(savedSession);
+          const { data, error } = await supabase.auth.setSession(session);
 
-        const session = data?.session;
-
-        if (session) {
-          console.log('[Supabase] Sessão encontrada:', session.user?.id);
-          router.replace('/telaInicial');
+          if (!error && data.session) {
+            console.log('[SecureStore] Sessão restaurada com sucesso:', data.session.user?.id);
+            router.replace('/telaInicial');
+            return;
+          } else {
+            console.log('[SecureStore] Sessão inválida ou expirada, removendo...');
+            await SecureStore.deleteItemAsync('supabase_session');
+          }
         } else {
-          console.log('[Supabase] Nenhuma sessão ativa encontrada.');
+          console.log('[SecureStore] Nenhuma sessão salva.');
         }
       } catch (err) {
-        console.error('[Erro] ao obter sessão do Supabase:', err);
+        console.error('[Erro] ao restaurar sessão:', err);
       } finally {
         setCheckingSession(false);
       }
     };
 
-    checkSession();
+    checkSavedSession();
   }, [router]);
 
   return (
