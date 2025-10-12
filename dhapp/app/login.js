@@ -6,20 +6,22 @@ import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MaskInput from 'react-native-mask-input';
+import { Checkbox } from 'expo-checkbox';
 import { supabase } from "../supabaseserver";
+import * as SecureStore from 'expo-secure-store';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
 export default function Login() {
-  // Controle das variáveis cpf e senha
+  const [isChecked, setChecked] = useState(false);
   const [cpf, setCpf] = useState("");
   const [cpfMasked, setCpfMasked] = useState('');
   const [senha, setSenha] = useState("");
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const router = useRouter();
-
   const { setUserId } = useUsuario();
 
+  // Login com opção de manter sessão
   const login = async () => {
     if (cpf === '' || senha === '') {
       Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
@@ -28,7 +30,6 @@ export default function Login() {
 
     try {
       const emailFake = `${cpf}@meuapp.com`;
-
       const { data, error } = await supabase.auth.signInWithPassword({
         email: emailFake,
         password: senha,
@@ -40,10 +41,19 @@ export default function Login() {
         return;
       }
 
-      setUserId(data.user.id); // salva o id do usuário logado no contexto
-      console.log("ID do usuário logado:", data.user.id);
-
+      // Salva o ID do usuário no contexto
+      setUserId(data.user.id);
       console.log("Usuário logado:", data.user);
+
+      // Se o usuário marcou "manter login", armazena a sessão
+      if (isChecked) {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session) {
+          await SecureStore.setItemAsync('supabase_session', JSON.stringify(sessionData.session));
+          console.log("Sessão salva no dispositivo");
+        }
+      }
+
       Alert.alert("Sucesso", "Login realizado com sucesso!");
       router.dismissAll();
       router.replace("/telaInicial");
@@ -57,63 +67,65 @@ export default function Login() {
     <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
       <Stack.Screen
         options={{
-            headerStyle: { backgroundColor: '#FAFAFF' },
-              headerTintColor: '#231F20',
-              headerTitle: '',
-              headerShadowVisible: false,
-           }}
-/>
-    <View style={styles.loginEstilo}>
-      
-      
-      <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
-        
-        <View style={styles.imageContainer}>
-          <Image source={LogoImage} style={styles.image} />
-        </View>
-        <View>
+          headerStyle: { backgroundColor: '#FAFAFF' },
+          headerTintColor: '#231F20',
+          headerTitle: '',
+          headerShadowVisible: false,
+        }}
+      />
+      <View style={styles.loginEstilo}>
+        <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.imageContainer}>
+            <Image source={LogoImage} style={styles.image} />
+          </View>
+
           <Text style={styles.titulo}>Login</Text>
-        </View>
-        <View style={styles.containerForm}>
-          {/* CPF */}
-          <View>
-            <Text style={styles.textForm}>CPF</Text>
-            <MaskInput
-              style={styles.input}
-              mask={cpfMask}
-              value={cpfMasked}
-              maxLength={14}
-              placeholder="123.456.789-10"
-              placeholderTextColor="grey"
-              keyboardType="numeric"
-              onChangeText={(masked, unmasked) => {
-                setCpfMasked(masked);
-                setCpf(unmasked); // cpf "limpo" sem pontos e traço
-              }}
-            />
-          </View>
 
-          {/* Senha */}
-          <View>
-            <Text style={styles.textForm}>Senha</Text>
-            <TextInput
-              value={senha}
-              onChangeText={setSenha}
-              style={styles.input}
-              placeholder="ex: senh@123"
-              placeholderTextColor={'grey'}
-              secureTextEntry={true}
-            />
-          </View>
+          <View style={styles.containerForm}>
+            {/* CPF */}
+            <View>
+              <Text style={styles.textForm}>CPF</Text>
+              <MaskInput
+                style={styles.input}
+                mask={cpfMask}
+                value={cpfMasked}
+                maxLength={14}
+                placeholder="123.456.789-10"
+                placeholderTextColor="grey"
+                keyboardType="numeric"
+                onChangeText={(masked, unmasked) => {
+                  setCpfMasked(masked);
+                  setCpf(unmasked);
+                }}
+              />
+            </View>
 
-          <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
-            <ButtonP label='Entrar' onPress={login} />
+            {/* Senha */}
+            <View>
+              <Text style={styles.textForm}>Senha</Text>
+              <TextInput
+                value={senha}
+                onChangeText={setSenha}
+                style={styles.input}
+                placeholder="ex: senh@123"
+                placeholderTextColor={'grey'}
+                secureTextEntry={true}
+              />
+            </View>
+
+            {/* Checkbox "Manter login" */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Checkbox value={isChecked} onValueChange={setChecked} />
+              <Text style={styles.textForm}>Manter login?</Text>
+            </View>
+
+            {/* Botão */}
+            <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
+              <ButtonP label='Entrar' onPress={login} />
+            </View>
           </View>
         </View>
-        
       </View>
-      
-    </View>
     </KeyboardAwareScrollView>
   );
 }
