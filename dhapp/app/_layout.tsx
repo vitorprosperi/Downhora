@@ -7,7 +7,7 @@ import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅�
 
 SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
 
-const DB_VERSION = 10; // aumente esse número quando mudar a estrutura
+const DB_VERSION = 11; // aumente esse número quando mudar a estrutura
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({ // mapeia as fontes
@@ -60,7 +60,7 @@ function RootLayoutNav() {
           // Recria tabelas
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS usuarios (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              id TEXT PRIMARY KEY,
               nome TEXT NOT NULL,
               data_nascimento TEXT NOT NULL,
               genero TEXT NOT NULL,
@@ -75,7 +75,7 @@ function RootLayoutNav() {
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS historico_medico (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              pessoa_id INTEGER NOT NULL,
+              usuario_id TEXT NOT NULL,
               exame_cariotipo TEXT NOT NULL,
               data_cariotipo TEXT,
               triagem_auditiva TEXT NOT NULL,
@@ -102,32 +102,32 @@ function RootLayoutNav() {
               medicamentos TEXT,
               alergias TEXT,
               tipo_sanguineo TEXT,
-              FOREIGN KEY (pessoa_id) REFERENCES usuarios(id)
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             );
           `);
 
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS complementares (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              pessoa_id INTEGER NOT NULL,
+              usuario_id TEXT NOT NULL,
               escolaridade TEXT,
               unidade_1 TEXT,
               unidade_2 TEXT,
               unidade_3 TEXT,
               autonomia_comunicacao TEXT,
-              FOREIGN KEY (pessoa_id) REFERENCES usuarios(id)
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             );
           `);
 
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS exames (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              pessoa_id INTEGER NOT NULL,
+              usuario_id TEXT NOT NULL,
               tipo_exame TEXT NOT NULL,
               data_exame TEXT NOT NULL,
               medico_responsavel TEXT,
               obs TEXT,
-              FOREIGN KEY (pessoa_id) REFERENCES usuarios(id)
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             );
           `);
 
