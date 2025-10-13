@@ -111,6 +111,8 @@ export default function CadastroPacQuatro() {
                 console.log("Complementar salvo no Supabase (complementar)");
             }
 
+            return authUserId;
+
         } catch (err) {
             console.error("Erro inesperado:", err);
             return null;
@@ -121,13 +123,22 @@ export default function CadastroPacQuatro() {
         let usuarioId = null;
 
         try {
+
+            const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
+
+            if (!authUserId) {
+            console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
+            return;
+        }
+
             await db.execAsync('BEGIN TRANSACTION');
 
             const result = await db.runAsync(
                 `INSERT INTO usuarios 
-                  (nome, data_nascimento, genero, cpf, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                  (id, nome, data_nascimento, genero, cpf, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
+                    authUserId,
                     pacientedados.nome,
                     pacientedados.data_nascimento,
                     pacientedados.genero,
@@ -138,14 +149,13 @@ export default function CadastroPacQuatro() {
                     pacientedados.email_responsavel
                 ]
             );
-            usuarioId = result.lastInsertRowId;
 
             await db.runAsync(
                 `INSERT INTO historico_medico 
-                  (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmo, data_oftalmo, consulta_fono, data_fono, consulta_odonto, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamentos, alergias, tipo_sanguineo)
+                  (usuario_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmo, data_oftalmo, consulta_fono, data_fono, consulta_odonto, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamentos, alergias, tipo_sanguineo)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    usuarioId,
+                    authUserId,
                     pacientedados.cariotipo,
                     pacientedados.dataCariotipo,
                     pacientedados.exameAuditivo,
@@ -176,10 +186,10 @@ export default function CadastroPacQuatro() {
             );
 
             await db.runAsync(
-                `INSERT INTO complementares (pessoa_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
+                `INSERT INTO complementares (usuario_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
                  VALUES (?, ?, ?, ?, ?, ?)`,
                 [
-                    usuarioId,
+                    authUserId,
                     pacientedados.escolaridade,
                     pacientedados.uni1,
                     pacientedados.uni2,
@@ -190,10 +200,6 @@ export default function CadastroPacQuatro() {
 
             await db.execAsync('COMMIT');
             console.log("Paciente salvo no SQLite");
-
-            if (pacientedados.cpf && pacientedados.senha) {
-                await registrarAuth(pacientedados.cpf, pacientedados.senha);
-            }
 
             const netState = await NetInfo.fetch();
             if (netState.isConnected) {

@@ -46,11 +46,11 @@ export default function Prontuario() {
 
   const carregarSQLite = async () => {
     try {
-      const resultPac = await db.getAllAsync("SELECT * FROM usuarios");
+      const resultPac = await db.getAllAsync("SELECT * FROM usuarios WHERE id = ?", [userId]);
       setPacientes(resultPac);
-      const resultHist = await db.getAllAsync("SELECT * FROM historico_medico");
+      const resultHist = await db.getAllAsync("SELECT * FROM historico_medico WHERE usuario_id = ?", [userId]);
       setHistoricos(resultHist);
-      const resultComp = await db.getAllAsync("SELECT * FROM complementares");
+      const resultComp = await db.getAllAsync("SELECT * FROM complementares WHERE usuario_id = ?", [userId]);
       setComplementares(resultComp);
     } catch (error) {
       console.error("Erro ao buscar dados no SQLite:", error);
