@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { cadastropacTres } from '../routes/rotas';
+import { cadastropacDois } from '../routes/rotas';
 import styles from './styleForms';
 
 export default function CadastroPac() {
@@ -69,7 +69,7 @@ export default function CadastroPac() {
       Alert.alert("Atenção", "As senhas não coincidem. Por favor, verifique e tente novamente.");
       return;
     }
-    cadastropacTres();
+    cadastropacDois();
   }
 
   const ref_input2 = useRef();
