@@ -217,7 +217,7 @@ export default function Prontuario() {
                   </View>
                 </View>
 
-                <View style={styles.contTitulo}>
+                <View style={styles.contTituloDois}>
                   <Text style={styles.titulo}>Histórico médico</Text>
                 </View>
                 <View style={styles.dadosContainer}>
@@ -337,7 +337,19 @@ const styles = StyleSheet.create({
   },
   contTitulo: {
     alignSelf: 'center',
+    backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
+    width: '100%',
+  },
+  contTituloDois: {
+    alignSelf: 'center',
+    backgroundColor: 'hsla(42 93.6% 49% / 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    width: '100%',
   },
   contNome: {
     alignSelf: 'center'
