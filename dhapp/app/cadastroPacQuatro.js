@@ -1,10 +1,11 @@
 import ButtonP from '@/components/ButtonP';
+import { MyDropdown } from '@/components/MyDropdown';
+import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
-import { Alert, Text, TextInput, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
@@ -227,13 +228,7 @@ export default function CadastroPacQuatro() {
                         {/* Escolaridade */}
                         <View>
                             <Text style={styles.textForm}>Escolaridade</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <MyDropdown
                                 data={[
                                     { label: 'Creche', value: 'Creche' },
                                     { label: 'Pré escola', value: 'Pré escola' },
@@ -259,9 +254,9 @@ export default function CadastroPacQuatro() {
                         {/* Escola */}
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 1:</Text>
-                            <TextInput
+                            <MyInput
                                 style={styles.input}
-                                placeholder='ex: Colégio Cora Coralina'
+                                placeholder='Ex: Colégio Cora Coralina'
                                 placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni1: text }))}
                             />
@@ -270,9 +265,9 @@ export default function CadastroPacQuatro() {
                         {/* APAE */}
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 2:</Text>
-                            <TextInput
+                            <MyInput
                                 style={styles.input}
-                                placeholder='ex: APAE Botucatu'
+                                placeholder='Ex: APAE Botucatu'
                                 placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni2: text }))}
                             />
@@ -280,9 +275,9 @@ export default function CadastroPacQuatro() {
 
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 3:</Text>
-                            <TextInput
+                            <MyInput
                                 style={styles.input}
-                                placeholder='ex: Apoio'
+                                placeholder='Ex: Apoio'
                                 placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni3: text }))}
                             />
@@ -291,13 +286,7 @@ export default function CadastroPacQuatro() {
                         {/* Comunicação */}
                         <View>
                             <Text style={styles.textForm}>Autonomia de comunicação</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <MyDropdown
                                 data={[
                                     { label: 'Total', value: 'Total' },
                                     { label: 'Parcial', value: 'Parcial' },

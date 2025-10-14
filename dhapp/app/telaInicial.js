@@ -26,103 +26,115 @@ export default function TelaInicial() {
   };
 
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-      <Stack.Screen 
-      options={{
-        headerStyle: { backgroundColor: '#FAFAFF' },
-              headerTintColor: '#231F20',
-              headerTitle: '',
-              headerShadowVisible: false,
-      }}
+    <SafeAreaView edges={['bottom', 'left', 'right', 'top']} style={styles.corEscura}>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
       />
       <KeyboardAwareScrollView
         contentContainerStyle={[styles.corEscura, { flexGrow: 1, justifyContent: 'space-between' }]}
         extraHeight={280}
         enableOnAndroid={true}
       >
-        <View style={styles.contInicial}>
+        <View style={btstyle.contView}>
+          <View style={btstyle.logoutContainer}>
+            <Pressable style={({ pressed }) => (pressed ? btstyle.logoutHighlight : btstyle.logoutButton)} onPress={logout}>
+              <Icon source="logout" color="#2261c1" size={28} />
+              <Text style={btstyle.logoutText}>Sair</Text>
+            </Pressable>
+          </View>
+          <View style={btstyle.contOla}>
+            <Text style={btstyle.textOla}>Olá </Text><Text style={[btstyle.textOla, {color: '#F2AA08'}]}>Usuário</Text>
+          </View>
           <View style={btstyle.botoesContainer}>
             <View>
               <TouchableOpacity>
                 <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={prontuario}>
-                  <Icon source="content-paste" color="#2261c1" size={45} />
+                  <Icon source="content-paste" color="#2261c1" size={55} />
                   <Text style={btstyle.text}>Prontuário</Text>
                 </Pressable>
               </TouchableOpacity>
             </View>
             <View>
               <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={exames}>
-                <Icon source="calendar-multiselect" color="#2261c1" size={45} />
+                <Icon source="calendar-multiselect" color="#2261c1" size={55} />
                 <Text style={btstyle.text}>Exames</Text>
               </Pressable>
             </View>
-          </View>
 
-          <View style={btstyle.botoesContainer}>
             <View>
               <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={vacina}>
-                <Icon source="needle" color="#2261c1" size={45} />
+                <Icon source="needle" color="#2261c1" size={55} />
                 <Text style={btstyle.text}>Vacinação</Text>
               </Pressable>
             </View>
             <View>
               <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={desenvolvimento}>
-                <Icon source="information-outline" color="#2261c1" size={45} />
+                <Icon source="information-outline" color="#2261c1" size={55} />
                 <Text style={btstyle.text}>Informações</Text>
               </Pressable>
             </View>
           </View>
         </View>
 
-        <View style={btstyle.logoutContainer}>
-          <Pressable style={({ pressed }) => (pressed ? btstyle.logoutHighlight : btstyle.logoutButton)} onPress={logout}>
-            <Icon source="logout" color="#2261c1" size={28} />
-            <Text style={btstyle.logoutText}>Sair</Text>
-          </Pressable>
-        </View>
+
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }
 
 const btstyle = StyleSheet.create({
+  contView: {
+    flex: 1,
+  },
+  contOla: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+  },
   button: {
     alignItems: 'center',
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    width: 'auto',
-    aspectRatio: '1/1',
-    height: 160,
-    borderRadius: 10,
+    width: '80%',
+    paddingVertical: 20,
+    borderRadius: 20,
+    boxShadow: '0.25px 0.5px 1px 0px hsl(216, 60%, 35%)',
   },
   highlight: {
     alignItems: 'center',
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#FBFBFC',
-    width: 'auto',
-    aspectRatio: '1/1',
-    height: 160,
-    borderRadius: 10,
+    width: '80%',
+    paddingVertical: 20,
+    borderRadius: 20,
+    boxShadow: '0.25px 0.5px 1px 0px hsl(216, 60%, 35%)',
   },
   text: {
     color: '#2261C1',
     fontSize: 25,
     fontFamily: 'Raleway-500',
   },
+  textOla: {
+    color: '#2261C1',
+    fontSize: 25,
+    fontFamily: 'Raleway-700',
+  },
   botoesContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
     gap: 20,
+    marginTop: 'auto',
+    marginBottom: '20%',
   },
   logoutContainer: {
     width: '100%',
-    alignItems: 'flex-start',
-    paddingLeft: 20,
+    alignItems: 'flex-end',
+    paddingRight: 20,
     paddingBottom: 20,
+    marginTop: '5%',
   },
   logoutButton: {
     flexDirection: 'row',
@@ -134,6 +146,7 @@ const btstyle = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: 'white',
+    boxShadow: '0.25px 0.5px 1px 0px hsl(216, 60%, 35%)',
   },
   logoutHighlight: {
     flexDirection: 'row',
@@ -145,6 +158,7 @@ const btstyle = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: 'white',
+    boxShadow: '0.25px 0.5px 1px 0px hsl(216, 60%, 35%)',
   },
   logoutText: {
     color: '#2261C1',

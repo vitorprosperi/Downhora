@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway'
   },
   exemplo: {
-    color: 'grey'
+    color: 'grey',
+    fontFamily: 'Roboto',
   },
   fab: {
     position: 'absolute',

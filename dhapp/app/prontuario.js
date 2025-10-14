@@ -1,5 +1,6 @@
 import { useUsuario } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
+import dayjs from 'dayjs';
 import { Stack } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from "react";
@@ -94,7 +95,7 @@ export default function Prontuario() {
       );
     }
 
-    
+
     return (
       <View>
         <Text style={styles.label}>{label}</Text>
@@ -105,12 +106,17 @@ export default function Prontuario() {
     );
   };
 
+  // Formatador de data
+  var customParseFormat = require("dayjs/plugin/customParseFormat");
+  dayjs.extend(customParseFormat)
 
 
   return (
     <SafeAreaView style={styles.safeView} edges={['bottom']}>
       <Stack.Screen
-        options={{ title: 'Prontuário' }}
+        options={{ title: 'Prontuário', 
+          headerShadowVisible: true,
+        }}
       />
       <View>
         <FlatList
@@ -122,17 +128,22 @@ export default function Prontuario() {
             const historico = HistoricoPorPacienteId(item.id);
             const infoComp = InfoPorPacienteId(item.id);
 
+            const data = `${item.data_nascimento}`
+            const dataFormatada = dayjs(data, 'DDMMYYYY').format('YYYY-MM-DD');
+
+            const idade = dayjs().diff(dataFormatada, 'y');
+
             return (
               <View style={styles.container}>
+
                 <View style={styles.contNome}>
-                  <Text style={styles.nome}>{item.nome}</Text>
-                  <Text></Text>
+                  <Text style={styles.nome}>{item.nome}, {idade} anos</Text>
                 </View>
+
                 <View style={styles.contTitulo}>
                   {<Text style={styles.titulo}>Dados pessoais</Text>}
                 </View>
                 <View style={styles.dadosContainer}>
-
                   <View>
                     <Text style={styles.label}>CPF</Text>
                     <MaskedText mask="999.999.999-99" style={styles.text}>{item.cpf}</MaskedText>
@@ -152,6 +163,38 @@ export default function Prontuario() {
                     <Text style={styles.label}>CNS</Text>
                     <Text style={styles.text}>{item.cns}</Text>
                   </View>
+
+                  {infoComp ? (
+                    <>
+                      <View>
+                        <Text style={styles.label}>Escolaridade</Text>
+                        <Text style={styles.text}>{infoComp.escolaridade}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Unidade escolar 1</Text>
+                        <Text style={styles.text}>{infoComp.unidade_1}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Unidade escolar 2</Text>
+                        <Text style={styles.text}>{infoComp.unidade_2}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Unidade escolar 3</Text>
+                        <Text style={styles.text}>{infoComp.unidade_3}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Autonomia/comunicação </Text>
+                        <Text style={styles.text}>{infoComp.autonomia_comunicacao}</Text>
+                      </View>
+                    </>
+                  ) : (
+                    <View>
+                    </View>
+                  )}
 
                   <View>
                     <Text style={styles.label}>Nome da mãe</Text>
@@ -180,6 +223,7 @@ export default function Prontuario() {
                 <View style={styles.dadosContainer}>
                   {historico ? (
                     <>
+
                       {mostrarExame(
                         "Exame cariótipo",
                         historico.exame_cariotipo,
@@ -266,32 +310,6 @@ export default function Prontuario() {
                     </Text>
                   )}
                 </View>
-
-
-                <Text style={styles.titulo}>Informações complementares</Text>
-                {infoComp ? (
-                  <>
-                    <Text style={{ color: "black" }}>
-                      Escolaridade: {infoComp.escolaridade}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Unidade escolar 1: {infoComp.unidade_1}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Unidade escolar 2: {infoComp.unidade_2}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Unidade escolar 3: {infoComp.unidade_3}
-                    </Text>
-                    <Text style={{ color: "black" }}>
-                      Autonomia/comunicação: {infoComp.autonomia_comunicacao}
-                    </Text>
-                  </>
-                ) : (
-                  <Text style={{ color: "black" }}>
-                    Informações complementares não cadastradas.
-                  </Text>
-                )}
               </View>
             );
           }}
@@ -321,7 +339,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: 5,
   },
-  contNome:{
+  contNome: {
     alignSelf: 'center'
   },
   dadosContainer: {
