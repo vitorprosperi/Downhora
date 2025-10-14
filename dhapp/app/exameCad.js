@@ -17,6 +17,7 @@ export default function ExameCad() {
   const router = useRouter();
   const { userId } = useUsuario();
   const db = useSQLiteContext();
+  const [imagemUrl, setImagemUrl] = useState('');
 
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
@@ -25,7 +26,6 @@ export default function ExameCad() {
   const [medico, setMedico] = useState('');
   const [obs, setObs] = useState('');
   const [outroExame, setOutroExame] = useState('');
-  const [imagemUrl, setImagemUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const tiposExames = [
@@ -105,7 +105,7 @@ export default function ExameCad() {
             data_exame: data,
             medico_responsavel: medico,
             obs: obs,
-            imagem_url: imagemUrl || null
+            imagem_url: imagemUrl
           }
         ]);
 
@@ -116,9 +116,9 @@ export default function ExameCad() {
       }
 
       await db.runAsync(
-        `INSERT INTO exames (pessoa_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [userId, tipoSelecionado, data, medico, obs, imagemUrl]
+        `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+         VALUES (?, ?, ?, ?, ?)`,
+        [userId, tipoSelecionado, data, medico, obs]
       );
 
       console.log("Exame salvo no SQLite local");
