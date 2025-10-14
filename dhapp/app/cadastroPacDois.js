@@ -495,7 +495,8 @@ export default function CadastroPacDois() {
                                     }));
                                 }}
                             />
-                            {valor6 === 'sim' && (
+                        </View>
+                        {valor6 === 'sim' && (
                                 <View>
                                     <Text style={styles.textForm}>Quais?</Text>
                                     <MyInput
@@ -507,7 +508,6 @@ export default function CadastroPacDois() {
                                     />
                                 </View>
                             )}
-                        </View>
 
                         {/* Tipo sanguíneo */}
                         <View>

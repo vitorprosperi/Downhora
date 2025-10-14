@@ -4,14 +4,14 @@ import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
 import { useSQLiteContext } from 'expo-sqlite';
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
 
-export default function CadastroPacQuatro() {
+export default function CadastroPacTres() {
     const { pacientedados, setPacientedados } = usePaciente();
     const db = useSQLiteContext();
 
@@ -128,9 +128,9 @@ export default function CadastroPacQuatro() {
             const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
 
             if (!authUserId) {
-            console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
-            return;
-        }
+                console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
+                return;
+            }
 
             await db.execAsync('BEGIN TRANSACTION');
 
@@ -215,6 +215,10 @@ export default function CadastroPacQuatro() {
         }
     };
 
+    const ref_input1 = useRef();
+    const ref_input2 = useRef();
+    const ref_input3 = useRef();
+
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
@@ -258,6 +262,9 @@ export default function CadastroPacQuatro() {
                                 style={styles.input}
                                 placeholder='Ex: Colégio Cora Coralina'
                                 placeholderTextColor={'grey'}
+                                onSubmitEditing={() => ref_input1.current.focus()}
+                                returnKeyType="next"
+                                submitBehavior='submit'
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni1: text }))}
                             />
                         </View>
@@ -266,9 +273,13 @@ export default function CadastroPacQuatro() {
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 2:</Text>
                             <MyInput
+                                ref={ref_input1}
                                 style={styles.input}
                                 placeholder='Ex: APAE Botucatu'
                                 placeholderTextColor={'grey'}
+                                onSubmitEditing={() => ref_input2.current.focus()}
+                                returnKeyType="next"
+                                submitBehavior='submit'
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni2: text }))}
                             />
                         </View>
@@ -276,6 +287,7 @@ export default function CadastroPacQuatro() {
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 3:</Text>
                             <MyInput
+                                ref={ref_input2}
                                 style={styles.input}
                                 placeholder='Ex: Apoio'
                                 placeholderTextColor={'grey'}
@@ -303,7 +315,7 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
-                        <ButtonP onPress={salvarPaciente} label="Finalizar"/>
+                        <ButtonP onPress={salvarPaciente} label="Finalizar" />
                     </View>
                 </View>
             </KeyboardAwareScrollView>
