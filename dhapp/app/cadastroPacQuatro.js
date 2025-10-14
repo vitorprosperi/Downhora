@@ -1,5 +1,5 @@
 import ButtonP from '@/components/ButtonP';
-import { usePaciente } from '@/context/context';
+import { usePaciente, useUsuario } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useState } from "react";
@@ -12,6 +12,7 @@ import styles from './styleForms';
 
 export default function CadastroPacQuatro() {
     const { pacientedados, setPacientedados } = usePaciente();
+    const { setUserId } = useUsuario(); // <-- OBTENHA O SETTER
     const db = useSQLiteContext();
 
     const [valor1, setValor1] = useState(null);
@@ -127,10 +128,11 @@ export default function CadastroPacQuatro() {
             const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
 
             if (!authUserId) {
-            console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
-            return;
-        }
+                console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
+                return;
 
+            }
+            setUserId(authUserId);
             await db.execAsync('BEGIN TRANSACTION');
 
             const result = await db.runAsync(
@@ -211,6 +213,7 @@ export default function CadastroPacQuatro() {
         } catch (error) {
             await db.execAsync('ROLLBACK');
             console.error("Erro ao salvar paciente:", error);
+            setUserId(null); 
         }
     };
 
@@ -314,7 +317,7 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
-                        <ButtonP onPress={salvarPaciente} label="Finalizar"/>
+                        <ButtonP onPress={salvarPaciente} label="Finalizar" />
                     </View>
                 </View>
             </KeyboardAwareScrollView>

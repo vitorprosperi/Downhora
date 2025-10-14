@@ -93,19 +93,24 @@ export default function ExameCad() {
   };
 
   const salvarExame = async () => {
+    if (!userId) {
+      if (!userId) {
+        Alert.alert("Erro de Contexto", "ID do paciente não encontrado. Não foi possível salvar o exame.");
+        return;
+      }
+    }
     try {
       const tipoSelecionado = exame === 'Outro' ? outroExame : exame;
 
       const { data: supaData, error } = await supabase
         .from('exames')
         .insert([
-          { 
+          {
             usuario_id: userId,
             tipo_exame: tipoSelecionado,
             data_exame: data,
             medico_responsavel: medico,
-            obs: obs,
-            imagem_url: imagemUrl || null
+            obs: obs
           }
         ]);
 
@@ -116,9 +121,9 @@ export default function ExameCad() {
       }
 
       await db.runAsync(
-        `INSERT INTO exames (pessoa_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [userId, tipoSelecionado, data, medico, obs, imagemUrl]
+        `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+         VALUES (?, ?, ?, ?, ?)`,
+        [userId, tipoSelecionado, data, medico, obs]
       );
 
       console.log("Exame salvo no SQLite local");
