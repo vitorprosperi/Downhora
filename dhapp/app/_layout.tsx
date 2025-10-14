@@ -3,7 +3,8 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen'; // carregar tela so quando carregar fonte
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
-import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅️ importe o UsuarioProvider
+import { PacienteProvider, UsuarioProvider } from '../context/context'; // importe o UsuarioProvider
+import AppInitializer from '../Initializer/appinitializer';
 
 SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
 
@@ -137,8 +138,9 @@ function RootLayoutNav() {
         }
       }}
     >
-      <UsuarioProvider> 
-        <PacienteProvider>
+      <UsuarioProvider>
+        <AppInitializer> 
+         <PacienteProvider>
           <Stack
              screenOptions={{
              headerStyle: { backgroundColor: '#FAFAFF', },
@@ -165,7 +167,8 @@ function RootLayoutNav() {
             /> 
 
           </Stack>
-        </PacienteProvider>
+         </PacienteProvider>
+        </AppInitializer>
       </UsuarioProvider>
     </SQLiteProvider>
   );
