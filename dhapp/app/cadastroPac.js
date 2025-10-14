@@ -1,10 +1,10 @@
 import ButtonP from '@/components/ButtonP';
+import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
 import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacTres } from '../routes/rotas';
@@ -18,7 +18,7 @@ export default function CadastroPac() {
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const phoneMask = [
     '(', /\d/, /\d/, ')', ' ',
-    /\d/, /\d/, /\d/, /\d/, /\d/, '-', 
+    /\d/, /\d/, /\d/, /\d/, /\d/, '-',
     /\d/, /\d/, /\d/, /\d/
   ];
 
@@ -41,9 +41,9 @@ export default function CadastroPac() {
     // Lista de campos obrigatórios
     const obrigatorios = [
       { nome: 'nome', label: 'Nome Completo' },
+      { nome: 'cpf', label: 'CPF' },
       { nome: 'data_nascimento', label: 'Data de Nascimento' },
       { nome: 'genero', label: 'Gênero' },
-      { nome: 'cpf', label: 'CPF' },
       { nome: 'senha', label: 'Senha' },
       { nome: 'nome_mae', label: 'Nome da mãe' },
       { nome: 'nome_responsavel', label: 'Nome do responsável' },
@@ -95,12 +95,33 @@ export default function CadastroPac() {
               <Text style={styles.textForm}>Nome Completo*</Text>
               <MyInput
                 style={styles.input}
-                placeholder='ex: Rene Vitor França de Melo'
+                placeholder='Ex: Rene Vitor França de Melo'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome: text }))}
                 onSubmitEditing={() => ref_input2.current.focus()}
+              />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>CPF*</Text>
+              <MyMaskInput
+                ref={ref_input2}
+                style={styles.input}
+                keyboardType="numeric"
+                mask={cpfMask}
+                maxLength={14}
+                value={cpf}
+                placeholder='Ex: 14077796477'
+                placeholderTextColor={'grey'}
+                onSubmitEditing={() => ref_input3.current.focus()}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onChangeText={(masked, unmasked) => {
+                  setCpf(masked);
+                  setPacientedados(prev => ({ ...prev, cpf: unmasked }));
+                }}
               />
             </View>
 
@@ -112,9 +133,9 @@ export default function CadastroPac() {
                 mask={dateMask}
                 maxLength={10}
                 value={dataNascimento}
-                placeholder='ex: 14/10/2021'
+                placeholder='Ex: 14/10/2021'
                 placeholderTextColor={'grey'}
-                ref={ref_input2}
+                ref={ref_input3}
                 onChangeText={(masked, unmasked) => {
                   setDataNascimento(masked);
                   setPacientedados(prev => ({ ...prev, data_nascimento: unmasked }));
@@ -124,13 +145,7 @@ export default function CadastroPac() {
 
             <View>
               <Text style={styles.textForm}>Gênero*</Text>
-              <Dropdown
-                style={styles.input}
-                placeholderStyle={styles.exemplo}
-                selectedTextStyle={styles.textForm}
-                containerStyle={styles.dropdownContainer}
-                itemTextStyle={styles.textForm}
-                activeColor='#F5F5FF'
+              <MyDropdown
                 data={itensGenero}
                 labelField="label"
                 valueField="value"
@@ -144,36 +159,16 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>CPF*</Text>
-              <MyMaskInput
-                style={styles.input}
-                keyboardType="numeric"
-                mask={cpfMask}
-                maxLength={14}
-                value={cpf}
-                placeholder='ex: 140.777.964-77'
-                placeholderTextColor={'grey'}
-                onSubmitEditing={() => ref_input3.current.focus()}
-                returnKeyType="next"
-                submitBehavior='submit'
-                onChangeText={(masked, unmasked) => {
-                  setCpf(masked);
-                  setPacientedados(prev => ({ ...prev, cpf: unmasked }));
-                }}
-              />
-            </View>
-
-            <View>
               <Text style={styles.textForm}>Senha*</Text>
               <MyInput
-              ref={ref_input3}
+                ref={ref_input3}
                 style={styles.input}
-                placeholder='ex: s&nh@Segur@123$'
+                placeholder='Digite uma senha segura'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
                 onSubmitEditing={() => ref_input4.current.focus()}
-                onChangeText={(text) => 
+                onChangeText={(text) =>
                   setPacientedados(prev => ({ ...prev, senha: text }))}
                 secureTextEntry
               />
@@ -182,7 +177,7 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Confirmar senha*</Text>
               <MyInput
-              ref={ref_input4}
+                ref={ref_input4}
                 style={styles.input}
                 placeholder='Digite novamente a senha'
                 placeholderTextColor={'grey'}
@@ -198,9 +193,9 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
               <MyInput
-              ref={ref_input5}
+                ref={ref_input5}
                 style={styles.input}
-                placeholder='ex: Roseane França de Melo'
+                placeholder='Ex: Roseane França de Melo'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
@@ -212,9 +207,9 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Nome do responsável*</Text>
               <MyInput
-              ref={ref_input6}
+                ref={ref_input6}
                 style={styles.input}
-                placeholder='ex: Roseane França de Melo'
+                placeholder='Ex: Roseane França de Melo'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
@@ -226,9 +221,9 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Telefone do responsável*</Text>
               <MyMaskInput
-              ref={ref_input7}
+                ref={ref_input7}
                 style={styles.input}
-                placeholder='ex: (14)12345-6789'
+                placeholder='Ex: 14123456789'
                 placeholderTextColor={'grey'}
                 keyboardType="phone-pad"
                 mask={phoneMask}
@@ -247,10 +242,11 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>E-mail do responsável*</Text>
               <MyInput
-              ref={ref_input8}
+                ref={ref_input8}
                 style={styles.input}
+                autoComplete='email'
                 keyboardType='email-address'
-                placeholder='ex: roseane@gmail.com'
+                placeholder='Ex: roseane@gmail.com'
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, email_responsavel: text }))}
               />
