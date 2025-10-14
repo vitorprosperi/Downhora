@@ -1,5 +1,6 @@
+import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { exameCad } from "../routes/rotas";
@@ -10,7 +11,8 @@ import { useRouter } from "expo-router";
 
 export default function Exames() {
   const [exames, setExames] = useState([]);
-  const router = useRouter(); 
+  const router = useRouter();
+  const db = useSQLiteContext();
 
   const carregarSupabase = async () => {
     try {
@@ -34,6 +36,39 @@ export default function Exames() {
       pathname: "/detalheExame",
       params: { exame: JSON.stringify(exame) },
     });
+  };
+
+  const deletarExame = async (id) => {
+    try {
+      Alert.alert(
+        "Excluir exame",
+        "Tem certeza que deseja excluir este exame?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Excluir",
+            style: "destructive",
+            onPress: async () => {
+              const { error: deleteError } = await supabase
+                .from("exames")
+                .delete()
+                .eq("id", id);
+
+              if (deleteError) throw deleteError;
+
+              await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
+
+              setExames((prev) => prev.filter((ex) => ex.id !== id));
+
+              Alert.alert("Sucesso", "Exame excluído com sucesso!");
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.error("Erro ao excluir exame:", error);
+      Alert.alert("Erro", "Não foi possível excluir o exame.");
+    }
   };
 
   return (
@@ -61,6 +96,13 @@ export default function Exames() {
                     </Text>
                   </View>
                   <Text>{item.obs}</Text>
+
+                  <Pressable
+                    onPress={() => deletarExame(item.id)}
+                    style={cstyle.botaoExcluir}
+                  >
+                    <Text style={cstyle.textoExcluir}>Excluir</Text>
+                  </Pressable>
                 </View>
               </Pressable>
             )}
@@ -107,5 +149,18 @@ const cstyle = StyleSheet.create({
   textoSecundario: {
     color: "hsla(345, 6%, 33%, 1)",
     fontSize: 17,
+  },
+  botaoExcluir: {
+    backgroundColor: "#d9534f",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignSelf: "flex-end",
+  },
+  textoExcluir: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });

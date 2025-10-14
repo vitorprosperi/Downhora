@@ -25,7 +25,7 @@ export default function ExameCad() {
   const [medico, setMedico] = useState('');
   const [obs, setObs] = useState('');
   const [outroExame, setOutroExame] = useState('');
-  const [imagemUrl, setImagemUrl] = useState(null);
+  const [imagemUrl, setImagemUrl] = useState('');
   const [uploading, setUploading] = useState(false);
 
   const tiposExames = [
@@ -110,7 +110,8 @@ export default function ExameCad() {
             tipo_exame: tipoSelecionado,
             data_exame: data,
             medico_responsavel: medico,
-            obs: obs
+            obs: obs,
+            imagem_url: imagemUrl
           }
         ]);
 
