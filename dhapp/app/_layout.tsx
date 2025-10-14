@@ -3,7 +3,8 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
-import { PacienteProvider, UsuarioProvider } from '../context/context';
+import { PacienteProvider, UsuarioProvider } from '../context/context'; // importe o UsuarioProvider
+import AppInitializer from '../Initializer/appinitializer';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -133,7 +134,8 @@ function RootLayoutNav() {
       }}
     >
       <UsuarioProvider>
-        <PacienteProvider>
+        <AppInitializer> 
+         <PacienteProvider>
           <Stack
             screenOptions={{
               headerStyle: { backgroundColor: '#FAFAFF' },
@@ -146,7 +148,8 @@ function RootLayoutNav() {
             <Stack.Screen name="index" options={{ title: '' }} />
             <Stack.Screen name="(top-tabs)" options={{ title: 'Informações' }} />
           </Stack>
-        </PacienteProvider>
+         </PacienteProvider>
+        </AppInitializer>
       </UsuarioProvider>
     </SQLiteProvider>
   );

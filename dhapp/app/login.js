@@ -1,14 +1,15 @@
 import ButtonP from '@/components/ButtonP';
+import { MyInput } from '@/components/MyInput';
+import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
+import { Checkbox } from 'expo-checkbox';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
-import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import MaskInput from 'react-native-mask-input';
-import { Checkbox } from 'expo-checkbox';
-import { supabase } from "../supabaseserver";
 import * as SecureStore from 'expo-secure-store';
+import { useRef, useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { supabase } from "../supabaseserver";
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -63,6 +64,8 @@ export default function Login() {
     }
   };
 
+  const ref_senha = useRef();
+
   return (
     <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
       <Stack.Screen
@@ -85,14 +88,17 @@ export default function Login() {
             {/* CPF */}
             <View>
               <Text style={styles.textForm}>CPF</Text>
-              <MaskInput
+              <MyMaskInput
                 style={styles.input}
                 mask={cpfMask}
                 value={cpfMasked}
                 maxLength={14}
-                placeholder="123.456.789-10"
+                placeholder="Digite o CPF cadastrado no aplicativo"
                 placeholderTextColor="grey"
                 keyboardType="numeric"
+                onSubmitEditing={() => ref_senha.current.focus()}
+                returnKeyType="next"
+                submitBehavior='submit'
                 onChangeText={(masked, unmasked) => {
                   setCpfMasked(masked);
                   setCpf(unmasked);
@@ -103,11 +109,13 @@ export default function Login() {
             {/* Senha */}
             <View>
               <Text style={styles.textForm}>Senha</Text>
-              <TextInput
+              <MyInput
+              ref={ref_senha}
                 value={senha}
                 onChangeText={setSenha}
+                autoComplete='current-password'
                 style={styles.input}
-                placeholder="ex: senh@123"
+                placeholder="Digite a senha"
                 placeholderTextColor={'grey'}
                 secureTextEntry={true}
               />
@@ -115,8 +123,8 @@ export default function Login() {
 
             {/* Checkbox "Manter login" */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Checkbox value={isChecked} onValueChange={setChecked} />
-              <Text style={styles.textForm}>Manter login?</Text>
+              <Checkbox color={'#3A7ADC'} value={isChecked} onValueChange={setChecked} />
+              <Text style={styles.textForm}>Manter login</Text>
             </View>
 
             {/* Botão */}
