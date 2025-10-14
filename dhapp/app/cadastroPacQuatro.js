@@ -13,7 +13,6 @@ import styles from './styleForms';
 
 export default function CadastroPacQuatro() {
     const { pacientedados, setPacientedados } = usePaciente();
-    const { setUserId } = useUsuario(); // <-- OBTENHA O SETTER
     const db = useSQLiteContext();
 
     const [valor1, setValor1] = useState(null);
@@ -213,8 +212,7 @@ export default function CadastroPacQuatro() {
             Alert.alert("Cadastro concluído!");
         } catch (error) {
             await db.execAsync('ROLLBACK');
-            console.error("Erro ao salvar paciente:", error);
-            setUserId(null); 
+            console.error("Erro ao salvar paciente:", error)
         }
     };
 
