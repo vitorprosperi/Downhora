@@ -8,7 +8,7 @@ import AppInitializer from '../Initializer/appinitializer';
 
 SplashScreen.preventAutoHideAsync();
 
-const DB_VERSION = 13; 
+const DB_VERSION = 16; 
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -59,13 +59,15 @@ function RootLayoutNav() {
             CREATE TABLE IF NOT EXISTS usuarios (
               id TEXT PRIMARY KEY,
               nome TEXT NOT NULL,
-              data_nascimento TEXT NOT NULL,
-              genero TEXT NOT NULL,
-              cpf TEXT UNIQUE NOT NULL,
-              nome_mae TEXT NOT NULL,
-              nome_responsavel TEXT NOT NULL,
-              telefone_responsavel TEXT NOT NULL,
-              email_responsavel TEXT NOT NULL
+              data_nascimento TEXT,
+              genero TEXT,
+              cpf TEXT UNIQUE,
+              nome_mae TEXT,
+              nome_responsavel TEXT,
+              telefone_responsavel TEXT,
+              email_responsavel TEXT,
+              access_token TEXT,
+              refresh_token TEXT
             );
           `);
 
