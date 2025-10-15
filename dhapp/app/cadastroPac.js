@@ -15,6 +15,7 @@ export default function CadastroPac() {
   const { pacientedados, setPacientedados } = usePaciente();
 
   const [email, setEmail] = useState('');
+  const [tel, setTel] = useState('');
 
   // Máscaras
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
@@ -76,7 +77,15 @@ export default function CadastroPac() {
   }
 
   function checkEmail() {
-    if (validator.isEmail(pacientedados.email_responsavel.toString())) {
+    if (validator.isEmail(email)) {
+      return;
+    } else {
+      return <Text>ta errado</Text>;
+    }
+  }
+
+  function checkTel() {
+    if (validator.isMobilePhone(tel, "pt-BR") && tel.length == 11) {
       return;
     } else {
       return <Text>ta errado</Text>;
@@ -90,6 +99,7 @@ export default function CadastroPac() {
   const ref_input6 = useRef();
   const ref_input7 = useRef();
   const ref_input8 = useRef();
+  const ref_input9 = useRef();
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -172,13 +182,13 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Senha*</Text>
               <MyInput
-                ref={ref_input3}
+                ref={ref_input4}
                 style={styles.input}
                 placeholder='Digite uma senha segura'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
-                onSubmitEditing={() => ref_input4.current.focus()}
+                onSubmitEditing={() => ref_input5.current.focus()}
                 onChangeText={(text) =>
                   setPacientedados(prev => ({ ...prev, senha: text }))}
                 secureTextEntry
@@ -188,14 +198,14 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Confirmar senha*</Text>
               <MyInput
-                ref={ref_input4}
+                ref={ref_input5}
                 style={styles.input}
                 placeholder='Digite novamente a senha'
                 placeholderTextColor={'grey'}
                 value={confirmarSenha}
                 returnKeyType="next"
                 submitBehavior='submit'
-                onSubmitEditing={() => ref_input5.current.focus()}
+                onSubmitEditing={() => ref_input6.current.focus()}
                 onChangeText={setConfirmarSenha}
                 secureTextEntry
               />
@@ -204,20 +214,6 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
               <MyInput
-                ref={ref_input5}
-                style={styles.input}
-                placeholder='Ex: Roseane França de Melo'
-                placeholderTextColor={'grey'}
-                returnKeyType="next"
-                submitBehavior='submit'
-                onSubmitEditing={() => ref_input6.current.focus()}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome_mae: text }))}
-              />
-            </View>
-
-            <View>
-              <Text style={styles.textForm}>Nome do responsável*</Text>
-              <MyInput
                 ref={ref_input6}
                 style={styles.input}
                 placeholder='Ex: Roseane França de Melo'
@@ -225,6 +221,20 @@ export default function CadastroPac() {
                 returnKeyType="next"
                 submitBehavior='submit'
                 onSubmitEditing={() => ref_input7.current.focus()}
+                onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome_mae: text }))}
+              />
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Nome do responsável*</Text>
+              <MyInput
+                ref={ref_input7}
+                style={styles.input}
+                placeholder='Ex: Roseane França de Melo'
+                placeholderTextColor={'grey'}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onSubmitEditing={() => ref_input8.current.focus()}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome_responsavel: text }))}
               />
             </View>
@@ -232,7 +242,7 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Telefone do responsável*</Text>
               <MyMaskInput
-                ref={ref_input7}
+                ref={ref_input8}
                 style={styles.input}
                 placeholder='Ex: 14123456789'
                 placeholderTextColor={'grey'}
@@ -242,36 +252,46 @@ export default function CadastroPac() {
                 value={telResp}
                 returnKeyType="next"
                 submitBehavior='submit'
-                onSubmitEditing={() => ref_input8.current.focus()}
+                onSubmitEditing={() => ref_input9.current.focus()}
                 onChangeText={(masked, unmasked) => {
                   setTelResp(masked);
+                  setTel(unmasked);
                   setPacientedados(prev => ({ ...prev, telefone_responsavel: unmasked }));
                 }}
               />
+
+              
+              {(tel == '') ? (
+                null
+              ) : (
+                checkTel()
+              )
+              }
             </View>
 
             <View>
               <Text style={styles.textForm}>E-mail do responsável*</Text>
               <MyInput
-                ref={ref_input8}
+                ref={ref_input9}
                 style={styles.input}
                 autoComplete='email'
                 keyboardType='email-address'
                 placeholder='Ex: roseane@gmail.com'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, email_responsavel: text }))}
-                onEndEditing={(text) => setEmail(text)}
+                onChangeText={(text) => { 
+                  setEmail(text);
+                  setPacientedados(prev => ({ ...prev, email_responsavel: text }))}}
               />
               {(email == '') ? (
-              null
-            ) : (
-              checkEmail()
-            )
-            }
+                null
+              ) : (
+                checkEmail()
+              )
+              }
             </View>
-            
 
-            
+
+
 
           </View>
           <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>

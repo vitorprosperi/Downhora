@@ -217,7 +217,6 @@ export default function CadastroPacTres() {
 
     const ref_input1 = useRef();
     const ref_input2 = useRef();
-    const ref_input3 = useRef();
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
