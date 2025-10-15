@@ -7,11 +7,14 @@ import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import validator from 'validator';
 import { cadastropacDois } from '../routes/rotas';
 import styles from './styleForms';
 
 export default function CadastroPac() {
   const { pacientedados, setPacientedados } = usePaciente();
+
+  const [email, setEmail] = useState('');
 
   // Máscaras
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
@@ -70,6 +73,14 @@ export default function CadastroPac() {
       return;
     }
     cadastropacDois();
+  }
+
+  function checkEmail() {
+    if (validator.isEmail(pacientedados.email_responsavel.toString())) {
+      return;
+    } else {
+      return <Text>ta errado</Text>;
+    }
   }
 
   const ref_input2 = useRef();
@@ -249,8 +260,18 @@ export default function CadastroPac() {
                 placeholder='Ex: roseane@gmail.com'
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, email_responsavel: text }))}
+                onEndEditing={(text) => setEmail(text)}
               />
+              {(email == '') ? (
+              null
+            ) : (
+              checkEmail()
+            )
+            }
             </View>
+            
+
+            
 
           </View>
           <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
