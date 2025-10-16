@@ -1,5 +1,7 @@
 import { useUsuario } from '@/context/context';
 import { Stack, useRouter } from 'expo-router';
+import { useSQLiteContext } from "expo-sqlite";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-paper';
@@ -10,7 +12,49 @@ import styles from './styleForms';
 
 export default function TelaInicial() {
   const router = useRouter();
+  const db = useSQLiteContext();
   const { setUserId } = useUsuario();
+  const [nomeUsuario, setNomeUsuario] = useState("Usuário");
+
+  useEffect(() => {
+    const buscarNomeUsuario = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data?.user) {
+          console.log("Nenhum usuário autenticado no Supabase.");
+          return;
+        }
+
+        const userId = data.user.id;
+
+        const localUser = await db.getFirstAsync(
+          "SELECT nome FROM usuarios WHERE id = ?",
+          [userId]
+        );
+
+        if (localUser?.nome) {
+          setNomeUsuario(localUser.nome);
+          return;
+        }
+
+        const { data: remoto, error: erroSupabase } = await supabase
+          .from("usuarios")
+          .select("nome")
+          .eq("id", userId)
+          .single();
+
+        if (erroSupabase) {
+          console.error("Erro ao buscar no Supabase:", erroSupabase);
+        } else if (remoto?.nome) {
+          setNomeUsuario(remoto.nome);
+        }
+      } catch (err) {
+        console.error("Erro ao carregar nome do usuário:", err);
+      }
+    };
+
+    buscarNomeUsuario();
+  }, []);
 
   const logout = async () => {
     try {
@@ -27,11 +71,7 @@ export default function TelaInicial() {
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right', 'top']} style={styles.corEscura}>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-      />
+      <Stack.Screen options={{ headerShown: false }} />
       <KeyboardAwareScrollView
         contentContainerStyle={[styles.corEscura, { flexGrow: 1, justifyContent: 'space-between' }]}
         extraHeight={280}
@@ -39,46 +79,66 @@ export default function TelaInicial() {
       >
         <View style={btstyle.contView}>
           <View style={btstyle.logoutContainer}>
-            <Pressable style={({ pressed }) => (pressed ? btstyle.logoutHighlight : btstyle.logoutButton)} onPress={logout}>
+            <Pressable
+              style={({ pressed }) => (pressed ? btstyle.logoutHighlight : btstyle.logoutButton)}
+              onPress={logout}
+            >
               <Icon source="logout" color="#2261c1" size={28} />
               <Text style={btstyle.logoutText}>Sair</Text>
             </Pressable>
           </View>
+
           <View style={btstyle.contOla}>
-            <Text style={btstyle.textOla}>Olá </Text><Text style={[btstyle.textOla, {color: '#F2AA08'}]}>Usuário</Text>
+            <Text style={btstyle.textOla}>Olá </Text>
+            <Text style={[btstyle.textOla, { color: '#F2AA08' }]}>
+              {nomeUsuario.split(" ")[0]}
+            </Text>
           </View>
+          
           <View style={btstyle.botoesContainer}>
             <View>
               <TouchableOpacity>
-                <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={prontuario}>
+                <Pressable
+                  style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+                  onPress={prontuario}
+                >
                   <Icon source="content-paste" color="#2261c1" size={55} />
                   <Text style={btstyle.text}>Prontuário</Text>
                 </Pressable>
               </TouchableOpacity>
             </View>
+
             <View>
-              <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={exames}>
+              <Pressable
+                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+                onPress={exames}
+              >
                 <Icon source="calendar-multiselect" color="#2261c1" size={55} />
                 <Text style={btstyle.text}>Exames</Text>
               </Pressable>
             </View>
 
             <View>
-              <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={vacina}>
+              <Pressable
+                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+                onPress={vacina}
+              >
                 <Icon source="needle" color="#2261c1" size={55} />
                 <Text style={btstyle.text}>Vacinação</Text>
               </Pressable>
             </View>
+
             <View>
-              <Pressable style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)} onPress={desenvolvimento}>
+              <Pressable
+                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+                onPress={desenvolvimento}
+              >
                 <Icon source="information-outline" color="#2261c1" size={55} />
                 <Text style={btstyle.text}>Informações</Text>
               </Pressable>
             </View>
           </View>
         </View>
-
-
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
@@ -164,6 +224,6 @@ const btstyle = StyleSheet.create({
     color: '#2261C1',
     fontSize: 18,
     marginLeft: 6,
-    fontFamily: 'Raleway-500'
+    fontFamily: 'Raleway-500',
   },
 });
