@@ -58,25 +58,25 @@ export default function CadastroPacDois() {
 
     // Itens dos dropdowns (sim/não)
     const itensSimNao = [
-        { label: 'Sim', value: 'sim' },
-        { label: 'Não', value: 'nao' },
+        { label: 'Sim', value: 'Sim' },
+        { label: 'Não', value: 'Não' },
     ];
     // Itens das comorbidades
     const itensComorbidades = [
-        { label: 'Cardíaca', value: 'cardiaca' },
-        { label: 'Tireoidiana', value: 'tireoidiana' },
-        { label: 'Outra', value: 'outra' },
+        { label: 'Cardíaca', value: 'Cardíaca' },
+        { label: 'Tireoidiana', value: 'Tireoidiana' },
+        { label: 'Outra', value: 'Outro' },
     ];
     // Itens do tipo sanguíneo
     const itensTipoSangue = [
-        { label: 'A+', value: 'apositivo' },
-        { label: 'A-', value: 'anegativo' },
-        { label: 'B+', value: 'bpositivo' },
-        { label: 'B-', value: 'bnegativo' },
-        { label: 'AB+', value: 'abpositivo' },
-        { label: 'AB-', value: 'abnegativo' },
-        { label: 'O+', value: 'opositivo' },
-        { label: 'O-', value: 'onegativo' },
+        { label: 'A+', value: 'A+' },
+        { label: 'A-', value: 'A-' },
+        { label: 'B+', value: 'B+' },
+        { label: 'B-', value: 'B-' },
+        { label: 'AB+', value: 'AB+' },
+        { label: 'AB-', value: 'AB-' },
+        { label: 'O+', value: 'O+' },
+        { label: 'O-', value: 'O-' },
     ];
 
     return (
