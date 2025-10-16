@@ -208,7 +208,7 @@ export default function Prontuario() {
 
                   <View>
                     <Text style={styles.label}>Telefone do responsável</Text>
-                    <MaskedText mask="(99) 9999-9999" style={styles.text}>{item.telefone_responsavel}</MaskedText>
+                    <MaskedText mask="(99) 99999-9999" style={styles.text}>{item.telefone_responsavel}</MaskedText>
                   </View>
 
                   <View>

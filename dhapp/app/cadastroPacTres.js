@@ -7,6 +7,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
@@ -17,6 +18,8 @@ export default function CadastroPacTres() {
 
     const [valor1, setValor1] = useState(null);
     const [valor2, setValor2] = useState(null);
+
+    const [cadastroCarregando, setCadastroCarregando] = useState(false);
 
     // Função para registrar usuário no Supabase Auth
     const registrarAuth = async (cpf, senha) => {
@@ -125,10 +128,13 @@ export default function CadastroPacTres() {
 
         try {
 
+            setCadastroCarregando(true)
+
             const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
 
             if (!authUserId) {
                 console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
+                setCadastroCarregando(false)
                 return;
             }
 
@@ -208,10 +214,13 @@ export default function CadastroPacTres() {
             } else {
                 console.log("Sem internet: paciente será sincronizado depois");
             }
+
+            setCadastroCarregando(false)
             Alert.alert("Cadastro concluído!");
         } catch (error) {
             await db.execAsync('ROLLBACK');
             console.error("Erro ao salvar paciente:", error);
+            setCadastroCarregando(false)
         }
     };
 
@@ -314,7 +323,13 @@ export default function CadastroPacTres() {
                             />
                         </View>
 
-                        <ButtonP onPress={salvarPaciente} label="Finalizar" />
+                        
+                        {cadastroCarregando ? (
+                            <ButtonP onPress={salvarPaciente} label=<ActivityIndicator color='#FAFAFF'></ActivityIndicator> />
+                        ) : (
+                            <ButtonP onPress={salvarPaciente} label="Finalizar" />
+                        )
+                        }
                     </View>
                 </View>
             </KeyboardAwareScrollView>

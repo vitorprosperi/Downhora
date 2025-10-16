@@ -87,7 +87,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '90%',
     position: 'static',
-  }
+  },
+  textFormErro: {
+    fontFamily: 'Roboto',
+    color: 'red',
+  } 
 })
 
 export default styles;

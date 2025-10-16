@@ -16,6 +16,9 @@ export default function CadastroPac() {
 
   const [email, setEmail] = useState('');
   const [tel, setTel] = useState('');
+  const [cpfUnmasked, setCpfUnmasked] = useState('');
+  const [senhaForca, setSenhaForca] = useState('');
+  
 
   // Máscaras
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
@@ -80,7 +83,7 @@ export default function CadastroPac() {
     if (validator.isEmail(email)) {
       return;
     } else {
-      return <Text>ta errado</Text>;
+      return <Text style={styles.textFormErro}>Email inválido</Text>;
     }
   }
 
@@ -88,7 +91,25 @@ export default function CadastroPac() {
     if (validator.isMobilePhone(tel, "pt-BR") && tel.length == 11) {
       return;
     } else {
-      return <Text>ta errado</Text>;
+      return <Text style={styles.textFormErro}>Número inválido</Text>;
+    }
+  }
+
+  const validateCpf = require('validar-cpf');
+
+  function checkCpf() {
+    if (validateCpf(cpfUnmasked)) {
+      return;
+    } else {
+      return <Text style={styles.textFormErro}>CPF inválido</Text>;
+    }
+  }
+
+  function checkSenha(){
+    if (validator.isStrongPassword(senhaForca, {minUppercase: 0, minSymbols: 0})) {
+      return;
+    } else {
+      return <Text style={styles.textFormErro}>Senha fraca</Text>;
     }
   }
 
@@ -141,9 +162,17 @@ export default function CadastroPac() {
                 submitBehavior='submit'
                 onChangeText={(masked, unmasked) => {
                   setCpf(masked);
+                  setCpfUnmasked(unmasked);
                   setPacientedados(prev => ({ ...prev, cpf: unmasked }));
                 }}
               />
+
+              {(cpfUnmasked == '') ? (
+                null
+              ) : (
+                checkCpf()
+              )
+              }
             </View>
 
             <View>
@@ -189,10 +218,17 @@ export default function CadastroPac() {
                 returnKeyType="next"
                 submitBehavior='submit'
                 onSubmitEditing={() => ref_input5.current.focus()}
-                onChangeText={(text) =>
-                  setPacientedados(prev => ({ ...prev, senha: text }))}
+                onChangeText={(text) => {
+                  setSenhaForca(text);
+                  setPacientedados(prev => ({ ...prev, senha: text }));}}
                 secureTextEntry
               />
+              {(senhaForca == '') ? (
+                null
+              ) : (
+                checkSenha()
+              )
+              }
             </View>
 
             <View>
@@ -289,9 +325,6 @@ export default function CadastroPac() {
               )
               }
             </View>
-
-
-
 
           </View>
           <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
