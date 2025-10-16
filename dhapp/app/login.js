@@ -34,7 +34,7 @@ export default function Login() {
     try {
       const emailFake = `${cpf}@meuapp.com`;
       const netInfo = await NetInfo.fetch();
-      const isOnline = false;
+      const isOnline = netInfo.isConnected;
 
       const db = await SQLite.openDatabaseAsync('downhora.db');
       await db.execAsync(`
@@ -80,9 +80,9 @@ export default function Login() {
 
           // Sempre salva no SQLite (para login offline)
           await db.runAsync(
-            `INSERT OR REPLACE INTO usuarios (id, nome, access_token, refresh_token)
-             VALUES (?, ?, ?, ?)`,
-            [user.id, user.user_metadata?.nome || 'Usuário', access_token, refresh_token]
+            `INSERT OR REPLACE INTO sessoes (usuario_id, access_token, refresh_token)
+             VALUES (?, ?, ?)`,
+            [user.id, access_token, refresh_token]
           );
 
           console.log("Sessão salva no SQLite");

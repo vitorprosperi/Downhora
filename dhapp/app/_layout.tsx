@@ -8,7 +8,7 @@ import AppInitializer from '../Initializer/appinitializer';
 
 SplashScreen.preventAutoHideAsync();
 
-const DB_VERSION = 16; 
+const DB_VERSION = 17; 
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -50,6 +50,7 @@ function RootLayoutNav() {
         const row = await db.getFirstAsync<MetaRow>("SELECT versao FROM Meta LIMIT 1");
 
         if (!row || row.versao < DB_VERSION) {
+          await db.execAsync("DROP TABLE IF EXISTS sessoes;");
           await db.execAsync("DROP TABLE IF EXISTS exames;");
           await db.execAsync("DROP TABLE IF EXISTS complementares;");
           await db.execAsync("DROP TABLE IF EXISTS historico_medico;");
@@ -65,9 +66,7 @@ function RootLayoutNav() {
               nome_mae TEXT,
               nome_responsavel TEXT,
               telefone_responsavel TEXT,
-              email_responsavel TEXT,
-              access_token TEXT,
-              refresh_token TEXT
+              email_responsavel TEXT
             );
           `);
 
@@ -126,6 +125,16 @@ function RootLayoutNav() {
               data_exame TEXT NOT NULL,
               medico_responsavel TEXT,
               obs TEXT,
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+            );
+          `);
+
+          await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS sessoes (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              usuario_id TEXT NOT NULL,
+              access_token TEXT,
+              refresh_token TEXT,
               FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             );
           `);
