@@ -187,7 +187,7 @@ export default function Prontuario() {
                       </View>
 
                       <View>
-                        <Text style={styles.label}>Autonomia/comunicação </Text>
+                        <Text style={styles.label}>Autonomia/Comunicação </Text>
                         <Text style={styles.text}>{infoComp.autonomia_comunicacao}</Text>
                       </View>
                     </>
@@ -245,27 +245,27 @@ export default function Prontuario() {
                         historico.data_pezinho
                       )}
                       {mostrarExame(
-                        "Consulta oftalmo",
+                        "Consulta oftalmologista",
                         historico.consulta_oftalmo,
                         historico.data_oftalmo
                       )}
                       {mostrarExame(
-                        "Consulta fono",
+                        "Consulta fonoaudiólogo",
                         historico.consulta_fono,
                         historico.data_fono
                       )}
                       {mostrarExame(
-                        "Consulta odonto",
+                        "Consulta odontologista",
                         historico.consulta_odonto,
                         historico.data_odonto
                       )}
                       {mostrarExame(
-                        "Consulta endocrinologia",
+                        "Consulta endocrinologista",
                         historico.consulta_endocrinologia,
                         historico.data_endocrinologia
                       )}
                       {mostrarExame(
-                        "Consulta fisio",
+                        "Consulta fisioterapeuta",
                         historico.consulta_fisio,
                         historico.data_fisio
                       )}

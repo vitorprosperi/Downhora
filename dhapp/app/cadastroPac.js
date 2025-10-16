@@ -113,6 +113,7 @@ export default function CadastroPac() {
     }
   }
 
+  const ref_botao = useRef();
   const ref_input2 = useRef();
   const ref_input3 = useRef();
   const ref_input4 = useRef();
@@ -124,17 +125,17 @@ export default function CadastroPac() {
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
 
             <View>
-              <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+              <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
               <Text style={styles.subTitulo}>Dados pessoais</Text>
             </View>
 
             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
+              <Text style={styles.textForm}>Nome completo*</Text>
               <MyInput
                 style={styles.input}
                 placeholder='Ex: Rene Vitor França de Melo'
@@ -176,7 +177,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Data de Nascimento*</Text>
+              <Text style={styles.textForm}>Data de nascimento*</Text>
               <MyMaskInput
                 style={styles.input}
                 keyboardType="numeric"
@@ -314,6 +315,7 @@ export default function CadastroPac() {
                 keyboardType='email-address'
                 placeholder='Ex: roseane@gmail.com'
                 placeholderTextColor={'grey'}
+                onSubmitEditing={Proximo}
                 onChangeText={(text) => { 
                   setEmail(text);
                   setPacientedados(prev => ({ ...prev, email_responsavel: text }))}}
@@ -327,7 +329,7 @@ export default function CadastroPac() {
             </View>
 
           </View>
-          <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
+          <View ref={ref_botao} style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
             <ButtonP label="Próximo" onPress={Proximo} />
           </View>
         </View>

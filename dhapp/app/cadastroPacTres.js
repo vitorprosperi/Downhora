@@ -1,338 +1,446 @@
 import ButtonP from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
-import { MyInput } from '@/components/MyInput';
+import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
-import NetInfo from '@react-native-community/netinfo';
-import { useSQLiteContext } from 'expo-sqlite';
-import { useRef, useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { useState } from "react";
+import { Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from "../supabaseserver";
+import { cadastropacQuatro } from "../routes/rotas";
 import styles from './styleForms';
 
-export default function CadastroPacTres() {
+export default function CadastroPacDois() {
+
+    const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
+
     const { pacientedados, setPacientedados } = usePaciente();
-    const db = useSQLiteContext();
 
-    const [valor1, setValor1] = useState(null);
-    const [valor2, setValor2] = useState(null);
+    // Estados para cada exame/avaliação
+    const [valor1, setValor1] = useState(null); // Cariótipo
+    const [dataCariotipo, setDataCariotipo] = useState('');
 
-    const [cadastroCarregando, setCadastroCarregando] = useState(false);
+    const [valor2, setValor2] = useState(null); // Exame Auditivo
+    const [dataAuditivo, setDataAuditivo] = useState('');
 
-    // Função para registrar usuário no Supabase Auth
-    const registrarAuth = async (cpf, senha) => {
-        try {
-            const emailFake = `${cpf}@meuapp.com`;
+    const [valor3, setValor3] = useState(null); // Exame Ecocardiograma
+    const [dataEco, setDataEco] = useState('');
 
-            const { data, error } = await supabase.auth.signUp({
-                email: emailFake,
-                password: senha,
-                options: { data: { cpf } }
-            });
+    const [valor4, setValor4] = useState(null); // Teste do pezinho
+    const [dataOrtopedica, setDataOrtopedica] = useState('');
 
-            if (error) {
-                console.error("Erro no Auth:", error.message);
-                Alert.alert("Erro", "Não foi possível criar o usuário no Supabase Auth");
-                return null;
-            }
+    const [valor5, setValor5] = useState(null); // Consulta Oftalmologista
+    const [dataNeuro, setDataNeuro] = useState('');
 
-            const authUserId = data.user.id;
+    // Consultas adicionadas
+    const [valorFono, setValorFono] = useState(null);
+    const [dataFono, setDataFono] = useState('');
 
-            const { error: errorUsuario } = await supabase
-                .from("usuarios")
-                .insert([{
-                    id: authUserId,
-                    nome: pacientedados.nome,
-                    data_nascimento: pacientedados.data_nascimento,
-                    genero: pacientedados.genero,
-                    cpf: pacientedados.cpf,
-                    nome_mae: pacientedados.nome_mae,
-                    nome_responsavel: pacientedados.nome_responsavel,
-                    telefone_responsavel: pacientedados.telefone_responsavel,
-                    email_responsavel: pacientedados.email_responsavel,
-                }]);
+    const [valorOdonto, setValorOdonto] = useState(null);
+    const [dataOdonto, setDataOdonto] = useState('');
 
-            if (errorUsuario) {
-                console.error("Erro ao sincronizar com Supabase (usuarios):", errorUsuario);
-            } else {
-                console.log("Paciente salvo no Supabase (usuarios)");
-            }
+    const [valorEndocrino, setValorEndocrino] = useState(null);
+    const [dataEndocrino, setDataEndocrino] = useState('');
 
-            const { error: errorHistorico } = await supabase
-                .from("historico_medico")
-                .insert([{
-                    usuario_id: authUserId,
-                    exame_cariotipo: pacientedados.cariotipo,
-                    data_cariotipo: pacientedados.dataCariotipo,
-                    triagem_auditiva: pacientedados.exameAuditivo,
-                    data_triagem: pacientedados.dataAuditivo,
-                    consulta_cardiologista: pacientedados.consultCardio,
-                    data_cardiologista: pacientedados.dataCard,
-                    teste_pezinho: pacientedados.testePe,
-                    data_pezinho: pacientedados.dataPe,
-                    consulta_oftalmo: pacientedados.oftalmo,
-                    data_oftalmo: pacientedados.dataOftal,
-                    consulta_fono: pacientedados.consultaFono,
-                    data_fono: pacientedados.dataFono,
-                    consulta_odonto: pacientedados.consultaOdonto,
-                    data_odonto: pacientedados.dataOdonto,
-                    consulta_endocrinologia: pacientedados.consultaEndocrino,
-                    data_endocrinologia: pacientedados.dataEndocrino,
-                    comorbidades: pacientedados.comorbidades,
-                    medicamentos: pacientedados.medicamento,
-                    alergias: pacientedados.alergia,
-                    tipo_sanguineo: pacientedados.tiposangue,
-                    consulta_terapia: pacientedados.consultaTerapia,
-                    data_terapia: pacientedados.dataTerapia,
-                    consulta_fisio: pacientedados.consultaFisio,
-                    data_fisio: pacientedados.dataFisio,
-                    consulta_psicopedagogo: pacientedados.consultaPsico,
-                    data_psicopedagogo: pacientedados.dataPsico
-                }]);
+    const [valorFisio, setValorFisio] = useState(null);
+    const [dataFisio, setDataFisio] = useState('');
 
-            if (errorHistorico) {
-                console.error("Erro ao sincronizar com Supabase (historico):", errorHistorico);
-            } else {
-                console.log("Histórico salvo no Supabase (historico)");
-            }
+    const [valorTerapia, setValorTerapia] = useState(null);
+    const [dataTerapia, setDataTerapia] = useState('');
 
-            const { error: errorComplementar } = await supabase
-                .from("complementares")
-                .insert([{
-                    usuario_id: authUserId,
-                    escolaridade: pacientedados.escolaridade,
-                    unidade_1: pacientedados.uni1,
-                    unidade_2: pacientedados.uni2,
-                    unidade_3: pacientedados.uni3,
-                    autonomia_comunicacao: pacientedados.comunicacao
-                }]);
+    const [valorPsico, setValorPsico] = useState(null);
+    const [dataPsico, setDataPsico] = useState('');
 
-            if (errorComplementar) {
-                console.error("Erro ao sincronizar com Supabase (complementar):", errorComplementar);
-            } else {
-                console.log("Complementar salvo no Supabase (complementar)");
-            }
 
-            return authUserId;
+    // Itens dos dropdowns (Sim/não)
+    const itensSimNao = [
+        { label: 'Sim', value: 'Sim' },
+        { label: 'Não', value: 'Não' },
+    ];
 
-        } catch (err) {
-            console.error("Erro inesperado:", err);
-            return null;
-        }
-    };
-
-    const salvarPaciente = async () => {
-        let usuarioId = null;
-
-        try {
-
-            setCadastroCarregando(true)
-
-            const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
-
-            if (!authUserId) {
-                console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
-                setCadastroCarregando(false)
-                return;
-            }
-
-            await db.execAsync('BEGIN TRANSACTION');
-
-            const result = await db.runAsync(
-                `INSERT INTO usuarios 
-                  (id, nome, data_nascimento, genero, cpf, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                    authUserId,
-                    pacientedados.nome,
-                    pacientedados.data_nascimento,
-                    pacientedados.genero,
-                    pacientedados.cpf,
-                    pacientedados.nome_mae,
-                    pacientedados.nome_responsavel,
-                    pacientedados.telefone_responsavel,
-                    pacientedados.email_responsavel
-                ]
-            );
-
-            await db.runAsync(
-                `INSERT INTO historico_medico 
-                  (usuario_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmo, data_oftalmo, consulta_fono, data_fono, consulta_odonto, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamentos, alergias, tipo_sanguineo)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                    authUserId,
-                    pacientedados.cariotipo,
-                    pacientedados.dataCariotipo,
-                    pacientedados.exameAuditivo,
-                    pacientedados.dataAuditivo,
-                    pacientedados.consultCardio,
-                    pacientedados.dataCard,
-                    pacientedados.testePe,
-                    pacientedados.dataPe,
-                    pacientedados.oftalmo,
-                    pacientedados.dataOftal,
-                    pacientedados.consultaFono,
-                    pacientedados.dataFono,
-                    pacientedados.consultaOdonto,
-                    pacientedados.dataOdonto,
-                    pacientedados.consultaEndocrino,
-                    pacientedados.dataEndocrino,
-                    pacientedados.consultaFisio,
-                    pacientedados.dataFisio,
-                    pacientedados.consultaTerapia,
-                    pacientedados.dataTerapia,
-                    pacientedados.consultaPsico,
-                    pacientedados.dataPsico,
-                    pacientedados.comorbidades,
-                    pacientedados.medicamento,
-                    pacientedados.alergia,
-                    pacientedados.tiposangue
-                ]
-            );
-
-            await db.runAsync(
-                `INSERT INTO complementares (usuario_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
-                 VALUES (?, ?, ?, ?, ?, ?)`,
-                [
-                    authUserId,
-                    pacientedados.escolaridade,
-                    pacientedados.uni1,
-                    pacientedados.uni2,
-                    pacientedados.uni3,
-                    pacientedados.comunicacao
-                ]
-            );
-
-            await db.execAsync('COMMIT');
-            console.log("Paciente salvo no SQLite");
-
-            const netState = await NetInfo.fetch();
-            if (netState.isConnected) {
-                console.log("Tem internet, dados enviados ao Supabase");
-            } else {
-                console.log("Sem internet: paciente será sincronizado depois");
-            }
-
-            setCadastroCarregando(false)
-            Alert.alert("Cadastro concluído!");
-        } catch (error) {
-            await db.execAsync('ROLLBACK');
-            console.error("Erro ao salvar paciente:", error);
-            setCadastroCarregando(false)
-        }
-    };
-
-    const ref_input1 = useRef();
-    const ref_input2 = useRef();
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
+
                         <View>
-                            <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
-                            <Text style={styles.subTitulo}>Informações complementares</Text>
+                            <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
+                            <Text style={styles.subTitulo}>Consultas e exames já realizados</Text>
                         </View>
 
-                        {/* Escolaridade */}
+                        {/* EXAMES */}
                         <View>
-                            <Text style={styles.textForm}>Escolaridade</Text>
+                            <Text style={styles.textForm}>Exame cariótipo*</Text>
                             <MyDropdown
-                                data={[
-                                    { label: 'Creche', value: 'Creche' },
-                                    { label: 'Pré escola', value: 'Pré escola' },
-                                    { label: 'Ensino fundamental incompleto', value: 'Ensino fundamental incompleto' },
-                                    { label: 'Ensino fundamental completo', value: 'Ensino fundamental completo' },
-                                    { label: 'Ensino médio incompleto', value: 'Ensino médio incompleto' },
-                                    { label: 'Ensino médio completo', value: 'Ensino médio completo' },
-                                    { label: 'Ensino superior incompleto', value: 'Ensino superior incompleto' },
-                                    { label: 'Ensino superior completo', value: 'Ensino superior completo' },
-                                    { label: 'Pós graduação', value: 'Pós graduação' },
-                                ]}
+                                data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Selecione"
                                 value={valor1}
                                 onChange={item => {
                                     setValor1(item.value);
-                                    setPacientedados(prev => ({ ...prev, escolaridade: item.value }));
+                                    setPacientedados(prev => ({ ...prev, cariotipo: item.value }));
                                 }}
                             />
-                        </View>
-
-                        {/* Escola */}
-                        <View>
-                            <Text style={styles.textForm}>Unidade escolar 1:</Text>
-                            <MyInput
-                                style={styles.input}
-                                placeholder='Ex: Colégio Cora Coralina'
-                                placeholderTextColor={'grey'}
-                                onSubmitEditing={() => ref_input1.current.focus()}
-                                returnKeyType="next"
-                                submitBehavior='submit'
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni1: text }))}
-                            />
-                        </View>
-
-                        {/* APAE */}
-                        <View>
-                            <Text style={styles.textForm}>Unidade escolar 2:</Text>
-                            <MyInput
-                                ref={ref_input1}
-                                style={styles.input}
-                                placeholder='Ex: APAE Botucatu'
-                                placeholderTextColor={'grey'}
-                                onSubmitEditing={() => ref_input2.current.focus()}
-                                returnKeyType="next"
-                                submitBehavior='submit'
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni2: text }))}
-                            />
+                            {valor1 === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data do exame</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataCariotipo}
+                                        mask={dateMask}
+                                        maxLength={10}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataCariotipo(masked);
+                                            setPacientedados(prev => ({ ...prev, dataCariotipo: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Unidade escolar 3:</Text>
-                            <MyInput
-                                ref={ref_input2}
-                                style={styles.input}
-                                placeholder='Ex: Apoio'
-                                placeholderTextColor={'grey'}
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni3: text }))}
-                            />
-                        </View>
-
-                        {/* Comunicação */}
-                        <View>
-                            <Text style={styles.textForm}>Autonomia de comunicação</Text>
+                            <Text style={styles.textForm}>Triagem auditiva*</Text>
                             <MyDropdown
-                                data={[
-                                    { label: 'Total', value: 'Total' },
-                                    { label: 'Parcial', value: 'Parcial' },
-                                    { label: 'Não', value: 'Não' },
-                                ]}
+                                data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Selecione"
                                 value={valor2}
                                 onChange={item => {
                                     setValor2(item.value);
-                                    setPacientedados(prev => ({ ...prev, comunicacao: item.value }));
+                                    setPacientedados(prev => ({ ...prev, exameAuditivo: item.value }));
                                 }}
                             />
+                            {valor2 === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data do exame</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        value={dataAuditivo}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataAuditivo(masked);
+                                            setPacientedados(prev => ({ ...prev, dataAuditivo: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
                         </View>
 
-                        
-                        {cadastroCarregando ? (
-                            <ButtonP onPress={salvarPaciente} label=<ActivityIndicator color='#FAFAFF'></ActivityIndicator> />
-                        ) : (
-                            <ButtonP onPress={salvarPaciente} label="Finalizar" />
-                        )
-                        }
+                        <View>
+                            <Text style={styles.textForm}>Consulta cardiologista*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valor3}
+                                onChange={item => {
+                                    setValor3(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultCardio: item.value }));
+                                }}
+                            />
+                            {valor3 === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data do exame</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataEco}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataEco(masked);
+                                            setPacientedados(prev => ({ ...prev, dataCard: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Teste do pezinho*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valor4}
+                                onChange={item => {
+                                    setValor4(item.value);
+                                    setPacientedados(prev => ({ ...prev, testePe: item.value }));
+                                }}
+                            />
+                            {valor4 === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da avaliação</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        value={dataOrtopedica}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataOrtopedica(masked);
+                                            setPacientedados(prev => ({ ...prev, dataPe: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta oftalmologista*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valor5}
+                                onChange={item => {
+                                    setValor5(item.value);
+                                    setPacientedados(prev => ({ ...prev, oftalmo: item.value }));
+                                }}
+                            />
+                            {valor5 === 'Sim' && (
+                                <View style={{marginTop: 10}}> 
+                                    <Text style={styles.textForm}>Data da avaliação</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        value={dataNeuro}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataNeuro(masked);
+                                            setPacientedados(prev => ({ ...prev, dataOftal: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        {/* CONSULTAS */}
+                        <View>
+                            <Text style={styles.textForm}>Consulta fonoaudiologia*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorFono}
+                                onChange={item => {
+                                    setValorFono(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaFono: item.value }));
+                                }}
+                            />
+                            {valorFono === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataFono}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataFono(masked);
+                                            setPacientedados(prev => ({ ...prev, dataFono: unmasked}));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta odontologia*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorOdonto}
+                                onChange={item => {
+                                    setValorOdonto(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaOdonto: item.value }));
+                                }}
+                            />
+                            {valorOdonto === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataOdonto}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataOdonto(masked);
+                                            setPacientedados(prev => ({ ...prev, dataOdonto: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta endocrinologia*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorEndocrino}
+                                onChange={item => {
+                                    setValorEndocrino(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaEndocrino: item.value }));
+                                }}
+                            />
+                            {valorEndocrino === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataEndocrino}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataEndocrino(masked);
+                                            setPacientedados(prev => ({ ...prev, dataEndocrino: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta fisioterapia*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorFisio}
+                                onChange={item => {
+                                    setValorFisio(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaFisio: item.value }));
+                                }}
+                            />
+                            {valorFisio === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataFisio}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataFisio(masked);
+                                            setPacientedados(prev => ({ ...prev, dataFisio: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta terapia ocupacional*</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorTerapia}
+                                onChange={item => {
+                                    setValorTerapia(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaTerapia: item.value }));
+                                }}
+                            />
+                            {valorTerapia === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataTerapia}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataTerapia(masked);
+                                            setPacientedados(prev => ({ ...prev, dataTerapia: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
+
+                        <View>
+                            <Text style={styles.textForm}>Consulta psicopedagogo</Text>
+                            <MyDropdown
+                                data={itensSimNao}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Selecione"
+                                value={valorPsico}
+                                onChange={item => {
+                                    setValorPsico(item.value);
+                                    setPacientedados(prev => ({ ...prev, consultaPsico: item.value }));
+                                }}
+                            />
+                            {valorPsico === 'Sim' && (
+                                <View style={{marginTop: 10}}>
+                                    <Text style={styles.textForm}>Data da consulta</Text>
+                                    <MyMaskInput
+                                        style={styles.input}
+                                        placeholder="Ex: 01/01/2023"
+                                        keyboardType="numeric"
+                                        placeholderTextColor="grey"
+                                        value={dataPsico}
+                                        maxLength={10}
+                                        mask={dateMask}
+                                        onChangeText={(masked, unmasked) => {
+                                            setDataPsico(masked);
+                                            setPacientedados(prev => ({ ...prev, dataPsico: unmasked }));
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        </View>
                     </View>
+
+                    <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
+                        <ButtonP label="Próximo" onPress={cadastropacQuatro} />
+                    </View>
+
                 </View>
             </KeyboardAwareScrollView>
         </SafeAreaView>
-    );
+    )
 }

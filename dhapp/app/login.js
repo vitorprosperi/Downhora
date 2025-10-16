@@ -2,12 +2,12 @@ import ButtonP from '@/components/ButtonP';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
+import NetInfo from '@react-native-community/netinfo';
 import { Checkbox } from 'expo-checkbox';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import * as SQLite from 'expo-sqlite';
-import NetInfo from '@react-native-community/netinfo';
 import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -121,7 +121,7 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: '#FAFAFF' },

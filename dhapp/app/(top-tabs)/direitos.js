@@ -6,7 +6,7 @@ export default function telaDireitos() {
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.cardTitle}>
-        <Text style={styles.title}>Direitos garantidos da criança com Síndrome de Down</Text>
+        <Text style={styles.title}>Direitos garantidos da criança com síndrome de Down</Text>
         </View>
         <View style={styles.contTexto}>
             <View style={styles.cardImpar}>

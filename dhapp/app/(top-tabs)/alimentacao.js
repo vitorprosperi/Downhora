@@ -7,7 +7,7 @@ export default function telaDireitos() {
 
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.cardTitle}>
-          <Text style={styles.title}>Avaliação nutricional de crianças e adolescentes com Síndrome de Down</Text>
+          <Text style={styles.title}>Avaliação nutricional de crianças e adolescentes com síndrome de Down</Text>
         </View>
         <View style={styles.contTexto}>
           <Text style={styles.text}>
