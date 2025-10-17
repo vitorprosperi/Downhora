@@ -114,6 +114,7 @@ export default function CadastroPac() {
   }
 
   const ref_botao = useRef();
+  const ref_inputGenero = useRef();
   const ref_input2 = useRef();
   const ref_input3 = useRef();
   const ref_input4 = useRef();
@@ -182,6 +183,7 @@ export default function CadastroPac() {
                 style={styles.input}
                 keyboardType="numeric"
                 mask={dateMask}
+                returnKeyType="next"
                 maxLength={10}
                 value={dataNascimento}
                 placeholder='Ex: 14/10/2021'
@@ -191,12 +193,14 @@ export default function CadastroPac() {
                   setDataNascimento(masked);
                   setPacientedados(prev => ({ ...prev, data_nascimento: unmasked }));
                 }}
+                onSubmitEditing={() => ref_inputGenero.current.open()}
               />
             </View>
 
             <View>
               <Text style={styles.textForm}>Gênero*</Text>
               <MyDropdown
+              ref={ref_inputGenero}
                 data={itensGenero}
                 labelField="label"
                 valueField="value"
@@ -315,7 +319,6 @@ export default function CadastroPac() {
                 keyboardType='email-address'
                 placeholder='Ex: roseane@gmail.com'
                 placeholderTextColor={'grey'}
-                onSubmitEditing={Proximo}
                 onChangeText={(text) => { 
                   setEmail(text);
                   setPacientedados(prev => ({ ...prev, email_responsavel: text }))}}

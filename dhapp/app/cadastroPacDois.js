@@ -2,7 +2,7 @@ import ButtonP from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -40,6 +40,9 @@ export default function CadastroPacDois() {
         { label: 'O-', value: 'O-' },
     ];
 
+    const ref_input2 = useRef();
+    const ref_input3 = useRef();
+
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
@@ -58,7 +61,10 @@ export default function CadastroPacDois() {
                                 style={styles.input}
                                 placeholder='Ex: Cardíaca, Tireoidiana'
                                 placeholderTextColor={'grey'}
+                                returnKeyType="next"
+                                submitBehavior='submit'
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, comorbidades: text }))}
+                                onSubmitEditing={() => ref_input2.current.focus()}
                             />
                         </View>
 
@@ -66,10 +72,13 @@ export default function CadastroPacDois() {
                         <View>
                             <Text style={styles.textForm}>Medicamentos em uso</Text>
                             <MyInput
+                            ref={ref_input2}
                                 style={styles.input}
                                 placeholder='Ex: Losartana'
                                 placeholderTextColor={'grey'}
+                                returnKeyType="next"
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, medicamento: text }))}
+                                onSubmitEditing={() => ref_input3.current.open()}
                             />
                         </View>
 
@@ -77,6 +86,7 @@ export default function CadastroPacDois() {
                         <View>
                             <Text style={styles.textForm}>Alergias</Text>
                             <MyDropdown
+                            ref={ref_input3}
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -113,7 +123,6 @@ export default function CadastroPacDois() {
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Selecione"
-                                dropdownPosition='top'
                                 value={valor7}
                                 onChange={item => {
                                     setValor7(item.value);
