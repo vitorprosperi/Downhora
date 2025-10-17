@@ -216,7 +216,6 @@ export default function CadastroPacQuatro() {
                 console.log("Sem internet: paciente será sincronizado depois");
             }
 
-            setCadastroCarregando(false);
             Alert.alert("Cadastro concluído!");
             router.replace('/');
         } catch (error) {
