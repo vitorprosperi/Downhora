@@ -1,3 +1,5 @@
+import { useUsuario } from "@/context/context";
+import NetInfo from "@react-native-community/netinfo";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
@@ -11,24 +13,65 @@ import styles from "./styleForms";
 
 export default function Exames() {
   const [exames, setExames] = useState([]);
+  const { userId } = useUsuario();
   const router = useRouter();
   const db = useSQLiteContext();
 
+  // Carrega os exames do Supabase (modo online)
   const carregarSupabase = async () => {
     try {
       const { data: examesData, error } = await supabase
         .from("exames")
-        .select("*");
+        .select("*")
+        .eq("usuario_id", userId);
 
       if (error) throw error;
+
       setExames(examesData || []);
+      console.log("Exames carregados do Supabase:", examesData);
+
+      // Atualiza o SQLite com os dados mais recentes (sincroniza)
+      await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
+      for (const ex of examesData) {
+        await db.runAsync(
+          `INSERT INTO exames 
+            (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+          [ex.id, ex.usuario_id, ex.tipo_exame, ex.data_exame, ex.medico_responsavel, ex.obs]
+        );
+      }
+      console.log("Exames sincronizados com SQLite.");
     } catch (error) {
       console.error("Erro ao buscar dados no Supabase:", error.message);
     }
   };
 
+  // Carrega exames do SQLite (modo offline)
+  const carregarSQLite = async () => {
+    try {
+      const result = await db.getAllAsync("SELECT * FROM exames WHERE usuario_id = ?", [userId]);
+      setExames(result || []);
+      console.log("Exames carregados do SQLite:", result);
+    } catch (error) {
+      console.error("Erro ao carregar exames do SQLite:", error);
+    }
+  };
+
+  // Detecta se há conexão com a internet e decide de onde carregar
+  const carregarExames = async () => {
+    const state = await NetInfo.fetch();
+     const isOnline = state.isConnected;
+    if (isOnline) {
+      console.log("Modo online detectado. Carregando do Supabase...");
+      await carregarSupabase();
+    } else {
+      console.log("Modo offline detectado. Carregando do SQLite...");
+      await carregarSQLite();
+    }
+  };
+
   useEffect(() => {
-    carregarSupabase();
+    carregarExames();
   }, []);
 
   const abrirDetalhes = (exame) => {
@@ -49,15 +92,18 @@ export default function Exames() {
             text: "Excluir",
             style: "destructive",
             onPress: async () => {
-              const { error: deleteError } = await supabase
-                .from("exames")
-                .delete()
-                .eq("id", id);
+              const state = await NetInfo.fetch();
 
-              if (deleteError) throw deleteError;
+              if (state.isConnected) {
+                // Online: deleta no Supabase e no SQLite
+                const { error: deleteError } = await supabase.from("exames").delete().eq("id", id);
+                if (deleteError) throw deleteError;
+                console.log("Exame deletado no Supabase:", id);
+              } else {
+                console.log("Sem conexão, exclusão apenas local:", id);
+              }
 
               await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
-
               setExames((prev) => prev.filter((ex) => ex.id !== id));
 
               Alert.alert("Sucesso", "Exame excluído com sucesso!");
@@ -105,7 +151,6 @@ export default function Exames() {
                   </Pressable>
                 </View>
               </Pressable>
-
             )}
           />
         </View>
@@ -152,17 +197,16 @@ const cstyle = StyleSheet.create({
     fontSize: 17,
   },
   botaoExcluir: {
-  backgroundColor: "#d9534f",
-  paddingVertical: 6,
-  paddingHorizontal: 12,
-  borderRadius: 8,
-  marginTop: 10,
-  alignSelf: "flex-end",
-},
-textoExcluir: {
-  color: "#fff",
-  fontWeight: "bold",
-  fontSize: 14,
-},
+    backgroundColor: "#d9534f",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignSelf: "flex-end",
+  },
+  textoExcluir: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
 });
-

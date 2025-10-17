@@ -187,7 +187,7 @@ export default function Prontuario() {
                       </View>
 
                       <View>
-                        <Text style={styles.label}>Autonomia/comunicação </Text>
+                        <Text style={styles.label}>Autonomia/Comunicação </Text>
                         <Text style={styles.text}>{infoComp.autonomia_comunicacao}</Text>
                       </View>
                     </>
@@ -208,7 +208,7 @@ export default function Prontuario() {
 
                   <View>
                     <Text style={styles.label}>Telefone do responsável</Text>
-                    <MaskedText mask="(99) 9999-9999" style={styles.text}>{item.telefone_responsavel}</MaskedText>
+                    <MaskedText mask="(99) 99999-9999" style={styles.text}>{item.telefone_responsavel}</MaskedText>
                   </View>
 
                   <View>
@@ -217,7 +217,7 @@ export default function Prontuario() {
                   </View>
                 </View>
 
-                <View style={styles.contTitulo}>
+                <View style={styles.contTituloDois}>
                   <Text style={styles.titulo}>Histórico médico</Text>
                 </View>
                 <View style={styles.dadosContainer}>
@@ -245,27 +245,27 @@ export default function Prontuario() {
                         historico.data_pezinho
                       )}
                       {mostrarExame(
-                        "Consulta oftalmo",
+                        "Consulta oftalmologista",
                         historico.consulta_oftalmo,
                         historico.data_oftalmo
                       )}
                       {mostrarExame(
-                        "Consulta fono",
+                        "Consulta fonoaudiólogo",
                         historico.consulta_fono,
                         historico.data_fono
                       )}
                       {mostrarExame(
-                        "Consulta odonto",
+                        "Consulta odontologista",
                         historico.consulta_odonto,
                         historico.data_odonto
                       )}
                       {mostrarExame(
-                        "Consulta endocrinologia",
+                        "Consulta endocrinologista",
                         historico.consulta_endocrinologia,
                         historico.data_endocrinologia
                       )}
                       {mostrarExame(
-                        "Consulta fisio",
+                        "Consulta fisioterapeuta",
                         historico.consulta_fisio,
                         historico.data_fisio
                       )}
@@ -337,7 +337,19 @@ const styles = StyleSheet.create({
   },
   contTitulo: {
     alignSelf: 'center',
+    backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
+    width: '100%',
+  },
+  contTituloDois: {
+    alignSelf: 'center',
+    backgroundColor: 'hsla(42 93.6% 49% / 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    width: '100%',
   },
   contNome: {
     alignSelf: 'center'

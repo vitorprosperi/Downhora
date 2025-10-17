@@ -4,9 +4,10 @@ import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
 import { useSQLiteContext } from 'expo-sqlite';
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
@@ -17,6 +18,8 @@ export default function CadastroPacQuatro() {
 
     const [valor1, setValor1] = useState(null);
     const [valor2, setValor2] = useState(null);
+
+    const [cadastroCarregando, setCadastroCarregando] = useState(false);
 
     // Função para registrar usuário no Supabase Auth
     const registrarAuth = async (cpf, senha) => {
@@ -125,12 +128,15 @@ export default function CadastroPacQuatro() {
 
         try {
 
+            setCadastroCarregando(true)
+
             const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
 
             if (!authUserId) {
-            console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
-            return;
-        }
+                console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
+                setCadastroCarregando(false)
+                return;
+            }
 
             await db.execAsync('BEGIN TRANSACTION');
 
@@ -208,16 +214,22 @@ export default function CadastroPacQuatro() {
             } else {
                 console.log("Sem internet: paciente será sincronizado depois");
             }
+
+            setCadastroCarregando(false)
             Alert.alert("Cadastro concluído!");
         } catch (error) {
             await db.execAsync('ROLLBACK');
             console.error("Erro ao salvar paciente:", error);
+            setCadastroCarregando(false)
         }
     };
 
+    const ref_input1 = useRef();
+    const ref_input2 = useRef();
+
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
                         <View>
@@ -231,14 +243,14 @@ export default function CadastroPacQuatro() {
                             <MyDropdown
                                 data={[
                                     { label: 'Creche', value: 'Creche' },
-                                    { label: 'Pré escola', value: 'Pré escola' },
+                                    { label: 'Pré-escola', value: 'Pré escola' },
                                     { label: 'Ensino fundamental incompleto', value: 'Ensino fundamental incompleto' },
                                     { label: 'Ensino fundamental completo', value: 'Ensino fundamental completo' },
                                     { label: 'Ensino médio incompleto', value: 'Ensino médio incompleto' },
                                     { label: 'Ensino médio completo', value: 'Ensino médio completo' },
                                     { label: 'Ensino superior incompleto', value: 'Ensino superior incompleto' },
                                     { label: 'Ensino superior completo', value: 'Ensino superior completo' },
-                                    { label: 'Pós graduação', value: 'Pós graduação' },
+                                    { label: 'Pós-graduação', value: 'Pós graduação' },
                                 ]}
                                 labelField="label"
                                 valueField="value"
@@ -258,6 +270,9 @@ export default function CadastroPacQuatro() {
                                 style={styles.input}
                                 placeholder='Ex: Colégio Cora Coralina'
                                 placeholderTextColor={'grey'}
+                                onSubmitEditing={() => ref_input1.current.focus()}
+                                returnKeyType="next"
+                                submitBehavior='submit'
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni1: text }))}
                             />
                         </View>
@@ -266,9 +281,13 @@ export default function CadastroPacQuatro() {
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 2:</Text>
                             <MyInput
+                                ref={ref_input1}
                                 style={styles.input}
                                 placeholder='Ex: APAE Botucatu'
                                 placeholderTextColor={'grey'}
+                                onSubmitEditing={() => ref_input2.current.focus()}
+                                returnKeyType="next"
+                                submitBehavior='submit'
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni2: text }))}
                             />
                         </View>
@@ -276,6 +295,7 @@ export default function CadastroPacQuatro() {
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 3:</Text>
                             <MyInput
+                                ref={ref_input2}
                                 style={styles.input}
                                 placeholder='Ex: Apoio'
                                 placeholderTextColor={'grey'}
@@ -303,7 +323,13 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
-                        <ButtonP onPress={salvarPaciente} label="Finalizar"/>
+                        
+                        {cadastroCarregando ? (
+                            <ButtonP onPress={salvarPaciente} label=<ActivityIndicator color='#FAFAFF'></ActivityIndicator> />
+                        ) : (
+                            <ButtonP onPress={salvarPaciente} label="Finalizar" />
+                        )
+                        }
                     </View>
                 </View>
             </KeyboardAwareScrollView>

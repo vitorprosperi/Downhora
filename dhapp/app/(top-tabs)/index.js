@@ -6,7 +6,7 @@ export default function telaDesenvolvimento() {
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.cardTitle}>
-        <Text style={styles.title}>Desenvolvimento da criança com Síndrome de Down</Text>
+        <Text style={styles.title}>Desenvolvimento da criança com síndrome de Down</Text>
         </View>
         <View style={styles.contTexto}>
           <Text style={styles.text}>

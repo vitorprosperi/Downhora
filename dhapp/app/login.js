@@ -2,10 +2,12 @@ import ButtonP from '@/components/ButtonP';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
+import NetInfo from '@react-native-community/netinfo';
 import { Checkbox } from 'expo-checkbox';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
+import * as SQLite from 'expo-sqlite';
 import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -21,53 +23,105 @@ export default function Login() {
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const router = useRouter();
   const { setUserId } = useUsuario();
+  const ref_senha = useRef();
 
-  // Login com opção de manter sessão
   const login = async () => {
-    if (cpf === '' || senha === '') {
+    if (!cpf || !senha) {
       Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
       return;
     }
 
     try {
       const emailFake = `${cpf}@meuapp.com`;
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: emailFake,
-        password: senha,
-      });
+      const netInfo = await NetInfo.fetch();
+      const isOnline = netInfo.isConnected;
 
-      if (error) {
-        console.error("Erro no login:", error.message);
-        Alert.alert("Erro", "CPF ou senha inválidos");
-        return;
-      }
+      const db = await SQLite.openDatabaseAsync('downhora.db');
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS usuarios (
+          id TEXT PRIMARY KEY NOT NULL,
+          nome TEXT,
+          access_token TEXT,
+          refresh_token TEXT
+        );
+      `);
 
-      // Salva o ID do usuário no contexto
-      setUserId(data.user.id);
-      console.log("Usuário logado:", data.user);
+      //
+      // MODO ONLINE
+      //
+      if (isOnline) {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: emailFake,
+          password: senha,
+        });
 
-      // Se o usuário marcou "manter login", armazena a sessão
-      if (isChecked) {
+        if (error) {
+          console.error("Erro no login:", error.message);
+          Alert.alert("Erro", "CPF ou senha inválidos");
+          return;
+        }
+
+        const user = data.user;
+        console.log("Usuário logado (online):", user);
+
         const { data: sessionData } = await supabase.auth.getSession();
+
         if (sessionData?.session) {
-          await SecureStore.setItemAsync('supabase_session', JSON.stringify(sessionData.session));
-          console.log("Sessão salva no dispositivo");
+          const { access_token, refresh_token } = sessionData.session;
+
+          // Se marcar "Manter login", salva a sessão
+          if (isChecked) {
+            await SecureStore.setItemAsync(
+              'supabase_session',
+              JSON.stringify(sessionData.session)
+            );
+            console.log("Sessão salva no SecureStore");
+          }
+
+          // Sempre salva no SQLite (para login offline)
+          await db.runAsync(
+            `INSERT OR REPLACE INTO sessoes (usuario_id, access_token, refresh_token)
+             VALUES (?, ?, ?)`,
+            [user.id, access_token, refresh_token]
+          );
+
+          console.log("Sessão salva no SQLite");
+        }
+
+        setUserId(user.id);
+        Alert.alert("Sucesso", "Login realizado com sucesso!");
+        router.dismissAll();
+        router.replace("/telaInicial");
+      }
+      //
+      // MODO OFFLINE
+      //
+      else {
+        const row = await db.getFirstAsync(
+          "SELECT id, nome FROM usuarios LIMIT 1"
+        );
+
+        if (row?.id) {
+          setUserId(row.id);
+          console.log("Login offline bem-sucedido:", row.nome);
+          Alert.alert("Modo Offline", `Bem-vindo de volta, ${row.nome}!`);
+          router.dismissAll();
+          router.replace("/telaInicial");
+        } else {
+          Alert.alert(
+            "Sem conexão",
+            "Nenhum login anterior encontrado. Conecte-se à internet para fazer login pela primeira vez."
+          );
         }
       }
-
-      Alert.alert("Sucesso", "Login realizado com sucesso!");
-      router.dismissAll();
-      router.replace("/telaInicial");
     } catch (err) {
       console.error("Erro inesperado:", err);
-      Alert.alert("Erro", "Não foi possível realizar o login");
+      Alert.alert("Erro", "Não foi possível realizar o login.");
     }
   };
 
-  const ref_senha = useRef();
-
   return (
-    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: '#FAFAFF' },
@@ -110,7 +164,7 @@ export default function Login() {
             <View>
               <Text style={styles.textForm}>Senha</Text>
               <MyInput
-              ref={ref_senha}
+                ref={ref_senha}
                 value={senha}
                 onChangeText={setSenha}
                 autoComplete='current-password'

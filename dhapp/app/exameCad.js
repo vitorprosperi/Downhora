@@ -17,7 +17,6 @@ export default function ExameCad() {
   const router = useRouter();
   const { userId } = useUsuario();
   const db = useSQLiteContext();
-  const [imagemUrl, setImagemUrl] = useState('');
 
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
@@ -26,6 +25,7 @@ export default function ExameCad() {
   const [medico, setMedico] = useState('');
   const [obs, setObs] = useState('');
   const [outroExame, setOutroExame] = useState('');
+  const [imagemUrl, setImagemUrl] = useState('');
   const [uploading, setUploading] = useState(false);
 
   const tiposExames = [
@@ -93,13 +93,19 @@ export default function ExameCad() {
   };
 
   const salvarExame = async () => {
+    if (!userId) {
+      if (!userId) {
+        Alert.alert("Erro de Contexto", "ID do paciente não encontrado. Não foi possível salvar o exame.");
+        return;
+      }
+    }
     try {
       const tipoSelecionado = exame === 'Outro' ? outroExame : exame;
 
       const { data: supaData, error } = await supabase
         .from('exames')
         .insert([
-          { 
+          {
             usuario_id: userId,
             tipo_exame: tipoSelecionado,
             data_exame: data,
