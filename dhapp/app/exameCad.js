@@ -128,7 +128,8 @@ export default function ExameCad() {
       );
 
       console.log("Exame salvo no SQLite local");
-      router.replace({ pathname: "/exames" });
+      router.dismiss(1);
+      router.replace('/exames');
 
     } catch (err) {
       console.error("Erro inesperado:", err);
