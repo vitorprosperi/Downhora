@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { ButtonP } from '@/components/ButtonP';
+import { login } from '@/routes/rotas';
+import { supabase } from '@/supabaseserver';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
-import ButtonP from '@/components/ButtonP';
-import { login } from '@/routes/rotas';
-import { cadastropac } from '../routes/rotas';
-import { supabase } from '@/supabaseserver';
 import * as SecureStore from 'expo-secure-store';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { cadastropac } from '../routes/rotas';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 

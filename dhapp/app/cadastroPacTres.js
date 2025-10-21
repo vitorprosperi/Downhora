@@ -1,4 +1,4 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
@@ -88,7 +88,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataCariotipo}
@@ -121,7 +121,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         maxLength={10}
@@ -154,7 +154,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataEco}
@@ -187,7 +187,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         maxLength={10}
@@ -220,7 +220,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         maxLength={10}
@@ -254,7 +254,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataFono}
@@ -287,7 +287,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataOdonto}
@@ -320,7 +320,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataEndocrino}
@@ -353,7 +353,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataFisio}
@@ -386,7 +386,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataTerapia}
@@ -419,7 +419,7 @@ export default function CadastroPacDois() {
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
-                                        placeholder="Ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataPsico}

@@ -4,26 +4,17 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 // Até o momento funciona mas se vc souber fazer mais bonito pode mexer a vontade
 // dou o bumbum
 
-type Props = {
-    label: string;
-    onPress(): void;
-    theme: string;
-};
-
-
-export default function ButtonP({ label, onPress, theme }: Props) {
-
+export const ButtonP = (props: any) => {
 
     return (
-
         <View style={{ width: '100%' }}>
-            {theme === 'yellow' ?
-                <Pressable style={({ pressed }) => (pressed ? styles.yellowHighlight : styles.yellow)} onPress={onPress}>
-                    <Text style={styles.textTrans}>{label}</Text>
+            {props.theme === 'yellow' ?
+                <Pressable style={({ pressed }) => (pressed ? styles.yellowHighlight : styles.yellow)} onPress={props.onPress}>
+                    <Text style={styles.textTrans}>{props.label}</Text>
                 </Pressable>
                 :
-                <Pressable style={({ pressed }) => (pressed ? styles.buttonHighlight : styles.button)} onPress={onPress}>
-                    <Text style={styles.text}>{label}</Text>
+                <Pressable style={({ pressed }) => (pressed ? styles.buttonHighlight : styles.button)} onPress={props.onPress}>
+                    <Text style={styles.text}>{props.label}</Text>
                 </Pressable>
             }
         </View>

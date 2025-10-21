@@ -1,7 +1,7 @@
-import { JSX, useState } from "react";
-import { TextInput, TextInputProps, } from "react-native";
+import { useState } from "react";
+import { TextInput } from "react-native";
 
-export const MyInput = (props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttributes<TextInput> & Readonly<TextInputProps>) => {
+export const MyInput = (props: any) => {
   const [isFocused, setIsFocused] = useState(false);
   return (
     <TextInput

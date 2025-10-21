@@ -1,4 +1,4 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';

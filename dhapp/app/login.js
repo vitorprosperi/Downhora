@@ -1,4 +1,4 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';

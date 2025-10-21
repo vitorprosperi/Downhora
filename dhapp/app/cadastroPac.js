@@ -1,4 +1,4 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
@@ -63,7 +63,7 @@ export default function CadastroPac() {
 
     if (vazio) {
       Alert.alert("Atenção", `O campo "${vazio.label}" é obrigatório.`);
-      return;
+      return false;
     }
 
     // temporario, mudar depois p uma funcao que onchange/onblur da senha ja avise o problema
@@ -135,11 +135,12 @@ export default function CadastroPac() {
               <Text style={styles.subTitulo}>Dados pessoais</Text>
             </View>
 
+            
             <View>
               <Text style={styles.textForm}>Nome completo*</Text>
               <MyInput
                 style={styles.input}
-                placeholder='Ex: Rene Vitor França de Melo'
+                placeholder='Ex: João Silva Santos'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
@@ -157,7 +158,8 @@ export default function CadastroPac() {
                 mask={cpfMask}
                 maxLength={14}
                 value={cpf}
-                placeholder='Ex: 14077796477'
+                autoComplete='off'
+                placeholder='Ex: 123.456.789-01'
                 placeholderTextColor={'grey'}
                 onSubmitEditing={() => ref_input3.current.focus()}
                 returnKeyType="next"
@@ -186,7 +188,7 @@ export default function CadastroPac() {
                 returnKeyType="next"
                 maxLength={10}
                 value={dataNascimento}
-                placeholder='Ex: 14/10/2021'
+                placeholder='Ex: DD/MM/YYYY'
                 placeholderTextColor={'grey'}
                 ref={ref_input3}
                 onChangeText={(masked, unmasked) => {
@@ -215,9 +217,10 @@ export default function CadastroPac() {
 
             <View>
               <Text style={styles.textForm}>Senha*</Text>
+              <View style={{flexDirection: 'row'}}>
               <MyInput
                 ref={ref_input4}
-                style={styles.input}
+                style={[styles.input, {width: '100%'}]}
                 placeholder='Digite uma senha segura'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
@@ -228,6 +231,7 @@ export default function CadastroPac() {
                   setPacientedados(prev => ({ ...prev, senha: text }));}}
                 secureTextEntry
               />
+              </View>
               {(senhaForca == '') ? (
                 null
               ) : (
@@ -257,7 +261,7 @@ export default function CadastroPac() {
               <MyInput
                 ref={ref_input6}
                 style={styles.input}
-                placeholder='Ex: Roseane França de Melo'
+                placeholder='Ex: Maria Silva Santos'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
@@ -271,7 +275,7 @@ export default function CadastroPac() {
               <MyInput
                 ref={ref_input7}
                 style={styles.input}
-                placeholder='Ex: Roseane França de Melo'
+                placeholder='Ex: Maria Silva Santos'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
                 submitBehavior='submit'
@@ -285,7 +289,7 @@ export default function CadastroPac() {
               <MyMaskInput
                 ref={ref_input8}
                 style={styles.input}
-                placeholder='Ex: 14123456789'
+                placeholder='Ex: (12) 34567-8901'
                 placeholderTextColor={'grey'}
                 keyboardType="phone-pad"
                 mask={phoneMask}
@@ -317,7 +321,7 @@ export default function CadastroPac() {
                 style={styles.input}
                 autoComplete='email'
                 keyboardType='email-address'
-                placeholder='Ex: roseane@gmail.com'
+                placeholder='Ex: maria@gmail.com'
                 placeholderTextColor={'grey'}
                 onChangeText={(text) => { 
                   setEmail(text);
@@ -333,7 +337,9 @@ export default function CadastroPac() {
 
           </View>
           <View ref={ref_botao} style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
-            <ButtonP label="Próximo" onPress={Proximo} />
+
+              <ButtonP label="Próximo" onPress={Proximo} /> 
+
           </View>
         </View>
       </KeyboardAwareScrollView>
