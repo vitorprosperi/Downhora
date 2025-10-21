@@ -159,11 +159,6 @@ export default function Prontuario() {
                     <Text style={styles.text}>{item.genero}</Text>
                   </View>
 
-                  <View>
-                    <Text style={styles.label}>CNS</Text>
-                    <Text style={styles.text}>{item.cns}</Text>
-                  </View>
-
                   {infoComp ? (
                     <>
                       <View>
