@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
-import { View, Text, FlatList } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import styles from './styleForms';
-import { useSQLiteContext } from 'expo-sqlite';
-import NetInfo from '@react-native-community/netinfo';
-import { supabase } from "../supabaseserver";
 import { useUsuario } from '@/context/context';
+import NetInfo from '@react-native-community/netinfo';
+import dayjs from 'dayjs';
+import { Stack } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
+import { useEffect, useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { MaskedText } from 'react-native-mask-text';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from "../supabaseserver";
+
 
 export default function Prontuario() {
   const db = useSQLiteContext();
@@ -14,58 +17,46 @@ export default function Prontuario() {
   const [historicos, setHistoricos] = useState([]);
   const [complementares, setComplementares] = useState([]);
 
-  // Busca dados do Supabase
   const carregarSupabase = async () => {
     try {
-      // Usuário logado
       const { data: pacienteData, error: pacienteError } = await supabase
         .from("usuarios")
         .select("*")
         .eq("id", userId);
-
       if (pacienteError) throw pacienteError;
       setPacientes(pacienteData || []);
 
-      // Histórico médico
       const { data: historicoData, error: historicoError } = await supabase
         .from("historico_medico")
         .select("*")
         .eq("usuario_id", userId);
-
       if (historicoError) throw historicoError;
       setHistoricos(historicoData || []);
 
-      // Informações complementares
       const { data: compData, error: compError } = await supabase
         .from("complementares")
         .select("*")
         .eq("usuario_id", userId);
-
       if (compError) throw compError;
       setComplementares(compData || []);
-
     } catch (error) {
       console.error("Erro ao buscar dados no Supabase:", error);
     }
   };
 
-  // 🔹 Busca dados do SQLite
   const carregarSQLite = async () => {
     try {
-      const resultPac = await db.getAllAsync("SELECT * FROM usuarios");
+      const resultPac = await db.getAllAsync("SELECT * FROM usuarios WHERE id = ?", [userId]);
       setPacientes(resultPac);
-
-      const resultHist = await db.getAllAsync("SELECT * FROM historico_medico");
+      const resultHist = await db.getAllAsync("SELECT * FROM historico_medico WHERE usuario_id = ?", [userId]);
       setHistoricos(resultHist);
-
-      const resultComp = await db.getAllAsync("SELECT * FROM complementares");
+      const resultComp = await db.getAllAsync("SELECT * FROM complementares WHERE usuario_id = ?", [userId]);
       setComplementares(resultComp);
     } catch (error) {
       console.error("Erro ao buscar dados no SQLite:", error);
     }
   };
 
-  // 🔹 Decide de onde carregar (Supabase ou SQLite)
   useEffect(() => {
     const buscarDados = async () => {
       const netState = await NetInfo.fetch();
@@ -80,78 +71,240 @@ export default function Prontuario() {
     buscarDados();
   }, [userId]);
 
-  // 🔹 Busca por paciente (compatível com pessoa_id e usuario_id)
-  const HistoricoPorPacienteId = (pacienteId) => {
-    return historicos.find(
+  const HistoricoPorPacienteId = (pacienteId) =>
+    historicos.find(
       (h) => h.usuario_id === pacienteId || h.pessoa_id === pacienteId
+    );
+
+  const InfoPorPacienteId = (pacienteId) =>
+    complementares.find(
+      (h) => h.usuario_id === pacienteId || h.pessoa_id === pacienteId
+    );
+
+  const mostrarExame = (label, valor, dataCampo) => {
+    if (valor?.toLowerCase() === "sim") {
+      return (
+        <View>
+          <Text style={styles.label}>{label}</Text>
+          <Text style={styles.text}>
+            {valor}
+          </Text>
+          <Text style={styles.label}>Data mais recente</Text>
+          <MaskedText mask="99/99/9999" style={styles.text}>{dataCampo}</MaskedText>
+        </View>
+      );
+    }
+
+
+    return (
+      <View>
+        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.text}>
+          {valor || "Não informado"}
+        </Text>
+      </View>
     );
   };
 
-  const InfoPorPacienteId = (pacienteId) => {
-    return complementares.find(
-      (h) => h.usuario_id === pacienteId || h.pessoa_id === pacienteId
-    );
-  };
+  // Formatador de data
+  var customParseFormat = require("dayjs/plugin/customParseFormat");
+  dayjs.extend(customParseFormat)
+
 
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-      <View style={styles.telaInicio}>
+    <SafeAreaView style={styles.safeView} edges={['bottom']}>
+      <Stack.Screen
+        options={{ title: 'Prontuário', 
+          headerShadowVisible: true,
+        }}
+      />
+      <View>
         <FlatList
           data={pacientes}
-          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
+          keyExtractor={(item, index) =>
+            item.id?.toString() || index.toString()
+          }
           renderItem={({ item }) => {
             const historico = HistoricoPorPacienteId(item.id);
             const infoComp = InfoPorPacienteId(item.id);
 
+            const data = `${item.data_nascimento}`
+            const dataFormatada = dayjs(data, 'DDMMYYYY').format('YYYY-MM-DD');
+
+            const idade = dayjs().diff(dataFormatada, 'y');
+
             return (
-              <View style={{ marginBottom: 12, padding: 10, backgroundColor: '#f3f3f3', borderRadius: 8 }}>
-                <Text style={{ color: 'black' }}>Nome: {item.nome}</Text>
-                <Text style={{ color: 'black' }}>CPF: {item.cpf}</Text>
-                <Text style={{ color: 'black' }}>Nascimento: {item.data_nascimento}</Text>
-                <Text style={{ color: 'black' }}>Gênero: {item.genero}</Text>
-                <Text style={{ color: 'black' }}>CNS: {item.cns}</Text>
-                <Text style={{ color: 'black' }}>Nome da mãe: {item.nome_mae}</Text>
-                <Text style={{ color: 'black' }}>Responsável: {item.nome_responsavel}</Text>
-                <Text style={{ color: 'black' }}>Telefone: {item.telefone_responsavel}</Text>
-                <Text style={{ color: 'black' }}>Email: {item.email_responsavel}</Text>
-                <Text style={{ color: 'black' }}>Prontuário: {item.n_prontuario}</Text>
-                <Text style={{ color: 'black' }}>Unidade: {item.unidade_prontuario}</Text>
+              <View style={styles.container}>
 
-                <Text style={{ color: 'black', marginTop: 8, fontWeight: 'bold' }}>Histórico médico:</Text>
-                {historico ? (
-                  <>
-                    <Text style={{ color: 'black' }}>Exame cariótipo: {historico.exame_cariotipo}</Text>
-                    <Text style={{ color: 'black' }}>Triagem auditiva: {historico.triagem_auditiva}</Text>
-                    <Text style={{ color: 'black' }}>Consulta cardiologista: {historico.consulta_cardiologista}</Text>
-                    <Text style={{ color: 'black' }}>Teste do pezinho: {historico.teste_pezinho}</Text>
-                    <Text style={{ color: 'black' }}>Consulta oftalmo: {historico.consulta_oftalmo}</Text>
-                    <Text style={{ color: 'black' }}>Consulta fono: {historico.consulta_fono}</Text>
-                    <Text style={{ color: 'black' }}>Consulta odonto: {historico.consulta_odonto}</Text>
-                    <Text style={{ color: 'black' }}>Consulta endocrinologia: {historico.consulta_endocrinologia}</Text>
-                    <Text style={{ color: 'black' }}>Consulta fisio: {historico.consulta_fisio}</Text>
-                    <Text style={{ color: 'black' }}>Consulta terapia: {historico.consulta_terapia}</Text>
-                    <Text style={{ color: 'black' }}>Consulta psicopedagogo: {historico.consulta_psicopedagogo}</Text>
-                    <Text style={{ color: 'black' }}>Comorbidades: {historico.comorbidades}</Text>
-                    <Text style={{ color: 'black' }}>Medicamentos: {historico.medicamentos}</Text>
-                    <Text style={{ color: 'black' }}>Alergias: {historico.alergias}</Text>
-                    <Text style={{ color: 'black' }}>Tipo sanguíneo: {historico.tipo_sanguineo}</Text>
-                  </>
-                ) : (
-                  <Text style={{ color: 'black' }}>Histórico não cadastrado.</Text>
-                )}
+                <View style={styles.contNome}>
+                  <Text style={styles.nome}>{item.nome}, {idade} anos</Text>
+                </View>
 
-                <Text style={{ color: 'black', marginTop: 8, fontWeight: 'bold' }}>Informações complementares:</Text>
-                {infoComp ? (
-                  <>
-                    <Text style={{ color: 'black' }}>Escolaridade: {infoComp.escolaridade}</Text>
-                    <Text style={{ color: 'black' }}>Unidade escolar 1: {infoComp.unidade_1}</Text>
-                    <Text style={{ color: 'black' }}>Unidade escolar 2: {infoComp.unidade_2}</Text>
-                    <Text style={{ color: 'black' }}>Unidade escolar 3: {infoComp.unidade_3}</Text>
-                    <Text style={{ color: 'black' }}>Autonomia/comunicação: {infoComp.autonomia_comunicacao}</Text>
-                  </>
-                ) : (
-                  <Text style={{ color: 'black' }}>Informações complementares não cadastradas.</Text>
-                )}
+                <View style={styles.contTitulo}>
+                  {<Text style={styles.titulo}>Dados pessoais</Text>}
+                </View>
+                <View style={styles.dadosContainer}>
+                  <View>
+                    <Text style={styles.label}>CPF</Text>
+                    <MaskedText mask="999.999.999-99" style={styles.text}>{item.cpf}</MaskedText>
+                  </View>
+
+                  <View>
+                    <Text style={styles.label}>Data de nascimento</Text>
+                    <MaskedText mask="99/99/9999" style={styles.text}>{item.data_nascimento}</MaskedText>
+                  </View>
+
+                  <View>
+                    <Text style={styles.label}>Gênero</Text>
+                    <Text style={styles.text}>{item.genero}</Text>
+                  </View>
+
+                  {infoComp ? (
+                    <>
+                      <View>
+                        <Text style={styles.label}>Escolaridade</Text>
+                        <Text style={styles.text}>{infoComp.escolaridade}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Unidade escolar 1</Text>
+                        <Text style={styles.text}>{infoComp.unidade_1}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Unidade escolar 2</Text>
+                        <Text style={styles.text}>{infoComp.unidade_2}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Unidade escolar 3</Text>
+                        <Text style={styles.text}>{infoComp.unidade_3}</Text>
+                      </View>
+
+                      <View>
+                        <Text style={styles.label}>Autonomia/Comunicação </Text>
+                        <Text style={styles.text}>{infoComp.autonomia_comunicacao}</Text>
+                      </View>
+                    </>
+                  ) : (
+                    <View>
+                    </View>
+                  )}
+
+                  <View>
+                    <Text style={styles.label}>Nome da mãe</Text>
+                    <Text style={styles.text}>{item.nome_mae}</Text>
+                  </View>
+
+                  <View>
+                    <Text style={styles.label}>Nome do responsável</Text>
+                    <Text style={styles.text}>{item.nome_responsavel}</Text>
+                  </View>
+
+                  <View>
+                    <Text style={styles.label}>Telefone do responsável</Text>
+                    <MaskedText mask="(99) 99999-9999" style={styles.text}>{item.telefone_responsavel}</MaskedText>
+                  </View>
+
+                  <View>
+                    <Text style={styles.label}>Email do responsável</Text>
+                    <Text style={[styles.text, { textTransform: 'none' }]}>{item.email_responsavel}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.contTituloDois}>
+                  <Text style={styles.titulo}>Histórico médico</Text>
+                </View>
+                <View style={styles.dadosContainer}>
+                  {historico ? (
+                    <>
+
+                      {mostrarExame(
+                        "Exame cariótipo",
+                        historico.exame_cariotipo,
+                        historico.data_cariotipo
+                      )}
+                      {mostrarExame(
+                        "Triagem auditiva",
+                        historico.triagem_auditiva,
+                        historico.data_triagem
+                      )}
+                      {mostrarExame(
+                        "Consulta cardiologista",
+                        historico.consulta_cardiologista,
+                        historico.data_cardiologista
+                      )}
+                      {mostrarExame(
+                        "Teste do pezinho",
+                        historico.teste_pezinho,
+                        historico.data_pezinho
+                      )}
+                      {mostrarExame(
+                        "Consulta oftalmologista",
+                        historico.consulta_oftalmo,
+                        historico.data_oftalmo
+                      )}
+                      {mostrarExame(
+                        "Consulta fonoaudiólogo",
+                        historico.consulta_fono,
+                        historico.data_fono
+                      )}
+                      {mostrarExame(
+                        "Consulta odontologista",
+                        historico.consulta_odonto,
+                        historico.data_odonto
+                      )}
+                      {mostrarExame(
+                        "Consulta endocrinologista",
+                        historico.consulta_endocrinologia,
+                        historico.data_endocrinologia
+                      )}
+                      {mostrarExame(
+                        "Consulta fisioterapeuta",
+                        historico.consulta_fisio,
+                        historico.data_fisio
+                      )}
+                      {mostrarExame(
+                        "Consulta terapia",
+                        historico.consulta_terapia,
+                        historico.data_terapia
+                      )}
+                      {mostrarExame(
+                        "Consulta psicopedagogo",
+                        historico.consulta_psicopedagogo,
+                        historico.data_psicopedagogo
+                      )}
+                      <View>
+                        <Text style={styles.label}>Comorbidades</Text>
+                        <Text style={[styles.text, { textTransform: 'none' }]}>
+                          {historico.comorbidades}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text style={styles.label}>Medicamentos</Text>
+                        <Text style={[styles.text]}>
+                          {historico.medicamentos}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text style={styles.label}>Alergias</Text>
+                        <Text style={[styles.text, { textTransform: 'none' }]}>
+                          {historico.alergias}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text style={styles.label}>Tipo sanguíneo</Text>
+                        <Text style={styles.text}>
+                          {historico.tipo_sanguineo}
+                        </Text>
+                      </View>
+                    </>
+                  ) : (
+                    <Text style={styles.text}>
+                      Histórico não cadastrado.
+                    </Text>
+                  )}
+                </View>
               </View>
             );
           }}
@@ -160,3 +313,66 @@ export default function Prontuario() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  cardColap: {
+    backgroundColor: '#FAFAFF',
+    width: '100%',
+    borderWidth: 0,
+    alignItems: 'flex-start',
+  },
+  safeView: {
+    flex: 1,
+    backgroundColor: '#FAFAFF',
+  },
+  container: {
+    alignItems: 'flex-start',
+    alignSelf: 'center',
+    width: '92%',
+  },
+  contTitulo: {
+    alignSelf: 'center',
+    backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    width: '100%',
+  },
+  contTituloDois: {
+    alignSelf: 'center',
+    backgroundColor: 'hsla(42 93.6% 49% / 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    width: '100%',
+  },
+  contNome: {
+    alignSelf: 'center'
+  },
+  dadosContainer: {
+    gap: 8,
+    marginBottom: 10,
+  },
+  nome: {
+    fontFamily: 'Roboto',
+    color: '#231F20',
+    fontSize: 19,
+  },
+  titulo: {
+    fontFamily: 'Raleway-700',
+    color: '#231F20',
+    fontSize: 18,
+  },
+  text: {
+    fontSize: 15,
+    color: '#231F20',
+    fontFamily: 'Roboto',
+    textTransform: 'capitalize',
+    marginTop: -2,
+  },
+  label: {
+    fontSize: 15,
+    color: '#hsl(345, 6%, 43%)',
+    fontFamily: 'Roboto-500',
+  },
+})

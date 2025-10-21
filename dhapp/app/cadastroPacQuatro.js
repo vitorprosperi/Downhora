@@ -1,11 +1,14 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
+import { MyDropdown } from '@/components/MyDropdown';
+import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
+import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { useState } from "react";
-import { Alert, Text, TextInput, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import { useRef, useState } from "react";
+import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
@@ -16,6 +19,8 @@ export default function CadastroPacQuatro() {
 
     const [valor1, setValor1] = useState(null);
     const [valor2, setValor2] = useState(null);
+
+    const [cadastroCarregando, setCadastroCarregando] = useState(false);
 
     // Função para registrar usuário no Supabase Auth
     const registrarAuth = async (cpf, senha) => {
@@ -44,13 +49,10 @@ export default function CadastroPacQuatro() {
                     data_nascimento: pacientedados.data_nascimento,
                     genero: pacientedados.genero,
                     cpf: pacientedados.cpf,
-                    cns: pacientedados.cns,
                     nome_mae: pacientedados.nome_mae,
                     nome_responsavel: pacientedados.nome_responsavel,
                     telefone_responsavel: pacientedados.telefone_responsavel,
                     email_responsavel: pacientedados.email_responsavel,
-                    n_prontuario: pacientedados.n_prontuario,
-                    unidade_prontuario: pacientedados.unidade_prontuario,
                 }]);
 
             if (errorUsuario) {
@@ -114,6 +116,8 @@ export default function CadastroPacQuatro() {
                 console.log("Complementar salvo no Supabase (complementar)");
             }
 
+            return authUserId;
+
         } catch (err) {
             console.error("Erro inesperado:", err);
             return null;
@@ -124,34 +128,42 @@ export default function CadastroPacQuatro() {
         let usuarioId = null;
 
         try {
+
+            setCadastroCarregando(true)
+
+            const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
+
+            if (!authUserId) {
+                console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
+                setCadastroCarregando(false)
+                return;
+            }
+
             await db.execAsync('BEGIN TRANSACTION');
 
             const result = await db.runAsync(
                 `INSERT INTO usuarios 
-                  (nome, data_nascimento, genero, cpf, cns, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel, n_prontuario, unidade_prontuario)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                  (id, nome, data_nascimento, genero, cpf, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
+                    authUserId,
                     pacientedados.nome,
                     pacientedados.data_nascimento,
                     pacientedados.genero,
                     pacientedados.cpf,
-                    pacientedados.cns,
                     pacientedados.nome_mae,
                     pacientedados.nome_responsavel,
                     pacientedados.telefone_responsavel,
-                    pacientedados.email_responsavel,
-                    pacientedados.n_prontuario,
-                    pacientedados.unidade_prontuario
+                    pacientedados.email_responsavel
                 ]
             );
-            usuarioId = result.lastInsertRowId;
 
             await db.runAsync(
                 `INSERT INTO historico_medico 
-                  (pessoa_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmo, data_oftalmo, consulta_fono, data_fono, consulta_odonto, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamentos, alergias, tipo_sanguineo)
+                  (usuario_id, exame_cariotipo, data_cariotipo, triagem_auditiva, data_triagem, consulta_cardiologista, data_cardiologista, teste_pezinho, data_pezinho, consulta_oftalmo, data_oftalmo, consulta_fono, data_fono, consulta_odonto, data_odonto, consulta_endocrinologia, data_endocrinologia, consulta_fisio, data_fisio, consulta_terapia, data_terapia, consulta_psicopedagogo, data_psicopedagogo, comorbidades, medicamentos, alergias, tipo_sanguineo)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    usuarioId,
+                    authUserId,
                     pacientedados.cariotipo,
                     pacientedados.dataCariotipo,
                     pacientedados.exameAuditivo,
@@ -182,10 +194,10 @@ export default function CadastroPacQuatro() {
             );
 
             await db.runAsync(
-                `INSERT INTO complementares (pessoa_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
+                `INSERT INTO complementares (usuario_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
                  VALUES (?, ?, ?, ?, ?, ?)`,
                 [
-                    usuarioId,
+                    authUserId,
                     pacientedados.escolaridade,
                     pacientedados.uni1,
                     pacientedados.uni2,
@@ -197,26 +209,30 @@ export default function CadastroPacQuatro() {
             await db.execAsync('COMMIT');
             console.log("Paciente salvo no SQLite");
 
-            if (pacientedados.cpf && pacientedados.senha) {
-                await registrarAuth(pacientedados.cpf, pacientedados.senha);
-            }
-
             const netState = await NetInfo.fetch();
             if (netState.isConnected) {
                 console.log("Tem internet, dados enviados ao Supabase");
             } else {
                 console.log("Sem internet: paciente será sincronizado depois");
             }
+
             Alert.alert("Cadastro concluído!");
+            router.replace('/');
         } catch (error) {
             await db.execAsync('ROLLBACK');
             console.error("Erro ao salvar paciente:", error);
+            setCadastroCarregando(false)
         }
     };
 
+
+
+    const ref_input1 = useRef();
+    const ref_input2 = useRef();
+
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
                         <View>
@@ -227,21 +243,17 @@ export default function CadastroPacQuatro() {
                         {/* Escolaridade */}
                         <View>
                             <Text style={styles.textForm}>Escolaridade</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <MyDropdown
                                 data={[
-                                    { label: 'Ensino fundamental incompleto', value: 'ensino_fundamental_incompleto' },
-                                    { label: 'Ensino fundamental completo', value: 'ensino_fundamental_completo' },
-                                    { label: 'Ensino médio incompleto', value: 'ensino_medio_incompleto' },
-                                    { label: 'Ensino médio completo', value: 'ensino_medio_completo' },
-                                    { label: 'Ensino superior incompleto', value: 'ensino_superior_incompleto' },
-                                    { label: 'Ensino superior completo', value: 'ensino_superior_completo' },
-                                    { label: 'Pós graduação', value: 'pos_graduacao' },
+                                    { label: 'Creche', value: 'Creche' },
+                                    { label: 'Pré-escola', value: 'Pré escola' },
+                                    { label: 'Ensino fundamental incompleto', value: 'Ensino fundamental incompleto' },
+                                    { label: 'Ensino fundamental completo', value: 'Ensino fundamental completo' },
+                                    { label: 'Ensino médio incompleto', value: 'Ensino médio incompleto' },
+                                    { label: 'Ensino médio completo', value: 'Ensino médio completo' },
+                                    { label: 'Ensino superior incompleto', value: 'Ensino superior incompleto' },
+                                    { label: 'Ensino superior completo', value: 'Ensino superior completo' },
+                                    { label: 'Pós-graduação', value: 'Pós graduação' },
                                 ]}
                                 labelField="label"
                                 valueField="value"
@@ -257,10 +269,13 @@ export default function CadastroPacQuatro() {
                         {/* Escola */}
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 1:</Text>
-                            <TextInput
+                            <MyInput
                                 style={styles.input}
-                                placeholder='ex: Colégio Cora Coralina'
+                                placeholder='Ex: Colégio Cora Coralina'
                                 placeholderTextColor={'grey'}
+                                onSubmitEditing={() => ref_input1.current.focus()}
+                                returnKeyType="next"
+                                submitBehavior='submit'
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni1: text }))}
                             />
                         </View>
@@ -268,19 +283,24 @@ export default function CadastroPacQuatro() {
                         {/* APAE */}
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 2:</Text>
-                            <TextInput
+                            <MyInput
+                                ref={ref_input1}
                                 style={styles.input}
-                                placeholder='ex: APAE Botucatu'
+                                placeholder='Ex: APAE Botucatu'
                                 placeholderTextColor={'grey'}
+                                onSubmitEditing={() => ref_input2.current.focus()}
+                                returnKeyType="next"
+                                submitBehavior='submit'
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni2: text }))}
                             />
                         </View>
 
                         <View>
                             <Text style={styles.textForm}>Unidade escolar 3:</Text>
-                            <TextInput
+                            <MyInput
+                                ref={ref_input2}
                                 style={styles.input}
-                                placeholder='ex: Rene nao sei qual é a 3 unidade'
+                                placeholder='Ex: Apoio'
                                 placeholderTextColor={'grey'}
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, uni3: text }))}
                             />
@@ -289,13 +309,7 @@ export default function CadastroPacQuatro() {
                         {/* Comunicação */}
                         <View>
                             <Text style={styles.textForm}>Autonomia de comunicação</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <MyDropdown
                                 data={[
                                     { label: 'Total', value: 'Total' },
                                     { label: 'Parcial', value: 'Parcial' },
@@ -312,7 +326,13 @@ export default function CadastroPacQuatro() {
                             />
                         </View>
 
-                        <ButtonP onPress={salvarPaciente} label="Finalizar"/>
+                        
+                        {cadastroCarregando ? (
+                            <ButtonP onPress={salvarPaciente} label=<ActivityIndicator color='#FAFAFF'></ActivityIndicator> />
+                        ) : (
+                            <ButtonP onPress={salvarPaciente} label="Finalizar" />
+                        )
+                        }
                     </View>
                 </View>
             </KeyboardAwareScrollView>

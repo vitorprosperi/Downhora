@@ -1,110 +1,207 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
+import { MyInput } from '@/components/MyInput';
+import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
+import NetInfo from '@react-native-community/netinfo';
+import { Checkbox } from 'expo-checkbox';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Stack, useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import * as SQLite from 'expo-sqlite';
+import { useRef, useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import MaskInput from 'react-native-mask-input';
+import { ActivityIndicator } from 'react-native-paper';
 import { supabase } from "../supabaseserver";
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
 export default function Login() {
-  // Controle das variáveis cpf e senha
+  const [isChecked, setChecked] = useState(false);
   const [cpf, setCpf] = useState("");
   const [cpfMasked, setCpfMasked] = useState('');
   const [senha, setSenha] = useState("");
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const router = useRouter();
-
   const { setUserId } = useUsuario();
+  const ref_senha = useRef();
+  const [loginCarregando, setLoginCarregando] = useState(false);
 
   const login = async () => {
-    if (cpf === '' || senha === '') {
+    if (!cpf || !senha) {
       Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
       return;
     }
 
+    setLoginCarregando(true);
+
     try {
       const emailFake = `${cpf}@meuapp.com`;
+      const netInfo = await NetInfo.fetch();
+      const isOnline = netInfo.isConnected;
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: emailFake,
-        password: senha,
-      });
+      const db = await SQLite.openDatabaseAsync('downhora.db');
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS usuarios (
+          id TEXT PRIMARY KEY NOT NULL,
+          nome TEXT,
+          access_token TEXT,
+          refresh_token TEXT
+        );
+      `);
 
-      if (error) {
-        console.error("Erro no login:", error.message);
-        Alert.alert("Erro", "CPF ou senha inválidos");
-        return;
+      //
+      // MODO ONLINE
+      //
+      if (isOnline) {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: emailFake,
+          password: senha,
+        });
+
+        if (error) {
+          setLoginCarregando(false);
+          console.error("Erro no login:", error.message);
+          Alert.alert("Erro", "CPF ou senha inválidos");
+          return;
+        }
+
+        const user = data.user;
+        console.log("Usuário logado (online):", user);
+
+        const { data: sessionData } = await supabase.auth.getSession();
+
+        if (sessionData?.session) {
+          const { access_token, refresh_token } = sessionData.session;
+
+          // Se marcar "Manter login", salva a sessão
+          if (isChecked) {
+            await SecureStore.setItemAsync(
+              'supabase_session',
+              JSON.stringify(sessionData.session)
+            );
+            console.log("Sessão salva no SecureStore");
+          }
+
+          // Sempre salva no SQLite (para login offline)
+          await db.runAsync(
+            `INSERT OR REPLACE INTO sessoes (usuario_id, access_token, refresh_token)
+             VALUES (?, ?, ?)`,
+            [user.id, access_token, refresh_token]
+          );
+
+          console.log("Sessão salva no SQLite");
+        }
+
+        setUserId(user.id);
+        Alert.alert("Sucesso", "Login realizado com sucesso!");
+        router.dismissAll();
+        router.replace("/telaInicial");
       }
+      //
+      // MODO OFFLINE
+      //
+      else {
+        const row = await db.getFirstAsync(
+          "SELECT id, nome FROM usuarios LIMIT 1"
+        );
 
-      setUserId(data.user.id); // salva o id do usuário logado no contexto
-      console.log("ID do usuário logado:", data.user.id);
-
-      console.log("Usuário logado:", data.user);
-      Alert.alert("Sucesso", "Login realizado com sucesso!");
-      router.dismissAll();
-      router.replace("/telaInicial");
+        if (row?.id) {
+          setUserId(row.id);
+          console.log("Login offline bem-sucedido:", row.nome);
+          Alert.alert("Modo Offline", `Bem-vindo de volta, ${row.nome}!`);
+          router.dismissAll();
+          router.replace("/telaInicial");
+        } else {
+          setLoginCarregando(false);
+          Alert.alert(
+            "Sem conexão",
+            "Nenhum login anterior encontrado. Conecte-se à internet para fazer login pela primeira vez."
+          );
+        }
+      }
     } catch (err) {
+      setLoginCarregando(false);
       console.error("Erro inesperado:", err);
-      Alert.alert("Erro", "Não foi possível realizar o login");
+      Alert.alert("Erro", "Não foi possível realizar o login.");
     }
   };
 
+
   return (
-    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
-    <View style={styles.loginEstilo}>
-      
-      <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
-        
-        <View style={styles.imageContainer}>
-          <Image source={LogoImage} style={styles.image} />
-        </View>
-        <View>
+    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
+      <Stack.Screen
+        options={{
+          headerStyle: { backgroundColor: '#FAFAFF' },
+          headerTintColor: '#231F20',
+          headerTitle: '',
+          headerShadowVisible: false,
+        }}
+      />
+      <View style={styles.loginEstilo}>
+        <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.imageContainer}>
+            <Image source={LogoImage} style={styles.image} />
+          </View>
+
           <Text style={styles.titulo}>Login</Text>
-        </View>
-        <View style={styles.containerForm}>
-          {/* CPF */}
-          <View>
-            <Text style={styles.textForm}>CPF</Text>
-            <MaskInput
-              style={styles.input}
-              mask={cpfMask}
-              value={cpfMasked}
-              maxLength={14}
-              placeholder="123.456.789-10"
-              placeholderTextColor="grey"
-              keyboardType="numeric"
-              onChangeText={(masked, unmasked) => {
-                setCpfMasked(masked);
-                setCpf(unmasked); // cpf "limpo" sem pontos e traço
-              }}
-            />
-          </View>
 
-          {/* Senha */}
-          <View>
-            <Text style={styles.textForm}>Senha</Text>
-            <TextInput
-              value={senha}
-              onChangeText={setSenha}
-              style={styles.input}
-              placeholder="ex: senh@123"
-              placeholderTextColor={'grey'}
-              secureTextEntry={true}
-            />
-          </View>
+          <View style={styles.containerForm}>
+            {/* CPF */}
+            <View>
+              <Text style={styles.textForm}>CPF</Text>
+              <MyMaskInput
+                style={styles.input}
+                mask={cpfMask}
+                value={cpfMasked}
+                maxLength={14}
+                placeholder="Digite o CPF cadastrado no aplicativo"
+                placeholderTextColor="grey"
+                keyboardType="numeric"
+                onSubmitEditing={() => ref_senha.current.focus()}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onChangeText={(masked, unmasked) => {
+                  setCpfMasked(masked);
+                  setCpf(unmasked);
+                }}
+              />
+            </View>
 
-          <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
-            <ButtonP label='Entrar' onPress={login} />
+            {/* Senha */}
+            <View>
+              <Text style={styles.textForm}>Senha</Text>
+              <MyInput
+                ref={ref_senha}
+                value={senha}
+                onChangeText={setSenha}
+                autoComplete='current-password'
+                style={styles.input}
+                placeholder="Digite a senha"
+                placeholderTextColor={'grey'}
+                secureTextEntry={true}
+              />
+            </View>
+
+            {/* Checkbox "Manter login" */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Checkbox color={'#3A7ADC'} value={isChecked} onValueChange={setChecked} />
+              <Text style={styles.textForm}>Manter login</Text>
+            </View>
+
+            {/* Botão */}
+            <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
+
+              {loginCarregando ? (
+                <ButtonP onPress={login} label=<ActivityIndicator color='#FAFAFF'></ActivityIndicator> />
+              ) : (
+                <ButtonP label='Entrar' onPress={login} />
+              )
+              }
+            </View>
           </View>
         </View>
-        
       </View>
-      
-    </View>
     </KeyboardAwareScrollView>
   );
 }
@@ -147,7 +244,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: 350,
     height: 350,
-    paddingBottom: 400,
+    marginBottom: 50,
   },
   image: {
     width: 350,

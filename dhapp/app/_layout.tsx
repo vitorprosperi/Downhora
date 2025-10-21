@@ -1,22 +1,24 @@
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen'; // carregar tela so quando carregar fonte
+import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
-import { PacienteProvider, UsuarioProvider } from '../context/context'; // ⬅️ importe o UsuarioProvider
+import { PacienteProvider, UsuarioProvider } from '../context/context'; // importe o UsuarioProvider
+import AppInitializer from '../Initializer/appinitializer';
 
-SplashScreen.preventAutoHideAsync(); // prevenir a splash screen (tela temporaria) de desaparecer enquanto a fonte carrega
+SplashScreen.preventAutoHideAsync();
 
-const DB_VERSION = 8; // aumente esse número quando mudar a estrutura
+const DB_VERSION = 18; 
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({ // mapeia as fontes
+  const [loaded, error] = useFonts({
     'Raleway': require('../assets/fonts/raleway-v37-latin-regular.ttf'),
     'Raleway-500': require('../assets/fonts/raleway-v37-latin-500.ttf'),
     'Raleway-700': require('../assets/fonts/raleway-v37-latin-700.ttf'),
     'Roboto': require('../assets/fonts/roboto-v49-latin-regular.ttf'),
     'Roboto-500': require('../assets/fonts/roboto-v49-latin-500.ttf'),
-  }); 
+    'Roboto-500-italic': require("../assets/fonts/roboto-v49-latin-500-italic.ttf"),
+  });
 
   useEffect(() => {
     if (loaded || error) {
@@ -36,7 +38,6 @@ function RootLayoutNav() {
     <SQLiteProvider
       databaseName="downhora.db"
       onInit={async (db) => {
-        // Cria a tabela de metadados (versão do banco)
         await db.execAsync(`
           CREATE TABLE IF NOT EXISTS Meta (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,40 +45,36 @@ function RootLayoutNav() {
           );
         `);
 
-        // 🔹 Define o tipo do retorno
         type MetaRow = { versao: number };
 
         const row = await db.getFirstAsync<MetaRow>("SELECT versao FROM Meta LIMIT 1");
 
         if (!row || row.versao < DB_VERSION) {
-          // Se não existir versão ou for antiga, dropa e recria as tabelas
-          await db.execAsync("DROP TABLE IF EXISTS Exames;");
+          await db.execAsync("DROP TABLE IF EXISTS fila_sinc;");
+          await db.execAsync("DROP TABLE IF EXISTS sessoes;");
+          await db.execAsync("DROP TABLE IF EXISTS exames;");
           await db.execAsync("DROP TABLE IF EXISTS complementares;");
           await db.execAsync("DROP TABLE IF EXISTS historico_medico;");
           await db.execAsync("DROP TABLE IF EXISTS usuarios;");
 
-          // Recria tabelas
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS usuarios (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              id TEXT PRIMARY KEY,
               nome TEXT NOT NULL,
-              data_nascimento TEXT NOT NULL,
-              genero TEXT NOT NULL,
-              cpf TEXT UNIQUE NOT NULL,
-              cns TEXT,
-              nome_mae TEXT NOT NULL,
-              nome_responsavel TEXT NOT NULL,
-              telefone_responsavel TEXT NOT NULL,
-              email_responsavel TEXT NOT NULL,
-              n_prontuario TEXT NOT NULL,
-              unidade_prontuario TEXT NOT NULL
+              data_nascimento TEXT,
+              genero TEXT,
+              cpf TEXT UNIQUE,
+              nome_mae TEXT,
+              nome_responsavel TEXT,
+              telefone_responsavel TEXT,
+              email_responsavel TEXT
             );
           `);
 
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS historico_medico (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              pessoa_id INTEGER NOT NULL,
+              usuario_id TEXT NOT NULL,
               exame_cariotipo TEXT NOT NULL,
               data_cariotipo TEXT,
               triagem_auditiva TEXT NOT NULL,
@@ -104,53 +101,77 @@ function RootLayoutNav() {
               medicamentos TEXT,
               alergias TEXT,
               tipo_sanguineo TEXT,
-              FOREIGN KEY (pessoa_id) REFERENCES usuarios(id)
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             );
           `);
 
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS complementares (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              pessoa_id INTEGER NOT NULL,
+              usuario_id TEXT NOT NULL,
               escolaridade TEXT,
               unidade_1 TEXT,
               unidade_2 TEXT,
               unidade_3 TEXT,
               autonomia_comunicacao TEXT,
-              FOREIGN KEY (pessoa_id) REFERENCES usuarios(id)
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             );
           `);
 
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS exames (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              pessoa_id INTEGER NOT NULL,
+              usuario_id TEXT NOT NULL,
               tipo_exame TEXT NOT NULL,
               data_exame TEXT NOT NULL,
               medico_responsavel TEXT,
               obs TEXT,
-              FOREIGN KEY (pessoa_id) REFERENCES usuarios(id)
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
             );
           `);
 
-          // Atualiza versão no Meta
+          await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS sessoes (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              usuario_id TEXT NOT NULL,
+              access_token TEXT,
+              refresh_token TEXT,
+              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+            );
+          `);
+
+          await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS fila_sinc (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              acao TEXT NOT NULL,
+              nome_tabela TEXT NOT NULL,
+              payload TEXT NOT NULL,
+              criado_em TEXT DEFAULT CURRENT_TIMESTAMP
+            );
+          `);
+
           await db.execAsync("DELETE FROM Meta;");
           await db.execAsync(`INSERT INTO Meta (versao) VALUES (${DB_VERSION});`);
         }
       }}
     >
-      <UsuarioProvider> 
-        <PacienteProvider>
+      <UsuarioProvider>
+        <AppInitializer> 
+         <PacienteProvider>
           <Stack
-             screenOptions={{
-             headerStyle: { backgroundColor: '#FAFAFF' },
+            screenOptions={{
+              headerStyle: { backgroundColor: '#FAFAFF' },
               headerTintColor: '#231F20',
-              headerTitle: '',
-             headerShadowVisible: false,
-           }}
+              headerTitleStyle: { fontFamily: 'Raleway-500' },
+              title: '',
+              headerShadowVisible: false,
+            }}
           >
+            <Stack.Screen name="index" options={{ title: '' }} />
+            <Stack.Screen name="(top-tabs)" options={{ title: 'Informações' }} />
           </Stack>
-        </PacienteProvider>
+         </PacienteProvider>
+        </AppInitializer>
       </UsuarioProvider>
     </SQLiteProvider>
   );

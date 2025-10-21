@@ -4,21 +4,19 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 // Até o momento funciona mas se vc souber fazer mais bonito pode mexer a vontade
 // dou o bumbum
 
-type Props = {
-    label: string;
-    onPress(): void;
-    theme: string;
-};
+export const ButtonP = (props: any) => {
 
-
-export default function ButtonP({label, onPress, theme}: Props) {
-
-    
     return (
-        <View style={{width: '100%'}}>
-            <Pressable style={[theme === 'transparent' ? styles.transparent : styles.button]} onPress={onPress}>
-                <Text style={[theme === 'transparent' ? styles.textTrans : styles.text]}>{label}</Text>
-            </Pressable>
+        <View style={{ width: '100%' }}>
+            {props.theme === 'yellow' ?
+                <Pressable style={({ pressed }) => (pressed ? styles.yellowHighlight : styles.yellow)} onPress={props.onPress}>
+                    <Text style={styles.textTrans}>{props.label}</Text>
+                </Pressable>
+                :
+                <Pressable style={({ pressed }) => (pressed ? styles.buttonHighlight : styles.button)} onPress={props.onPress}>
+                    <Text style={styles.text}>{props.label}</Text>
+                </Pressable>
+            }
         </View>
     )
 };
@@ -33,11 +31,29 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 10,
     },
-    transparent: {
+    buttonHighlight: {
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'hsl(216, 70%, 40%)',
+        width: '100%',
+        height: 50,
+        borderRadius: 10,
+    },
+    yellow: {
         alignItems: 'center',
         alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: '#F2AA08',
+        width: '100%',
+        height: 50,
+        borderRadius: 10,
+    },
+    yellowHighlight: {
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'hsl(42, 94%, 55%)',
         width: '100%',
         height: 50,
         borderRadius: 10,

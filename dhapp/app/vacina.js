@@ -90,7 +90,7 @@ export default function Vacina() {
               <Text style={{ color: "white" }}>Tipo: {item.tipo_exame}</Text>
               <Text style={{ color: "white" }}>Data: {item.data_exame}</Text>
               <Text style={{ color: "white" }}>Médico: {item.medico_responsavel}</Text>
-              <Text style={{ color: "white" }}>Obs: {item.observacoes}</Text>
+              <Text style={{ color: "white" }}>Obs: {item.obs}</Text>
             </View>
           )}
         />
@@ -101,6 +101,7 @@ export default function Vacina() {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={{ backgroundColor: "#555", marginVertical: 5, padding: 10, borderRadius: 8 }}>
+              <Text style={{ color: "white"}}>ID: {item.id}</Text>
               <Text style={{ color: "white" }}>Nome: {item.nome}</Text>
               <Text style={{ color: "white" }}>Nascimento: {item.data_nascimento}</Text>
               <Text style={{ color: "white" }}>Gênero: {item.genero}</Text>
@@ -125,6 +126,8 @@ export default function Vacina() {
             <Text style={{ color: "white", fontWeight: "bold" }}>Histórico ID: {item.id}</Text>
 
             <Text style={{ color: "white", marginTop: 5, fontWeight: "bold" }}></Text>
+            <Text style={{ color: "white"}}>ID: {item.usuario_id}</Text>
+
             <Text style={{ color: "white" }}>Cariótipo: {item.exame_cariotipo} - {item.data_cariotipo}</Text>
             <Text style={{ color: "white" }}>Triagem auditiva: {item.triagem_auditiva} - {item.data_triagem}</Text>
             <Text style={{ color: "white" }}>Teste do pezinho: {item.teste_pezinho} - {item.data_pezinho}</Text>

@@ -1,4 +1,7 @@
-import * as ImagePicker from "expo-image-picker";
+import { useUsuario } from "@/context/context";
+import NetInfo from "@react-native-community/netinfo";
+import { useRouter } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { FAB } from "react-native-paper";
@@ -7,102 +10,112 @@ import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
 
+
 export default function Exames() {
   const [exames, setExames] = useState([]);
-  const [uploading, setUploading] = useState(false);
+  const { userId } = useUsuario();
+  const router = useRouter();
+  const db = useSQLiteContext();
 
+  // Carrega os exames do Supabase (modo online)
   const carregarSupabase = async () => {
     try {
       const { data: examesData, error } = await supabase
         .from("exames")
-        .select("*");
+        .select("*")
+        .eq("usuario_id", userId);
 
       if (error) throw error;
+
       setExames(examesData || []);
+      console.log("Exames carregados do Supabase:", examesData);
+
+      // Atualiza o SQLite com os dados mais recentes (sincroniza)
+      await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
+      for (const ex of examesData) {
+        await db.runAsync(
+          `INSERT INTO exames 
+            (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+          [ex.id, ex.usuario_id, ex.tipo_exame, ex.data_exame, ex.medico_responsavel, ex.obs]
+        );
+      }
+      console.log("Exames sincronizados com SQLite.");
     } catch (error) {
       console.error("Erro ao buscar dados no Supabase:", error.message);
     }
   };
 
+  // Carrega exames do SQLite (modo offline)
+  const carregarSQLite = async () => {
+    try {
+      const result = await db.getAllAsync("SELECT * FROM exames WHERE usuario_id = ?", [userId]);
+      setExames(result || []);
+      console.log("Exames carregados do SQLite:", result);
+    } catch (error) {
+      console.error("Erro ao carregar exames do SQLite:", error);
+    }
+  };
+
+  // Detecta se há conexão com a internet e decide de onde carregar
+  const carregarExames = async () => {
+    const state = await NetInfo.fetch();
+     const isOnline = state.isConnected;
+    if (isOnline) {
+      console.log("Modo online detectado. Carregando do Supabase...");
+      await carregarSupabase();
+    } else {
+      console.log("Modo offline detectado. Carregando do SQLite...");
+      await carregarSQLite();
+    }
+  };
+
   useEffect(() => {
-    carregarSupabase();
+    carregarExames();
   }, []);
 
-const escolherEEnviarImagem = async () => {
-  try {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permissão necessária", "Conceda acesso à galeria para continuar.");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-      base64: true,
+  const abrirDetalhes = (exame) => {
+    router.push({
+      pathname: "/detalheExame",
+      params: { exame: JSON.stringify(exame) },
     });
+  };
 
-    if (result.canceled || !result.assets?.length) {
-      Alert.alert("Aviso", "Seleção de imagem cancelada.");
-      return;
+  const deletarExame = async (id) => {
+    try {
+      Alert.alert(
+        "Excluir exame",
+        "Tem certeza que deseja excluir este exame?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Excluir",
+            style: "destructive",
+            onPress: async () => {
+              const state = await NetInfo.fetch();
+
+              if (state.isConnected) {
+                // Online: deleta no Supabase e no SQLite
+                const { error: deleteError } = await supabase.from("exames").delete().eq("id", id);
+                if (deleteError) throw deleteError;
+                console.log("Exame deletado no Supabase:", id);
+              } else {
+                console.log("Sem conexão, exclusão apenas local:", id);
+              }
+
+              await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
+              setExames((prev) => prev.filter((ex) => ex.id !== id));
+
+              Alert.alert("Sucesso", "Exame excluído com sucesso!");
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.error("Erro ao excluir exame:", error);
+      Alert.alert("Erro", "Não foi possível excluir o exame.");
     }
-
-    const file = result.assets[0];
-    const base64Image = file.base64;
-
-    if (!base64Image) {
-      Alert.alert("Erro", "Não foi possível ler o conteúdo da imagem.");
-      return;
-    }
-
-    setUploading(true);
-
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      Alert.alert("Erro", "Usuário não autenticado.");
-      return;
-    }
-
-    const userId = user.id;
-
-    const fileExt = file.uri.split(".").pop() || "jpg";
-    const fileName = `${Date.now()}.${fileExt}`;
-    const filePath = `imagens/${fileName}`;
-
-    const imageBuffer = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
-
-    const { error: uploadError } = await supabase.storage
-      .from("imagens")
-      .upload(filePath, imageBuffer, {
-        contentType: "image/jpeg",
-      });
-
-    if (uploadError) throw uploadError;
-
-    const { data } = supabase.storage.from("imagens").getPublicUrl(filePath);
-    const imageUrl = data.publicUrl;
-
-    const { error: updateError } = await supabase
-      .from("usuarios")
-      .update({ imagem_url: imageUrl })
-      .eq("id", userId);
-
-    if (updateError) throw updateError;
-
-    Alert.alert("Sucesso", "Imagem enviada e salva com sucesso!");
-  } catch (error) {
-    console.error("Erro ao enviar imagem:", error.message);
-    Alert.alert("Erro", "Não foi possível enviar a imagem.");
-  } finally {
-    setUploading(false);
-  }
-};
+  };
 
   return (
     <SafeAreaView
@@ -110,46 +123,37 @@ const escolherEEnviarImagem = async () => {
       style={[styles.corEscura, { alignItems: "center" }]}
     >
       <View style={styles.telaExames}>
-        <View>
-          <Text style={styles.titulo}>Exames Cadastrados</Text>
-        </View>
+        <Text style={styles.titulo}>Exames Cadastrados</Text>
 
         <View style={cstyle.container}>
           <FlatList
             data={exames}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <View style={cstyle.card}>
-                <Pressable>
-                  <View>
-                    <Text style={cstyle.textoSecundario}>
-                      Dr. {item.medico_responsavel}
-                    </Text>
-                  </View>
+              <Pressable onPress={() => abrirDetalhes(item)}>
+                <View style={cstyle.card}>
+                  <Text style={cstyle.textoSecundario}>
+                    Dr. {item.medico_responsavel}
+                  </Text>
                   <View style={cstyle.midBar}>
                     <Text style={cstyle.textoPrincipal}>{item.tipo_exame}</Text>
                     <Text style={[cstyle.textoSecundario, { fontSize: 20 }]}>
                       {item.data_exame}
                     </Text>
                   </View>
-                  <View>
-                    <Text>{item.obs}</Text>
-                  </View>
-                </Pressable>
-              </View>
+                  <Text>{item.obs}</Text>
+
+                  <Pressable
+                    onPress={() => deletarExame(item.id)}
+                    style={cstyle.botaoExcluir}
+                  >
+                    <Text style={cstyle.textoExcluir}>Excluir</Text>
+                  </Pressable>
+                </View>
+              </Pressable>
             )}
           />
         </View>
-
-        <FAB
-          icon="upload"
-          color="#FAFAFF"
-          style={[styles.fab, { bottom: 120 }]} 
-          customSize={76}
-          onPress={escolherEEnviarImagem}
-          loading={uploading}
-          mode="flat"
-        />
 
         <FAB
           icon="plus"
@@ -192,5 +196,17 @@ const cstyle = StyleSheet.create({
     color: "hsla(345, 6%, 33%, 1)",
     fontSize: 17,
   },
+  botaoExcluir: {
+    backgroundColor: "#d9534f",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignSelf: "flex-end",
+  },
+  textoExcluir: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
 });
-

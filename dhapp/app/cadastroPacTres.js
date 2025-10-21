@@ -1,15 +1,15 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
+import { MyDropdown } from '@/components/MyDropdown';
+import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
 import { useState } from "react";
-import { Text, TextInput, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import { Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import MaskInput from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacQuatro } from "../routes/rotas";
 import styles from './styleForms';
 
-export default function CadastroPacTres() {
+export default function CadastroPacDois() {
 
     const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
@@ -51,54 +51,28 @@ export default function CadastroPacTres() {
     const [dataPsico, setDataPsico] = useState('');
 
 
-    // Outros campos já existentes
-    const [valor6, setValor6] = useState(null); // Alergias
-    const [valor7, setValor7] = useState(null); // Tipo sanguíneo
-
-    // Itens dos dropdowns (sim/não)
+    // Itens dos dropdowns (Sim/não)
     const itensSimNao = [
-        { label: 'Sim', value: 'sim' },
-        { label: 'Não', value: 'nao' },
+        { label: 'Sim', value: 'Sim' },
+        { label: 'Não', value: 'Não' },
     ];
-    // Itens das comorbidades
-    const itensComorbidades = [
-        { label: 'Cardíaca', value: 'cardiaca' },
-        { label: 'Tireoidiana', value: 'tireoidiana' },
-        { label: 'Outra', value: 'outra' },
-    ];
-    // Itens do tipo sanguíneo
-    const itensTipoSangue = [
-        { label: 'A+', value: 'apositivo' },
-        { label: 'A-', value: 'anegativo' },
-        { label: 'B+', value: 'bpositivo' },
-        { label: 'B-', value: 'bnegativo' },
-        { label: 'AB+', value: 'abpositivo' },
-        { label: 'AB-', value: 'abnegativo' },
-        { label: 'O+', value: 'opositivo' },
-        { label: 'O-', value: 'onegativo' },
-    ];
+
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+            <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
 
                         <View>
-                            <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
-                            <Text style={styles.subTitulo}>Histórico médico</Text>
+                            <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
+                            <Text style={styles.subTitulo}>Consultas e exames já realizados</Text>
                         </View>
 
                         {/* EXAMES */}
                         <View>
-                            <Text style={styles.textForm}>Exame Cariótipo*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Exame cariótipo*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -109,12 +83,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, cariotipo: item.value }));
                                 }}
                             />
-                            {valor1 === 'sim' && (
+                            {valor1 === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataCariotipo}
@@ -130,14 +104,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Triagem Auditiva*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Triagem auditiva*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -148,12 +116,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, exameAuditivo: item.value }));
                                 }}
                             />
-                            {valor2 === 'sim' && (
+                            {valor2 === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         maxLength={10}
@@ -169,14 +137,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta Cardiologista*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta cardiologista*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -187,12 +149,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, consultCardio: item.value }));
                                 }}
                             />
-                            {valor3 === 'sim' && (
+                            {valor3 === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data do exame</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataEco}
@@ -209,13 +171,7 @@ export default function CadastroPacTres() {
 
                         <View>
                             <Text style={styles.textForm}>Teste do pezinho*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -226,12 +182,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, testePe: item.value }));
                                 }}
                             />
-                            {valor4 === 'sim' && (
+                            {valor4 === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         maxLength={10}
@@ -247,14 +203,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta Oftalmologista*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta oftalmologista*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -265,12 +215,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, oftalmo: item.value }));
                                 }}
                             />
-                            {valor5 === 'sim' && (
+                            {valor5 === 'Sim' && (
                                 <View style={{marginTop: 10}}> 
                                     <Text style={styles.textForm}>Data da avaliação</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         maxLength={10}
@@ -287,14 +237,8 @@ export default function CadastroPacTres() {
 
                         {/* CONSULTAS */}
                         <View>
-                            <Text style={styles.textForm}>Consulta Fonoaudiologia*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta fonoaudiologia*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -305,12 +249,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, consultaFono: item.value }));
                                 }}
                             />
-                            {valorFono === 'sim' && (
+                            {valorFono === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataFono}
@@ -326,14 +270,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta Odontologia*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta odontologia*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -344,12 +282,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, consultaOdonto: item.value }));
                                 }}
                             />
-                            {valorOdonto === 'sim' && (
+                            {valorOdonto === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataOdonto}
@@ -365,14 +303,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta Endocrinologia*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta endocrinologia*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -383,12 +315,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, consultaEndocrino: item.value }));
                                 }}
                             />
-                            {valorEndocrino === 'sim' && (
+                            {valorEndocrino === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataEndocrino}
@@ -404,14 +336,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta Fisioterapia*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta fisioterapia*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -422,12 +348,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, consultaFisio: item.value }));
                                 }}
                             />
-                            {valorFisio === 'sim' && (
+                            {valorFisio === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataFisio}
@@ -443,14 +369,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta Terapia Ocupacional*</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta terapia ocupacional*</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -461,12 +381,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, consultaTerapia: item.value }));
                                 }}
                             />
-                            {valorTerapia === 'sim' && (
+                            {valorTerapia === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataTerapia}
@@ -482,14 +402,8 @@ export default function CadastroPacTres() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta Psicopedagogo</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
+                            <Text style={styles.textForm}>Consulta psicopedagogo</Text>
+                            <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -500,12 +414,12 @@ export default function CadastroPacTres() {
                                     setPacientedados(prev => ({ ...prev, consultaPsico: item.value }));
                                 }}
                             />
-                            {valorPsico === 'sim' && (
+                            {valorPsico === 'Sim' && (
                                 <View style={{marginTop: 10}}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MaskInput
+                                    <MyMaskInput
                                         style={styles.input}
-                                        placeholder="ex: 01/01/2023"
+                                        placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
                                         value={dataPsico}
@@ -518,89 +432,6 @@ export default function CadastroPacTres() {
                                     />
                                 </View>
                             )}
-                        </View>
-
-                        {/* Tipo de comorbidade */}
-                        <View>
-                            <Text style={styles.textForm}>Comorbidades</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='ex: Cardíaca, Tireoidiana'
-                                placeholderTextColor={'grey'}
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, comorbidades: text }))}
-                            />
-                        </View>
-
-                        {/* Medicamento em uso */}
-                        <View>
-                            <Text style={styles.textForm}>Medicamento em uso</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='ex: Losartana'
-                                placeholderTextColor={'grey'}
-                                onChangeText={(text) => setPacientedados(prev => ({ ...prev, medicamento: text }))}
-                            />
-                        </View>
-
-                        {/* Alergias */}
-                        <View>
-                            <Text style={styles.textForm}>Alergias</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valor6}
-                                onChange={item => {
-                                    setValor6(item.value);
-                                    setPacientedados(prev => ({
-                                        ...prev,
-                                        possuiAlergia: item.value,
-                                        alergia: item.value === 'sim' ? prev.alergia || '' : 'não'
-                                    }));
-                                }}
-                            />
-                            {valor6 === 'sim' && (
-                                <View>
-                                    <Text style={styles.textForm}>Quais?</Text>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder='ex: Rinite alérgica'
-                                        placeholderTextColor={'grey'}
-                                        value={pacientedados.alergia === 'não' ? '' : pacientedados.alergia || ''}
-                                        onChangeText={text => setPacientedados(prev => ({ ...prev, alergia: text }))}
-                                    />
-                                </View>
-                            )}
-                        </View>
-
-                        {/* Tipo sanguíneo */}
-                        <View>
-                            <Text style={styles.textForm}>Tipo sanguíneo</Text>
-                            <Dropdown
-                                style={styles.input}
-                                placeholderStyle={styles.exemplo}
-                                selectedTextStyle={styles.textForm}
-                                containerStyle={styles.dropdownContainer}
-                                itemTextStyle={styles.textForm}
-                                activeColor='#F5F5FF'
-                                data={itensTipoSangue}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                dropdownPosition='top'
-                                value={valor7}
-                                onChange={item => {
-                                    setValor7(item.value);
-                                    setPacientedados(prev => ({ ...prev, tiposangue: item.value }));
-                                }}
-                            />
                         </View>
                     </View>
 

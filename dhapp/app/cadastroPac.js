@@ -1,31 +1,36 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
+import { MyDropdown } from '@/components/MyDropdown';
+import { MyInput } from '@/components/MyInput';
+import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
-import { useState } from "react";
-import { Alert, Text, TextInput, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import { useRef, useState } from "react";
+import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import MaskInput from 'react-native-mask-input';
-import { RadioButton } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { cadastropacTres } from '../routes/rotas';
+import validator from 'validator';
+import { cadastropacDois } from '../routes/rotas';
 import styles from './styleForms';
 
 export default function CadastroPac() {
   const { pacientedados, setPacientedados } = usePaciente();
 
+  const [email, setEmail] = useState('');
+  const [tel, setTel] = useState('');
+  const [cpfUnmasked, setCpfUnmasked] = useState('');
+  const [senhaForca, setSenhaForca] = useState('');
+  
+
   // Máscaras
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
-  const cnsMask = [/\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/];
   const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const phoneMask = [
     '(', /\d/, /\d/, ')', ' ',
-    /\d/, /\d/, /\d/, /\d/, /\d/, '-', 
+    /\d/, /\d/, /\d/, /\d/, /\d/, '-',
     /\d/, /\d/, /\d/, /\d/
   ];
 
   // Estados separados
   const [genero, setGenero] = useState(null);
-  const [unidade, setUnidade] = useState(null);
 
   const itensGenero = [
     { label: 'Masculino', value: 'masculino' },
@@ -35,7 +40,6 @@ export default function CadastroPac() {
 
   // Estados para os campos mascarados
   const [dataNascimento, setDataNascimento] = useState('');
-  const [cns, setCns] = useState('');
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
@@ -44,17 +48,14 @@ export default function CadastroPac() {
     // Lista de campos obrigatórios
     const obrigatorios = [
       { nome: 'nome', label: 'Nome Completo' },
+      { nome: 'cpf', label: 'CPF' },
       { nome: 'data_nascimento', label: 'Data de Nascimento' },
       { nome: 'genero', label: 'Gênero' },
-      { nome: 'cpf', label: 'CPF' },
       { nome: 'senha', label: 'Senha' },
-      { nome: 'cns', label: 'CNS' },
       { nome: 'nome_mae', label: 'Nome da mãe' },
       { nome: 'nome_responsavel', label: 'Nome do responsável' },
       { nome: 'telefone_responsavel', label: 'Telefone do responsável' },
       { nome: 'email_responsavel', label: 'E-mail do responsável' },
-      { nome: 'n_prontuario', label: 'Nº do Prontuário' },
-      { nome: 'unidade_prontuario', label: 'Unidade do Prontuário' },
     ];
 
     // Verifica se algum campo obrigatório está vazio
@@ -62,7 +63,7 @@ export default function CadastroPac() {
 
     if (vazio) {
       Alert.alert("Atenção", `O campo "${vazio.label}" é obrigatório.`);
-      return;
+      return false;
     }
 
     // temporario, mudar depois p uma funcao que onchange/onblur da senha ja avise o problema
@@ -75,56 +76,133 @@ export default function CadastroPac() {
       Alert.alert("Atenção", "As senhas não coincidem. Por favor, verifique e tente novamente.");
       return;
     }
-    cadastropacTres();
+    cadastropacDois();
   }
+
+  function checkEmail() {
+    if (validator.isEmail(email)) {
+      return;
+    } else {
+      return <Text style={styles.textFormErro}>Email inválido</Text>;
+    }
+  }
+
+  function checkTel() {
+    if (validator.isMobilePhone(tel, "pt-BR") && tel.length == 11) {
+      return;
+    } else {
+      return <Text style={styles.textFormErro}>Número inválido</Text>;
+    }
+  }
+
+  const validateCpf = require('validar-cpf');
+
+  function checkCpf() {
+    if (validateCpf(cpfUnmasked)) {
+      return;
+    } else {
+      return <Text style={styles.textFormErro}>CPF inválido</Text>;
+    }
+  }
+
+  function checkSenha(){
+    if (validator.isStrongPassword(senhaForca, {minUppercase: 0, minSymbols: 0})) {
+      return;
+    } else {
+      return <Text style={styles.textFormErro}>Senha fraca</Text>;
+    }
+  }
+
+  const ref_botao = useRef();
+  const ref_inputGenero = useRef();
+  const ref_input2 = useRef();
+  const ref_input3 = useRef();
+  const ref_input4 = useRef();
+  const ref_input5 = useRef();
+  const ref_input6 = useRef();
+  const ref_input7 = useRef();
+  const ref_input8 = useRef();
+  const ref_input9 = useRef();
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280} enableOnAndroid={true}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
 
             <View>
-              <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
+              <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
               <Text style={styles.subTitulo}>Dados pessoais</Text>
             </View>
 
+            
             <View>
-              <Text style={styles.textForm}>Nome Completo*</Text>
-              <TextInput
+              <Text style={styles.textForm}>Nome completo*</Text>
+              <MyInput
                 style={styles.input}
-                placeholder='ex: Rene Vitor França de Melo'
+                placeholder='Ex: João Silva Santos'
                 placeholderTextColor={'grey'}
+                returnKeyType="next"
+                submitBehavior='submit'
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome: text }))}
+                onSubmitEditing={() => ref_input2.current.focus()}
               />
             </View>
 
             <View>
-              <Text style={styles.textForm}>Data de Nascimento*</Text>
-              <MaskInput
+              <Text style={styles.textForm}>CPF*</Text>
+              <MyMaskInput
+                ref={ref_input2}
+                style={styles.input}
+                keyboardType="numeric"
+                mask={cpfMask}
+                maxLength={14}
+                value={cpf}
+                autoComplete='off'
+                placeholder='Ex: 123.456.789-01'
+                placeholderTextColor={'grey'}
+                onSubmitEditing={() => ref_input3.current.focus()}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onChangeText={(masked, unmasked) => {
+                  setCpf(masked);
+                  setCpfUnmasked(unmasked);
+                  setPacientedados(prev => ({ ...prev, cpf: unmasked }));
+                }}
+              />
+
+              {(cpfUnmasked == '') ? (
+                null
+              ) : (
+                checkCpf()
+              )
+              }
+            </View>
+
+            <View>
+              <Text style={styles.textForm}>Data de nascimento*</Text>
+              <MyMaskInput
                 style={styles.input}
                 keyboardType="numeric"
                 mask={dateMask}
+                returnKeyType="next"
                 maxLength={10}
                 value={dataNascimento}
-                placeholder='ex: 14/10/2021'
+                placeholder='Ex: DD/MM/YYYY'
                 placeholderTextColor={'grey'}
+                ref={ref_input3}
                 onChangeText={(masked, unmasked) => {
                   setDataNascimento(masked);
                   setPacientedados(prev => ({ ...prev, data_nascimento: unmasked }));
                 }}
+                onSubmitEditing={() => ref_inputGenero.current.open()}
               />
             </View>
 
             <View>
               <Text style={styles.textForm}>Gênero*</Text>
-              <Dropdown
-                style={styles.input}
-                placeholderStyle={styles.exemplo}
-                selectedTextStyle={styles.textForm}
-                containerStyle={styles.dropdownContainer}
-                itemTextStyle={styles.textForm}
-                activeColor='#F5F5FF'
+              <MyDropdown
+              ref={ref_inputGenero}
                 data={itensGenero}
                 labelField="label"
                 valueField="value"
@@ -138,134 +216,130 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>CPF*</Text>
-              <MaskInput
-                style={styles.input}
-                keyboardType="numeric"
-                mask={cpfMask}
-                maxLength={14}
-                value={cpf}
-                placeholder='ex: 140.777.964-77'
-                placeholderTextColor={'grey'}
-                onChangeText={(masked, unmasked) => {
-                  setCpf(masked);
-                  setPacientedados(prev => ({ ...prev, cpf: unmasked }));
-                }}
-              />
-            </View>
-
-            <View>
               <Text style={styles.textForm}>Senha*</Text>
-              <TextInput
-                style={styles.input}
-                placeholder='ex: s&nh@Segur@123$'
+              <View style={{flexDirection: 'row'}}>
+              <MyInput
+                ref={ref_input4}
+                style={[styles.input, {width: '100%'}]}
+                placeholder='Digite uma senha segura'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => 
-                  setPacientedados(prev => ({ ...prev, senha: text }))}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onSubmitEditing={() => ref_input5.current.focus()}
+                onChangeText={(text) => {
+                  setSenhaForca(text);
+                  setPacientedados(prev => ({ ...prev, senha: text }));}}
                 secureTextEntry
               />
+              </View>
+              {(senhaForca == '') ? (
+                null
+              ) : (
+                checkSenha()
+              )
+              }
             </View>
 
             <View>
               <Text style={styles.textForm}>Confirmar senha*</Text>
-              <TextInput
+              <MyInput
+                ref={ref_input5}
                 style={styles.input}
                 placeholder='Digite novamente a senha'
                 placeholderTextColor={'grey'}
                 value={confirmarSenha}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onSubmitEditing={() => ref_input6.current.focus()}
                 onChangeText={setConfirmarSenha}
                 secureTextEntry
               />
             </View>
 
             <View>
-              <Text style={styles.textForm}>CNS*</Text>
-              <MaskInput
-                style={styles.input}
-                keyboardType='numeric'
-                maxLength={18}
-                mask={cnsMask}
-                value={cns}
-                placeholder='ex: 123 4567 8901 2345'
-                placeholderTextColor={'grey'}
-                onChangeText={(masked, unmasked) => {
-                  setCns(masked);
-                  setPacientedados(prev => ({ ...prev, cns: unmasked }));
-                }}
-              />
-            </View>
-
-            <View>
               <Text style={styles.textForm}>Nome da mãe*</Text>
-              <TextInput
+              <MyInput
+                ref={ref_input6}
                 style={styles.input}
-                placeholder='ex: Roseane França de Melo'
+                placeholder='Ex: Maria Silva Santos'
                 placeholderTextColor={'grey'}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onSubmitEditing={() => ref_input7.current.focus()}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome_mae: text }))}
               />
             </View>
 
             <View>
               <Text style={styles.textForm}>Nome do responsável*</Text>
-              <TextInput
+              <MyInput
+                ref={ref_input7}
                 style={styles.input}
-                placeholder='ex: Roseane França de Melo'
+                placeholder='Ex: Maria Silva Santos'
                 placeholderTextColor={'grey'}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onSubmitEditing={() => ref_input8.current.focus()}
                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, nome_responsavel: text }))}
               />
             </View>
 
             <View>
               <Text style={styles.textForm}>Telefone do responsável*</Text>
-              <MaskInput
+              <MyMaskInput
+                ref={ref_input8}
                 style={styles.input}
-                placeholder='ex: (14)12345-6789'
+                placeholder='Ex: (12) 34567-8901'
                 placeholderTextColor={'grey'}
                 keyboardType="phone-pad"
                 mask={phoneMask}
                 maxLength={15}
                 value={telResp}
+                returnKeyType="next"
+                submitBehavior='submit'
+                onSubmitEditing={() => ref_input9.current.focus()}
                 onChangeText={(masked, unmasked) => {
                   setTelResp(masked);
+                  setTel(unmasked);
                   setPacientedados(prev => ({ ...prev, telefone_responsavel: unmasked }));
                 }}
               />
+
+              
+              {(tel == '') ? (
+                null
+              ) : (
+                checkTel()
+              )
+              }
             </View>
 
             <View>
               <Text style={styles.textForm}>E-mail do responsável*</Text>
-              <TextInput
+              <MyInput
+                ref={ref_input9}
                 style={styles.input}
+                autoComplete='email'
                 keyboardType='email-address'
-                placeholder='ex: roseane@gmail.com'
+                placeholder='Ex: maria@gmail.com'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, email_responsavel: text }))}
+                onChangeText={(text) => { 
+                  setEmail(text);
+                  setPacientedados(prev => ({ ...prev, email_responsavel: text }))}}
               />
-            </View>
-
-            <View>
-              <Text style={styles.textForm}>Nº do Prontuário*</Text>
-              <TextInput
-                style={styles.input}
-                placeholder='ex: 123456789'
-                placeholderTextColor={'grey'}
-                onChangeText={(text) => setPacientedados(prev => ({ ...prev, n_prontuario: text }))}
-              />
-              <RadioButton.Group
-                onValueChange={value => {
-                  setUnidade(value);
-                  setPacientedados(prev => ({ ...prev, unidade_prontuario: value }));
-                }}
-                value={unidade}
-              >
-                <RadioButton.Item uncheckedColor='#231F20' color="#231F20" labelStyle={styles.textForm} label="UBS" value="UBS" />
-                <RadioButton.Item uncheckedColor='#231F20' color="#231F20" labelStyle={styles.textForm} label="Unesp" value="Unesp" />
-              </RadioButton.Group>
+              {(email == '') ? (
+                null
+              ) : (
+                checkEmail()
+              )
+              }
             </View>
 
           </View>
-          <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
-            <ButtonP label="Próximo" onPress={Proximo} />
+          <View ref={ref_botao} style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
+
+              <ButtonP label="Próximo" onPress={Proximo} /> 
+
           </View>
         </View>
       </KeyboardAwareScrollView>

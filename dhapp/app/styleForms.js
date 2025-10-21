@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway'
   },
   exemplo: {
-    color: 'grey'
+    color: 'grey',
+    fontFamily: 'Roboto',
   },
   fab: {
     position: 'absolute',
@@ -86,7 +87,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '90%',
     position: 'static',
-  }
+  },
+  textFormErro: {
+    fontFamily: 'Roboto',
+    color: 'red',
+  } 
 })
 
 export default styles;
