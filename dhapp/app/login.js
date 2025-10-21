@@ -11,6 +11,7 @@ import * as SQLite from 'expo-sqlite';
 import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ActivityIndicator } from 'react-native-paper';
 import { supabase } from "../supabaseserver";
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
@@ -24,12 +25,15 @@ export default function Login() {
   const router = useRouter();
   const { setUserId } = useUsuario();
   const ref_senha = useRef();
+  const [loginCarregando, setLoginCarregando] = useState(false);
 
   const login = async () => {
     if (!cpf || !senha) {
       Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
       return;
     }
+
+    setLoginCarregando(true);
 
     try {
       const emailFake = `${cpf}@meuapp.com`;
@@ -56,6 +60,7 @@ export default function Login() {
         });
 
         if (error) {
+          setLoginCarregando(false);
           console.error("Erro no login:", error.message);
           Alert.alert("Erro", "CPF ou senha inválidos");
           return;
@@ -108,6 +113,7 @@ export default function Login() {
           router.dismissAll();
           router.replace("/telaInicial");
         } else {
+          setLoginCarregando(false);
           Alert.alert(
             "Sem conexão",
             "Nenhum login anterior encontrado. Conecte-se à internet para fazer login pela primeira vez."
@@ -115,10 +121,12 @@ export default function Login() {
         }
       }
     } catch (err) {
+      setLoginCarregando(false);
       console.error("Erro inesperado:", err);
       Alert.alert("Erro", "Não foi possível realizar o login.");
     }
   };
+
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
@@ -183,7 +191,13 @@ export default function Login() {
 
             {/* Botão */}
             <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
-              <ButtonP label='Entrar' onPress={login} />
+
+              {loginCarregando ? (
+                <ButtonP onPress={login} label=<ActivityIndicator color='#FAFAFF'></ActivityIndicator> />
+              ) : (
+                <ButtonP label='Entrar' onPress={login} />
+              )
+              }
             </View>
           </View>
         </View>

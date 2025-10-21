@@ -3,6 +3,7 @@ import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
+import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
@@ -215,14 +216,16 @@ export default function CadastroPacQuatro() {
                 console.log("Sem internet: paciente será sincronizado depois");
             }
 
-            setCadastroCarregando(false)
             Alert.alert("Cadastro concluído!");
+            router.replace('/');
         } catch (error) {
             await db.execAsync('ROLLBACK');
             console.error("Erro ao salvar paciente:", error);
             setCadastroCarregando(false)
         }
     };
+
+
 
     const ref_input1 = useRef();
     const ref_input2 = useRef();
