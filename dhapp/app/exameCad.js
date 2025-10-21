@@ -1,7 +1,7 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
 import { useUsuario } from '@/context/context';
-import * as ImagePicker from "expo-image-picker";
 import NetInfo from "@react-native-community/netinfo";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
@@ -216,16 +216,16 @@ export default function ExameCad() {
               value={data}
               onChangeText={(masked) => setData(masked)}
               maxLength={10}
-              placeholder='ex: 14/10/2001'
+              placeholder='ex: DD/MM/YYYY'
               placeholderTextColor={'grey'}
             />
           </View>
 
           <View>
-            <Text style={styles.textForm}>Médico Responsável</Text>
+            <Text style={styles.textForm}>Médico responsável</Text>
             <TextInput
               style={styles.input}
-              placeholder='ex: Rene Vitor França de Melo'
+              placeholder='Nome do médico que realizou a consulta/exame'
               placeholderTextColor={'grey'}
               value={medico}
               onChangeText={setMedico}
@@ -236,7 +236,7 @@ export default function ExameCad() {
             <Text style={styles.textForm}>Observações</Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite aqui...'
+              placeholder='Observações adicionais sobre a consulta/exame'
               placeholderTextColor={'grey'}
               value={obs}
               onChangeText={setObs}
