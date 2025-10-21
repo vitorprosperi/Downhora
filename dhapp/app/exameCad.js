@@ -25,7 +25,7 @@ export default function ExameCad() {
   const [medico, setMedico] = useState('');
   const [obs, setObs] = useState('');
   const [outroExame, setOutroExame] = useState('');
-  const [imagemUrl, setImagemUrl] = useState('');
+  const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const tiposExames = [
@@ -34,7 +34,8 @@ export default function ExameCad() {
     { label: 'Outro', value: 'Outro' },
   ];
 
-  const escolherEEnviarImagem = async () => {
+  // Seleciona imagem (sem cortes)
+  const escolherESelecionarImagem = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
@@ -44,8 +45,6 @@ export default function ExameCad() {
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
-        allowsEditing: true,
-        aspect: [1, 1],
         quality: 0.8,
         base64: true,
       });
@@ -56,52 +55,49 @@ export default function ExameCad() {
       }
 
       const file = result.assets[0];
-      const base64Image = file.base64;
-      if (!base64Image) {
-        Alert.alert("Erro", "Não foi possível ler o conteúdo da imagem.");
-        return;
-      }
-
-      setUploading(true);
-
-      const fileExt = file.uri.split(".").pop() || "jpg";
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `exames/${fileName}`;
-
-      const imageBuffer = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
-
-      const { error: uploadError } = await supabase.storage
-        .from("imagens")
-        .upload(filePath, imageBuffer, {
-          contentType: "image/jpeg",
-        });
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage.from("imagens").getPublicUrl(filePath);
-      const imageUrl = data.publicUrl;
-
-      setImagemUrl(imageUrl);
-      Alert.alert("Sucesso", "Imagem adicionada ao exame!");
-
+      setImagemSelecionada(file);
+      Alert.alert("Imagem selecionada", "A imagem foi selecionada com sucesso!");
     } catch (error) {
-      console.error("Erro ao enviar imagem:", error.message);
-      Alert.alert("Erro", "Não foi possível enviar a imagem.");
-    } finally {
-      setUploading(false);
+      console.error("Erro ao selecionar imagem:", error.message);
+      Alert.alert("Erro", "Não foi possível selecionar a imagem.");
     }
   };
 
+  // Faz upload da imagem e salva o exame
   const salvarExame = async () => {
     if (!userId) {
-      if (!userId) {
-        Alert.alert("Erro de Contexto", "ID do paciente não encontrado. Não foi possível salvar o exame.");
-        return;
-      }
+      Alert.alert("Erro de Contexto", "ID do paciente não encontrado. Não foi possível salvar o exame.");
+      return;
     }
+
     try {
+      setUploading(true);
+      let imageUrlFinal = null;
+
+      // Upload só acontece aqui
+      if (imagemSelecionada && imagemSelecionada.base64) {
+        const base64Image = imagemSelecionada.base64;
+        const fileExt = imagemSelecionada.uri.split(".").pop() || "jpg";
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `exames/${fileName}`;
+
+        const imageBuffer = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
+
+        const { error: uploadError } = await supabase.storage
+          .from("imagens")
+          .upload(filePath, imageBuffer, {
+            contentType: "image/jpeg",
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage.from("imagens").getPublicUrl(filePath);
+        imageUrlFinal = data.publicUrl;
+      }
+
       const tipoSelecionado = exame === 'Outro' ? outroExame : exame;
 
+      // Salva no Supabase
       const { data: supaData, error } = await supabase
         .from('exames')
         .insert([
@@ -111,8 +107,8 @@ export default function ExameCad() {
             data_exame: data,
             medico_responsavel: medico,
             obs: obs,
-            imagem_url: imagemUrl
-          }
+            imagem_url: imageUrlFinal,
+          },
         ]);
 
       if (error) {
@@ -121,6 +117,7 @@ export default function ExameCad() {
         console.log("Exame salvo no Supabase:", supaData);
       }
 
+      // Salva também no SQLite local
       await db.runAsync(
         `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
          VALUES (?, ?, ?, ?, ?)`,
@@ -128,11 +125,15 @@ export default function ExameCad() {
       );
 
       console.log("Exame salvo no SQLite local");
+      Alert.alert("Sucesso", "Exame salvo com sucesso!");
       router.dismiss(1);
       router.replace('/exames');
 
     } catch (err) {
       console.error("Erro inesperado:", err);
+      Alert.alert("Erro", "Não foi possível salvar o exame.");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -178,14 +179,14 @@ export default function ExameCad() {
           {(exame === 'Cariótipo' || exame === 'Pezinho') && (
             <Pressable
               style={[styles.botaoUpload, { backgroundColor: '#3478f6', marginTop: 10, borderRadius: 10, padding: 10 }]}
-              onPress={escolherEEnviarImagem}
+              onPress={escolherESelecionarImagem}
               disabled={uploading}
             >
               {uploading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
                 <Text style={{ color: '#fff', textAlign: 'center', fontSize: 16 }}>
-                  {imagemUrl ? "Imagem adicionada ✅" : "Adicionar imagem do exame"}
+                  {imagemSelecionada ? "Exame selecionado ✅" : "Selecionar imagem do exame"}
                 </Text>
               )}
             </Pressable>
