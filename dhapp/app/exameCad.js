@@ -1,4 +1,4 @@
-import ButtonP from '@/components/ButtonP';
+import { ButtonP } from '@/components/ButtonP';
 import { useUsuario } from '@/context/context';
 import NetInfo from "@react-native-community/netinfo";
 import * as ImagePicker from "expo-image-picker";
