@@ -1,6 +1,7 @@
 import ButtonP from '@/components/ButtonP';
 import { useUsuario } from '@/context/context';
 import * as ImagePicker from "expo-image-picker";
+import NetInfo from "@react-native-community/netinfo";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
@@ -94,40 +95,55 @@ export default function ExameCad() {
 
   const salvarExame = async () => {
     if (!userId) {
-      if (!userId) {
-        Alert.alert("Erro de Contexto", "ID do paciente não encontrado. Não foi possível salvar o exame.");
-        return;
-      }
+      Alert.alert("Erro de Contexto", "ID do paciente não encontrado. Não foi possível salvar o exame.");
+      return;
     }
+
+    const tipoSelecionado = exame === 'Outro' ? outroExame : exame;
+    const novoExame = {
+      usuario_id: userId,
+      tipo_exame: tipoSelecionado,
+      data_exame: data,
+      medico_responsavel: medico,
+      obs: obs,
+      imagem_url: imagemUrl
+    };
+
     try {
-      const tipoSelecionado = exame === 'Outro' ? outroExame : exame;
+      const netInfo = await NetInfo.fetch();
+      const isOnline = netInfo.isConnected;
 
-      const { data: supaData, error } = await supabase
-        .from('exames')
-        .insert([
-          {
-            usuario_id: userId,
-            tipo_exame: tipoSelecionado,
-            data_exame: data,
-            medico_responsavel: medico,
-            obs: obs,
-            imagem_url: imagemUrl
-          }
-        ]);
+      if (isOnline) {
+        // ONLINE: salva no Supabase e SQLite
+        const { data: supaData, error } = await supabase
+          .from('exames')
+          .insert([novoExame]);
 
-      if (error) {
-        console.error("Erro ao salvar exame no Supabase:", error);
+        if (error) {
+          console.error("Erro ao salvar exame no Supabase:", error);
+        } else {
+          console.log("Exame salvo no Supabase:", supaData);
+        }
+
+        await db.runAsync(
+          `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+           VALUES (?, ?, ?, ?, ?)`,
+          [userId, tipoSelecionado, data, medico, obs]
+        );
+
+        console.log("Exame salvo no SQLite local");
+        Alert.alert("Sucesso", "Exame salvo com sucesso!");
       } else {
-        console.log("Exame salvo no Supabase:", supaData);
+        // OFFLINE: adiciona à fila de sincronização
+        await db.runAsync(
+          `INSERT INTO fila_sinc (acao, nome_tabela, payload)
+           VALUES (?, ?, ?)`,
+          ["insert", "exames", JSON.stringify(novoExame)]
+        );
+        console.log("Exame adicionado à fila de sincronização (offline).");
+        Alert.alert("Offline", "Exame salvo localmente e será enviado quando a internet voltar.");
       }
 
-      await db.runAsync(
-        `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
-         VALUES (?, ?, ?, ?, ?)`,
-        [userId, tipoSelecionado, data, medico, obs]
-      );
-
-      console.log("Exame salvo no SQLite local");
       router.dismiss(1);
       router.replace('/exames');
 
