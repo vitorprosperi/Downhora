@@ -10,14 +10,13 @@ import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
 
-
 export default function Exames() {
   const [exames, setExames] = useState([]);
   const { userId } = useUsuario();
   const router = useRouter();
   const db = useSQLiteContext();
 
-  // Carrega os exames do Supabase (modo online)
+  // Carrega exames do Supabase (modo online)
   const carregarSupabase = async () => {
     try {
       const { data: examesData, error } = await supabase
@@ -30,7 +29,7 @@ export default function Exames() {
       setExames(examesData || []);
       console.log("Exames carregados do Supabase:", examesData);
 
-      // Atualiza o SQLite com os dados mais recentes (sincroniza)
+      // Sincroniza SQLite
       await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
       for (const ex of examesData) {
         await db.runAsync(
@@ -60,7 +59,7 @@ export default function Exames() {
   // Detecta se há conexão com a internet e decide de onde carregar
   const carregarExames = async () => {
     const state = await NetInfo.fetch();
-     const isOnline = state.isConnected;
+    const isOnline = state.isConnected;
     if (isOnline) {
       console.log("Modo online detectado. Carregando do Supabase...");
       await carregarSupabase();
@@ -81,6 +80,7 @@ export default function Exames() {
     });
   };
 
+  // 🔹 Função para excluir exame e também imagem do Storage
   const deletarExame = async (id) => {
     try {
       Alert.alert(
@@ -95,14 +95,52 @@ export default function Exames() {
               const state = await NetInfo.fetch();
 
               if (state.isConnected) {
-                // Online: deleta no Supabase e no SQLite
-                const { error: deleteError } = await supabase.from("exames").delete().eq("id", id);
+                // 🔹 Busca o exame no Supabase para obter a URL da imagem
+                const { data: exameData, error: fetchError } = await supabase
+                  .from("exames")
+                  .select("imagem_url")
+                  .eq("id", id)
+                  .single();
+
+                if (fetchError) {
+                  console.error("Erro ao buscar exame:", fetchError);
+                } else if (exameData?.imagem_url) {
+                  try {
+                    // 🔹 Extrai o caminho do arquivo do Supabase Storage
+                    // Exemplo: https://xyz.supabase.co/storage/v1/object/public/imagens/exames/123.jpg
+                    const url = exameData.imagem_url;
+                    const path = url.split("/imagens/")[1]; // pega "exames/123.jpg"
+
+                    if (path) {
+                      // 🔹 Exclui o arquivo do bucket "imagens"
+                      const { error: deleteImgError } = await supabase.storage
+                        .from("imagens")
+                        .remove([path]);
+
+                      if (deleteImgError) {
+                        console.error("Erro ao excluir imagem no Storage:", deleteImgError);
+                      } else {
+                        console.log("Imagem excluída do Storage:", path);
+                      }
+                    }
+                  } catch (err) {
+                    console.error("Erro ao processar URL da imagem:", err);
+                  }
+                }
+
+                // 🔹 Depois exclui o registro no banco Supabase
+                const { error: deleteError } = await supabase
+                  .from("exames")
+                  .delete()
+                  .eq("id", id);
+
                 if (deleteError) throw deleteError;
                 console.log("Exame deletado no Supabase:", id);
               } else {
                 console.log("Sem conexão, exclusão apenas local:", id);
               }
 
+              // 🔹 Exclui localmente no SQLite
               await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
               setExames((prev) => prev.filter((ex) => ex.id !== id));
 
