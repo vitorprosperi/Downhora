@@ -208,7 +208,6 @@ export default function ExameCad() {
             <Text style={styles.textForm}>Médico responsável</Text>
             <TextInput
               style={styles.input}
-              placeholder='Nome do médico que realizou a consulta/exame'
               placeholderTextColor={'grey'}
               value={medico}
               onChangeText={setMedico}
@@ -219,7 +218,6 @@ export default function ExameCad() {
             <Text style={styles.textForm}>Observações</Text>
             <TextInput
               style={styles.input}
-              placeholder='Observações adicionais sobre a consulta/exame'
               placeholderTextColor={'grey'}
               value={obs}
               onChangeText={setObs}

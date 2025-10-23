@@ -162,7 +162,7 @@ function RootLayoutNav() {
             screenOptions={{
               headerStyle: { backgroundColor: '#FAFAFF' },
               headerTintColor: '#231F20',
-              headerTitleStyle: { fontFamily: 'Raleway-500' },
+              headerTitleStyle: { fontFamily: 'Raleway-700' },
               title: '',
               headerShadowVisible: false,
             }}

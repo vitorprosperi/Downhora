@@ -1,6 +1,6 @@
 import { useUsuario } from "@/context/context";
 import NetInfo from "@react-native-community/netinfo";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
@@ -120,18 +120,22 @@ export default function Exames() {
   return (
     <SafeAreaView
       edges={["bottom", "left", "right"]}
-      style={[styles.corEscura, { alignItems: "center" }]}
+      style={[styles.corEscura]}
     >
-      <View style={styles.telaExames}>
-        <Text style={styles.titulo}>Exames Cadastrados</Text>
-
+      <Stack.Screen
+              options={{ title: 'Exames', 
+                headerShadowVisible: true,
+              }}
+            />
+      <View style={cstyle.tela}>
         <View style={cstyle.container}>
           <FlatList
             data={exames}
+            contentContainerStyle={cstyle.lista}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <Pressable onPress={() => abrirDetalhes(item)}>
-                <View style={cstyle.card}>
+              <Pressable style={cstyle.card} onPress={() => abrirDetalhes(item)}>
+                <View>
                   <Text style={cstyle.textoSecundario}>
                     Dr. {item.medico_responsavel}
                   </Text>
@@ -170,16 +174,19 @@ export default function Exames() {
 
 const cstyle = StyleSheet.create({
   card: {
-    backgroundColor: "hsla(216, 70%, 45%, 0.2)",
-    borderRadius: 1,
-    minWidth: "99%",
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    marginBottom: 5,
+    marginBottom: 10,
+    width: 350,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    boxShadow: '0px 2px 2.1px -1.9px hsla(240, 25%, 60% / 0.38)',
+   // 0px 0.8px 0.9px -0.9px hsl(var(--shadow-color) / 0.36),
+    //0px 2px 2.1px -1.9px hsl(var(--shadow-color) / 0.33),
+    //0px 4.9px 5.3px -2.8px hsl(var(--shadow-color) / 0.31)',
   },
   container: {
     width: "100%",
-    alignItems: "center",
     gap: 10,
     flex: 1,
   },
@@ -209,4 +216,10 @@ const cstyle = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
   },
+  tela: {
+    flex: 1,
+  },
+  lista: {
+    alignItems: 'center',
+  }
 });
