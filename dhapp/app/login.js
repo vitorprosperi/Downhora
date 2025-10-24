@@ -34,21 +34,14 @@ export default function Login() {
     }
 
     setLoginCarregando(true);
+    let db;
 
     try {
       const emailFake = `${cpf}@meuapp.com`;
       const netInfo = await NetInfo.fetch();
       const isOnline = netInfo.isConnected;
 
-      const db = await SQLite.openDatabaseAsync('downhora.db');
-      await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS usuarios (
-          id TEXT PRIMARY KEY NOT NULL,
-          nome TEXT,
-          access_token TEXT,
-          refresh_token TEXT
-        );
-      `);
+      db = await SQLite.openDatabaseAsync('downhora.db');
 
       //
       // MODO ONLINE
@@ -102,14 +95,14 @@ export default function Login() {
       // MODO OFFLINE
       //
       else {
-        const row = await db.getFirstAsync(
-          "SELECT id, nome FROM usuarios LIMIT 1"
+        const sessao = await db.getFirstAsync(
+          "SELECT usuario_id AS id, access_token, refresh_token FROM sessoes LIMIT 1"
         );
 
-        if (row?.id) {
-          setUserId(row.id);
-          console.log("Login offline bem-sucedido:", row.nome);
-          Alert.alert("Modo Offline", `Bem-vindo de volta, ${row.nome}!`);
+        if (sessao?.id) {
+          setUserId(sessao.id);
+          console.log("Login offline bem-sucedido:", sessao.id);
+          Alert.alert("Modo Offline", `Bem-vindo de volta!`);
           router.dismissAll();
           router.replace("/telaInicial");
         } else {

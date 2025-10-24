@@ -16,8 +16,18 @@ export default function Exames() {
   const router = useRouter();
   const db = useSQLiteContext();
 
+  // Flag para evitar concorrência de sincronização
+  let sincronizacaoEmAndamento = false;
+
   // Carrega exames do Supabase (modo online)
   const carregarSupabase = async () => {
+    if (sincronizacaoEmAndamento) {
+      console.log("Sincronização já em andamento, ignorando chamada duplicada.");
+      return;
+    }
+
+    sincronizacaoEmAndamento = true;
+
     try {
       const { data: examesData, error } = await supabase
         .from("exames")
@@ -29,19 +39,32 @@ export default function Exames() {
       setExames(examesData || []);
       console.log("Exames carregados do Supabase:", examesData);
 
-      // Sincroniza SQLite
-      await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
-      for (const ex of examesData) {
-        await db.runAsync(
-          `INSERT INTO exames 
-            (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-          [ex.id, ex.usuario_id, ex.tipo_exame, ex.data_exame, ex.medico_responsavel, ex.obs]
-        );
-      }
+      // Usa transação única para evitar erro prepareAsync
+      await db.withTransactionAsync(async () => {
+        await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
+
+        for (const ex of examesData) {
+          await db.runAsync(
+            `INSERT INTO exames 
+              (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+              VALUES (?, ?, ?, ?, ?, ?)`,
+            [
+              ex.id,
+              ex.usuario_id,
+              ex.tipo_exame,
+              ex.data_exame,
+              ex.medico_responsavel,
+              ex.obs,
+            ]
+          );
+        }
+      });
+
       console.log("Exames sincronizados com SQLite.");
     } catch (error) {
       console.error("Erro ao buscar dados no Supabase:", error.message);
+    } finally {
+      sincronizacaoEmAndamento = false;
     }
   };
 
@@ -80,7 +103,7 @@ export default function Exames() {
     });
   };
 
-  // 🔹 Função para excluir exame e também imagem do Storage
+  // Função para excluir exame e também imagem do Storage
   const deletarExame = async (id) => {
     try {
       Alert.alert(
@@ -95,7 +118,7 @@ export default function Exames() {
               const state = await NetInfo.fetch();
 
               if (state.isConnected) {
-                // 🔹 Busca o exame no Supabase para obter a URL da imagem
+                // Busca o exame no Supabase para obter a URL da imagem
                 const { data: exameData, error: fetchError } = await supabase
                   .from("exames")
                   .select("imagem_url")
@@ -106,13 +129,11 @@ export default function Exames() {
                   console.error("Erro ao buscar exame:", fetchError);
                 } else if (exameData?.imagem_url) {
                   try {
-                    // 🔹 Extrai o caminho do arquivo do Supabase Storage
-                    // Exemplo: https://xyz.supabase.co/storage/v1/object/public/imagens/exames/123.jpg
+                    // Extrai o caminho do arquivo do Supabase Storage
                     const url = exameData.imagem_url;
                     const path = url.split("/imagens/")[1]; // pega "exames/123.jpg"
 
                     if (path) {
-                      // 🔹 Exclui o arquivo do bucket "imagens"
                       const { error: deleteImgError } = await supabase.storage
                         .from("imagens")
                         .remove([path]);
@@ -128,7 +149,7 @@ export default function Exames() {
                   }
                 }
 
-                // 🔹 Depois exclui o registro no banco Supabase
+                // Depois exclui o registro no banco Supabase
                 const { error: deleteError } = await supabase
                   .from("exames")
                   .delete()
@@ -140,8 +161,11 @@ export default function Exames() {
                 console.log("Sem conexão, exclusão apenas local:", id);
               }
 
-              // 🔹 Exclui localmente no SQLite
-              await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
+              // Exclui localmente no SQLite
+              await db.withTransactionAsync(async () => {
+                await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
+              });
+
               setExames((prev) => prev.filter((ex) => ex.id !== id));
 
               Alert.alert("Sucesso", "Exame excluído com sucesso!");
