@@ -2,68 +2,70 @@ import { useState, useEffect } from "react";
 import { Text, View, FlatList } from "react-native";
 import { FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSQLiteContext } from "expo-sqlite";
-
+import { getDB } from "../database";
 import styles from "./styleForms";
 
 export default function Vacina() {
-
-  const [exames, setExames] = useState([]); // lista de exames do SQLite
-  const [pessoaSindromedeDown, setPessoaSindromedeDown] = useState([]); // lista de pessoas com síndrome de Down
-  const [historico, setHistorico] = useState();
+  const [exames, setExames] = useState([]);
+  const [pessoaSindromedeDown, setPessoaSindromedeDown] = useState([]);
+  const [historico, setHistorico] = useState([]);
   const [complementares, setComplementares] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [db, setDb] = useState(null);
 
-  const db = useSQLiteContext();
+  // Inicializa o banco de dados
+  useEffect(() => {
+    (async () => {
+      const database = await getDB();
+      setDb(database);
+    })();
+  }, []);
 
-  // Recuperar exames do SQLite
-  async function carregarExames() {
+  const buscarDados = async (query, setter, nomeTabela) => {
+    if (!db) return;
     try {
-      const result = await db.getAllAsync("SELECT * FROM exames");
-      setExames(result);
-      console.log("Exames recuperados do SQLite:", result);
-    } catch (err) {
-      console.error("Erro ao buscar exames no SQLite:", err);
+      const result = await db.getAllAsync(query);
+      setter(result);
+      console.log(`[SQLite] ${nomeTabela} carregados (${result.length} registros)`);
+    } catch (error) {
+      console.error(`[SQLite] Erro ao buscar ${nomeTabela}:`, error);
     }
-  }
-// Recuperar pessoas com síndrome de Down do SQLite
-  async function carregarPessoaSindromeDeDown() {
-    try {
-      const result = await db.getAllAsync("SELECT * FROM usuarios");
-      setPessoaSindromedeDown(result);
-      console.log("Pessoas com síndrome de Down recuperadas do SQLite:", result);
-    } catch (err) {
-      console.error("Erro ao buscar exames no SQLite:", err);
-    }
-  }
+  };
 
-  // Recuperar histórico de vacinas do SQLite
-  async function carregarHistorico() {
+  const carregarTudo = async () => {
+    if (!db) return;
     try {
-      const result = await db.getAllAsync("SELECT * FROM historico_medico");
-      setHistorico(result);
-      console.log("Histórico de exames recuperado do SQLite:", result);
-    } catch (err) {
-      console.error("Erro ao buscar histórico de exames no SQLite:", err);
-    }
-  }
+      setCarregando(true);
+      await db.execAsync("BEGIN TRANSACTION");
 
-  // Recuperar informações complementares do SQLite
-  async function carregarComplementares() {
-    try {
-      const result = await db.getAllAsync("SELECT * FROM complementares");
-      setComplementares(result);
-      console.log("Informações complementares recuperadas do SQLite:", result);
-    } catch (err) {
-      console.error("Erro ao buscar informações complementares no SQLite:", err);
+      await buscarDados("SELECT * FROM usuarios", setPessoaSindromedeDown, "usuarios");
+      await buscarDados("SELECT * FROM exames", setExames, "exames");
+      await buscarDados("SELECT * FROM historico_medico", setHistorico, "historico_medico");
+      await buscarDados("SELECT * FROM complementares", setComplementares, "complementares");
+
+      await db.execAsync("COMMIT");
+      console.log("[SQLite] Todas as tabelas carregadas com sucesso.");
+    } catch (error) {
+      await db.execAsync("ROLLBACK");
+      console.error("[SQLite] Erro ao carregar dados:", error);
+    } finally {
+      setCarregando(false);
     }
-  }
+  };
 
   useEffect(() => {
-    carregarExames();
-    carregarPessoaSindromeDeDown();
-    carregarHistorico();
-    carregarComplementares();
-  }, []);
+    if (db) carregarTudo();
+  }, [db]);
+
+  if (carregando) {
+    return (
+      <SafeAreaView edges={["bottom", "left", "right"]} style={styles.corEscura}>
+        <View style={[styles.telaInicio, { justifyContent: "center", alignItems: "center" }]}>
+          <Text style={{ color: "black", fontSize: 18 }}>Carregando dados locais...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView edges={["bottom", "left", "right"]} style={styles.corEscura}>
@@ -75,15 +77,15 @@ export default function Vacina() {
           style={styles.fab}
           customSize={76}
           mode="flat"
+          onPress={carregarTudo}
         />
 
-        {/* Lista de exames salvos no SQLite */}
         <Text style={{ color: "black", marginTop: 30, fontSize: 18 }}>
           Exames salvos localmente:
         </Text>
         <FlatList
           data={exames}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           renderItem={({ item }) => (
             <View style={{ backgroundColor: "#333", marginVertical: 5, padding: 10, borderRadius: 8 }}>
               <Text style={{ color: "white" }}>ID: {item.id}</Text>
@@ -95,24 +97,23 @@ export default function Vacina() {
           )}
         />
 
-        <Text style={{ color: "black", marginTop: 30, fontSize: 18 }}>Pessoas com síndrome de Down:</Text>
+        <Text style={{ color: "black", marginTop: 30, fontSize: 18 }}>
+          Pessoas com síndrome de Down:
+        </Text>
         <FlatList
           data={pessoaSindromedeDown}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           renderItem={({ item }) => (
             <View style={{ backgroundColor: "#555", marginVertical: 5, padding: 10, borderRadius: 8 }}>
-              <Text style={{ color: "white"}}>ID: {item.id}</Text>
+              <Text style={{ color: "white" }}>ID: {item.id}</Text>
               <Text style={{ color: "white" }}>Nome: {item.nome}</Text>
               <Text style={{ color: "white" }}>Nascimento: {item.data_nascimento}</Text>
               <Text style={{ color: "white" }}>Gênero: {item.genero}</Text>
               <Text style={{ color: "white" }}>CPF: {item.cpf}</Text>
-              <Text style={{ color: "white" }}>CNS: {item.cns}</Text>
               <Text style={{ color: "white" }}>Nome da mãe: {item.nome_mae}</Text>
               <Text style={{ color: "white" }}>Responsável: {item.nome_responsavel}</Text>
               <Text style={{ color: "white" }}>Tel: {item.telefone_responsavel}</Text>
               <Text style={{ color: "white" }}>Email: {item.email_responsavel}</Text>
-              <Text style={{ color: "white" }}>Prontuário: {item.n_prontuario}</Text>
-              <Text style={{ color: "white" }}>Unidade de saúde: {item.unidade_prontuario}</Text>
             </View>
           )}
         />
@@ -120,37 +121,34 @@ export default function Vacina() {
         <Text style={{ color: "black", marginTop: 30, fontSize: 18 }}>Histórico Médico:</Text>
         <FlatList
           data={historico}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           renderItem={({ item }) => (
-          <View style={{ backgroundColor: "#555", marginVertical: 5, padding: 12, borderRadius: 10 }}>
-            <Text style={{ color: "white", fontWeight: "bold" }}>Histórico ID: {item.id}</Text>
+            <View style={{ backgroundColor: "#555", marginVertical: 5, padding: 12, borderRadius: 10 }}>
+              <Text style={{ color: "white", fontWeight: "bold" }}>Histórico ID: {item.id}</Text>
+              <Text style={{ color: "white" }}>Usuário ID: {item.usuario_id}</Text>
+              <Text style={{ color: "white" }}>Cariótipo: {item.exame_cariotipo} - {item.data_cariotipo}</Text>
+              <Text style={{ color: "white" }}>Triagem auditiva: {item.triagem_auditiva} - {item.data_triagem}</Text>
+              <Text style={{ color: "white" }}>Teste do pezinho: {item.teste_pezinho} - {item.data_pezinho}</Text>
+              <Text style={{ color: "white" }}>Cardiologista: {item.consulta_cardiologista} - {item.data_cardiologista}</Text>
+              <Text style={{ color: "white" }}>Oftalmologista: {item.consulta_oftalmo} - {item.data_oftalmo}</Text>
+              <Text style={{ color: "white" }}>Fonoaudiologia: {item.consulta_fono} - {item.data_fono}</Text>
+              <Text style={{ color: "white" }}>Odontologia: {item.consulta_odonto} - {item.data_odonto}</Text>
+              <Text style={{ color: "white" }}>Endocrinologia: {item.consulta_endocrinologia} - {item.data_endocrinologia}</Text>
+              <Text style={{ color: "white" }}>Fisioterapia: {item.consulta_fisio} - {item.data_fisio}</Text>
+              <Text style={{ color: "white" }}>Terapia ocupacional: {item.consulta_terapia} - {item.data_terapia}</Text>
+              <Text style={{ color: "white" }}>Psicopedagogo: {item.consulta_psicopedagogo} - {item.data_psicopedagogo}</Text>
+              <Text style={{ color: "white" }}>Comorbidades: {item.comorbidades}</Text>
+              <Text style={{ color: "white" }}>Medicamentos: {item.medicamentos}</Text>
+              <Text style={{ color: "white" }}>Alergias: {item.alergias}</Text>
+              <Text style={{ color: "white" }}>Tipo sanguíneo: {item.tipo_sanguineo}</Text>
+            </View>
+          )}
+        />
 
-            <Text style={{ color: "white", marginTop: 5, fontWeight: "bold" }}></Text>
-            <Text style={{ color: "white"}}>ID: {item.usuario_id}</Text>
-
-            <Text style={{ color: "white" }}>Cariótipo: {item.exame_cariotipo} - {item.data_cariotipo}</Text>
-            <Text style={{ color: "white" }}>Triagem auditiva: {item.triagem_auditiva} - {item.data_triagem}</Text>
-            <Text style={{ color: "white" }}>Teste do pezinho: {item.teste_pezinho} - {item.data_pezinho}</Text>
-            <Text style={{ color: "white" }}>Cardiologista: {item.consulta_cardiologista} - {item.data_cardiologista}     </Text>
-            <Text style={{ color: "white" }}>Oftalmologista: {item.consulta_oftalmo} - {item.data_oftalmo}</Text>
-            <Text style={{ color: "white" }}>Fonoaudiologia: {item.consulta_fono} - {item.data_fono}</Text>
-            <Text style={{ color: "white" }}>Odontologia: {item.consulta_odonto} - {item.data_odonto}</Text>
-            <Text style={{ color: "white" }}>Endocrinologia: {item.consulta_endocrinologia} - {item.      data_endocrinologia}</Text>
-            <Text style={{ color: "white" }}>Fisioterapia: {item.consulta_fisio} - {item.data_fisio}</Text>
-            <Text style={{ color: "white" }}>Terapia ocupacional: {item.consulta_terapia} - {item.data_terapia}</Text>
-            <Text style={{ color: "white" }}>Psicopedagogo: {item.consulta_psicopedagogo} - {item.data_psicopedagogo}     </Text>
-            <Text style={{ color: "white", marginTop: 5, fontWeight: "bold" }}></Text>
-            <Text style={{ color: "white" }}>Comorbidades: {item.comorbidades}</Text>
-            <Text style={{ color: "white" }}>Medicamentos em uso: {item.medicamentos}</Text>
-            <Text style={{ color: "white" }}>Alergias: {item.alergias}</Text>
-            <Text style={{ color: "white" }}>Tipo sanguíneo: {item.tipo_sanguineo}</Text>
-          </View>
-         )}
-       />
         <Text style={{ color: "black", marginTop: 30, fontSize: 18 }}>Informações Complementares:</Text>
         <FlatList
           data={complementares}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           renderItem={({ item }) => (
             <View style={{ backgroundColor: "#555", marginVertical: 5, padding: 10, borderRadius: 8 }}>
               <Text style={{ color: "white" }}>ID: {item.id}</Text>
@@ -161,7 +159,7 @@ export default function Vacina() {
               <Text style={{ color: "white" }}>Autonomia de comunicação: {item.autonomia_comunicacao}</Text>
             </View>
           )}
-        /> 
+        />
       </View>
     </SafeAreaView>
   );

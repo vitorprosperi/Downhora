@@ -3,7 +3,6 @@ import { useUsuario } from '@/context/context';
 import NetInfo from "@react-native-community/netinfo";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -11,13 +10,12 @@ import MaskInput from 'react-native-mask-input';
 import { TextInput } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from "../supabaseserver";
+import { getDB } from "../database";
 import styles from "./styleForms";
 
 export default function ExameCad() {
-
   const router = useRouter();
   const { userId } = useUsuario();
-  const db = useSQLiteContext();
 
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
@@ -35,7 +33,7 @@ export default function ExameCad() {
     { label: 'Outro', value: 'Outro' },
   ];
 
-  // 📸 Selecionar imagem da galeria
+  // Selecionar imagem
   const escolherImagem = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -63,7 +61,7 @@ export default function ExameCad() {
     }
   };
 
-  // 💾 Salvar exame (com suporte offline)
+  // Salvar exame (com suporte offline)
   const salvarExame = async () => {
     if (!userId) {
       Alert.alert("Erro", "ID do paciente não encontrado.");
@@ -75,12 +73,11 @@ export default function ExameCad() {
 
     try {
       setUploading(true);
-
-      // 🔗 Verifica conexão
+      const db = await getDB(); // ✅ sempre obtém o mesmo handle, sem race condition
       const netInfo = await NetInfo.fetch();
       const isOnline = netInfo.isConnected;
 
-      // Faz upload se houver imagem
+      // Upload de imagem (apenas online)
       if (imagemSelecionada && imagemSelecionada.base64 && isOnline) {
         const base64Image = imagemSelecionada.base64;
         const fileExt = imagemSelecionada.uri.split(".").pop() || "jpg";
@@ -108,24 +105,30 @@ export default function ExameCad() {
       };
 
       if (isOnline) {
-        // 🔹 ONLINE: salva Supabase + SQLite
+        // ONLINE: salva Supabase + SQLite
         const { data: supaData, error } = await supabase.from('exames').insert([novoExame]);
         if (error) console.error("Erro Supabase:", error);
         else console.log("Exame salvo online:", supaData);
 
-        await db.runAsync(
-          `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
-           VALUES (?, ?, ?, ?, ?)`,
-          [userId, tipoSelecionado, data, medico, obs]
-        );
+        await db.withTransactionAsync(async () => {
+          await db.runAsync(
+            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+             VALUES (?, ?, ?, ?, ?)`,
+            [userId, tipoSelecionado, data, medico, obs]
+          );
+        });
+
         Alert.alert("Sucesso", "Exame salvo com sucesso!");
       } else {
-        // 🔸 OFFLINE: salva na fila de sincronização
-        await db.runAsync(
-          `INSERT INTO fila_sinc (acao, nome_tabela, payload)
-           VALUES (?, ?, ?)`,
-          ["insert", "exames", JSON.stringify(novoExame)]
-        );
+        // OFFLINE: salva na fila de sincronização
+        await db.withTransactionAsync(async () => {
+          await db.runAsync(
+            `INSERT INTO fila_sinc (acao, nome_tabela, payload)
+             VALUES (?, ?, ?)`,
+            ["insert", "exames", JSON.stringify(novoExame)]
+          );
+        });
+
         Alert.alert("Offline", "Exame salvo localmente e será sincronizado depois.");
       }
 
@@ -144,7 +147,6 @@ export default function ExameCad() {
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
       <View style={styles.container}>
         <View style={styles.containerForm}>
-
           <Text style={styles.titulo}>Cadastro de exames</Text>
           <Text style={styles.subTitulo}>Informações do exame</Text>
           <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>

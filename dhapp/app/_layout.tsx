@@ -1,14 +1,12 @@
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
-import { PacienteProvider, UsuarioProvider } from '../context/context'; // importe o UsuarioProvider
+import { PacienteProvider, UsuarioProvider } from '../context/context';
 import AppInitializer from '../Initializer/appinitializer';
+import { getDB } from '../database';
 
 SplashScreen.preventAutoHideAsync();
-
-const DB_VERSION = 18; 
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -21,143 +19,18 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-    }
+    (async () => {
+      await getDB(); // garante que o banco está pronto antes de renderizar o app
+      if (loaded || error) SplashScreen.hideAsync();
+    })();
   }, [loaded, error]);
 
-  if (!loaded && !error) {
-    return null;
-  }
+  if (!loaded && !error) return null;
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
   return (
-    <SQLiteProvider
-      databaseName="downhora.db"
-      onInit={async (db) => {
-        await db.execAsync(`
-          CREATE TABLE IF NOT EXISTS Meta (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            versao INTEGER
-          );
-        `);
-
-        type MetaRow = { versao: number };
-
-        const row = await db.getFirstAsync<MetaRow>("SELECT versao FROM Meta LIMIT 1");
-
-        if (!row || row.versao < DB_VERSION) {
-          await db.execAsync("DROP TABLE IF EXISTS fila_sinc;");
-          await db.execAsync("DROP TABLE IF EXISTS sessoes;");
-          await db.execAsync("DROP TABLE IF EXISTS exames;");
-          await db.execAsync("DROP TABLE IF EXISTS complementares;");
-          await db.execAsync("DROP TABLE IF EXISTS historico_medico;");
-          await db.execAsync("DROP TABLE IF EXISTS usuarios;");
-
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS usuarios (
-              id TEXT PRIMARY KEY,
-              nome TEXT NOT NULL,
-              data_nascimento TEXT,
-              genero TEXT,
-              cpf TEXT UNIQUE,
-              nome_mae TEXT,
-              nome_responsavel TEXT,
-              telefone_responsavel TEXT,
-              email_responsavel TEXT
-            );
-          `);
-
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS historico_medico (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              usuario_id TEXT NOT NULL,
-              exame_cariotipo TEXT NOT NULL,
-              data_cariotipo TEXT,
-              triagem_auditiva TEXT NOT NULL,
-              data_triagem TEXT,
-              consulta_cardiologista TEXT NOT NULL,
-              data_cardiologista TEXT,
-              teste_pezinho TEXT NOT NULL,
-              data_pezinho TEXT,
-              consulta_oftalmo TEXT NOT NULL,
-              data_oftalmo TEXT,
-              consulta_fono TEXT NOT NULL,
-              data_fono TEXT,
-              consulta_odonto TEXT NOT NULL,
-              data_odonto TEXT,
-              consulta_endocrinologia TEXT NOT NULL,
-              data_endocrinologia TEXT,
-              consulta_fisio TEXT NOT NULL,
-              data_fisio TEXT,
-              consulta_terapia TEXT NOT NULL,
-              data_terapia TEXT,
-              consulta_psicopedagogo TEXT NOT NULL,
-              data_psicopedagogo TEXT,
-              comorbidades TEXT,
-              medicamentos TEXT,
-              alergias TEXT,
-              tipo_sanguineo TEXT,
-              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-            );
-          `);
-
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS complementares (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              usuario_id TEXT NOT NULL,
-              escolaridade TEXT,
-              unidade_1 TEXT,
-              unidade_2 TEXT,
-              unidade_3 TEXT,
-              autonomia_comunicacao TEXT,
-              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-            );
-          `);
-
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS exames (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              usuario_id TEXT NOT NULL,
-              tipo_exame TEXT NOT NULL,
-              data_exame TEXT NOT NULL,
-              medico_responsavel TEXT,
-              obs TEXT,
-              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-            );
-          `);
-
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS sessoes (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              usuario_id TEXT NOT NULL,
-              access_token TEXT,
-              refresh_token TEXT,
-              FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-            );
-          `);
-
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS fila_sinc (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              acao TEXT NOT NULL,
-              nome_tabela TEXT NOT NULL,
-              payload TEXT NOT NULL,
-              criado_em TEXT DEFAULT CURRENT_TIMESTAMP
-            );
-          `);
-
-          await db.execAsync("DELETE FROM Meta;");
-          await db.execAsync(`INSERT INTO Meta (versao) VALUES (${DB_VERSION});`);
-        }
-      }}
-    >
-      <UsuarioProvider>
-        <AppInitializer> 
-         <PacienteProvider>
+    <UsuarioProvider>
+      <AppInitializer>
+        <PacienteProvider>
           <Stack
             screenOptions={{
               headerStyle: { backgroundColor: '#FAFAFF' },
@@ -170,9 +43,8 @@ function RootLayoutNav() {
             <Stack.Screen name="index" options={{ title: '' }} />
             <Stack.Screen name="(top-tabs)" options={{ title: 'Informações' }} />
           </Stack>
-         </PacienteProvider>
-        </AppInitializer>
-      </UsuarioProvider>
-    </SQLiteProvider>
+        </PacienteProvider>
+      </AppInitializer>
+    </UsuarioProvider>
   );
 }

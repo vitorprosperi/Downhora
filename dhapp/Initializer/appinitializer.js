@@ -1,26 +1,28 @@
 import * as SecureStore from 'expo-secure-store';
 import { supabase } from '../supabaseserver';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useUsuario } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
-import { useSQLiteContext } from 'expo-sqlite';
+import { getDB } from '../database';
 
-// Variável global para impedir sincronizações duplicadas
 let isSyncing = false;
 
 export default function AppInitializer({ children }) {
   const { setUserId } = useUsuario();
-  const db = useSQLiteContext();
+  const prevIsConnected = useRef(false);
+  const debounceTimer = useRef(null);
 
-  // Restaurar sessão salva no SecureStore
   useEffect(() => {
     const restaurarSessao = async () => {
       try {
+        console.log('[Pronto] Iniciando verificação de sessão no SecureStore...');
         const storedSession = await SecureStore.getItemAsync('supabase_session');
-        if (!storedSession) return;
+        if (!storedSession) {
+          console.log('[SecureStore] Nenhuma sessão salva.');
+          return;
+        }
 
         const session = JSON.parse(storedSession);
-
         const { error } = await supabase.auth.setSession({
           access_token: session.access_token,
           refresh_token: session.refresh_token,
@@ -43,59 +45,66 @@ export default function AppInitializer({ children }) {
     restaurarSessao();
   }, []);
 
-  // Listener para detectar reconexão de rede
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(async (state) => {
-      if (state.isConnected) {
-        console.log('Conexão restabelecida — iniciando sincronização...');
-        await sincronizarFila();
-      }
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      const isConnected = state.isConnected;
+
+      // Evita chamadas repetidas se o estado não mudou
+      if (isConnected === prevIsConnected.current) return;
+      prevIsConnected.current = isConnected;
+
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+      // Delay de 1 segundo para evitar repiques rápidos
+      debounceTimer.current = setTimeout(async () => {
+        if (isConnected) {
+          console.log('Conexão restabelecida — iniciando sincronização...');
+          const db = await getDB();
+          await sincronizarFila(db);
+        }
+      }, 1000);
     });
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(debounceTimer.current);
+      unsubscribe();
+    };
   }, []);
 
-  // Função para sincronizar registros pendentes
-  const sincronizarFila = async () => {
+  const sincronizarFila = async (db) => {
     if (isSyncing) {
       console.log('Sincronização já em andamento, ignorando chamada duplicada.');
       return;
     }
 
     isSyncing = true;
-    try {
-      const pendentes = await db.getAllAsync(
-        'SELECT * FROM fila_sinc ORDER BY criado_em ASC'
-      );
 
-      if (!pendentes || pendentes.length === 0) {
+    try {
+      const result = await db.getAllAsync('SELECT * FROM fila_sinc ORDER BY criado_em ASC');
+      if (!result || result.length === 0) {
         console.log('Nenhum item pendente na fila.');
         return;
       }
 
-      console.log(`Iniciando sincronização de ${pendentes.length} item(s)...`);
+      console.log(`Iniciando sincronização de ${result.length} item(s)...`);
 
-      for (const item of pendentes) {
+      for (const item of result) {
         const payload = JSON.parse(item.payload);
-        console.log(`→ Sincronizando item da tabela ${item.nome_tabela} (ID local ${item.id})`);
 
         if (item.nome_tabela === 'exames' && item.acao === 'insert') {
           const { error } = await supabase.from('exames').insert([payload]);
-
           if (!error) {
             await db.runAsync('DELETE FROM fila_sinc WHERE id = ?', [item.id]);
-            console.log(`✓ Exame sincronizado e removido da fila (ID ${item.id})`);
+            console.log(`Exame sincronizado (ID ${item.id})`);
           } else {
-            console.error(`✗ Erro ao enviar exame (ID ${item.id}):`, error.message);
+            console.error(`Erro ao enviar exame (ID ${item.id}):`, error.message);
           }
         }
-
-        // Aqui no futuro você pode adicionar suporte para outras tabelas
       }
 
-      console.log('✅ Sincronização concluída com sucesso!');
+      console.log('Sincronização concluída com sucesso!');
     } catch (error) {
-      console.error('Erro ao sincronizar fila:', error);
+      console.error('Erro ao buscar fila_sinc:', error);
     } finally {
       isSyncing = false;
     }
