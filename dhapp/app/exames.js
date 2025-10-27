@@ -8,7 +8,7 @@ import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { FAB, Icon } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getDB } from "../database"; // usa o helper seguro
 import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
@@ -18,6 +18,8 @@ export default function Exames() {
   const [exames, setExames] = useState([]);
   const { userId } = useUsuario();
   const router = useRouter();
+
+  const insets = useSafeAreaInsets();
 
   // flag para evitar concorrência de sincronização
   let sincronizacaoEmAndamento = false;
@@ -196,18 +198,14 @@ export default function Exames() {
 
 
   return (
-    <SafeAreaView
-      edges={["bottom", "left", "right",]}
-      style={[styles.corEscura]}
-    >
-      <Stack.Screen
+      <View style={cstyle.tela}>
+        <Stack.Screen
         options={{
           title: 'Exames',
           headerShadowVisible: true,
         }}
       />
-      <View style={cstyle.tela}>
-        <View style={cstyle.container}>
+        <View style={[cstyle.container, {paddingBottom: insets.bottom}]}>
           <FlatList
             data={exames}
             contentContainerStyle={cstyle.lista}
@@ -223,26 +221,25 @@ export default function Exames() {
               style={({ pressed }) => (pressed ? cstyle.cardHighlight : cstyle.card)}
               onPress={() => abrirDetalhes(item)}
               >
-                <View>
+                <View style={cstyle.rowGroup}>
                   <View style={cstyle.rowTop}>
-                    <Text style={cstyle.textoSecundario}>
+                    {item.medico_responsavel ? (
+                      <Text style={cstyle.textoSecundario}>
                       Dr. {item.medico_responsavel}
                     </Text>
-                    <Pressable style={{marginRight: "-8"}} onPress={() => deletarExame(item.id)}>
+                    ) : (
+                      <Text></Text>
+                    )}
+                    <Pressable style={{marginRight: "-14"}} onPress={() => deletarExame(item.id)}>
                       <Icon source={"close-circle-outline"} size={19}></Icon>
                     </Pressable>
                   </View>
                   <View style={cstyle.midBar}>
-                    <Text style={cstyle.textoPrincipal}>{item.tipo_exame}</Text>
-                    <View style={{flexDirection: "row"}}>
-                      <Icon source={"calendar-range"} size={24}></Icon>
-                      <Text style={cstyle.textoSecundario}>
-                        {dayjs(dataFormatada).format("ll")}
-                      </Text>
-                    </View>
+                    <Text style={[cstyle.textoPrincipal]}>{item.tipo_exame}</Text>
                   </View>
                 </View>
-                <View style={cstyle.rowBottom}>
+                <View style={[cstyle.rowBottom]}>
+                  <View style={cstyle.iconsView}>
                   {item.obs ? (
                     <Icon source="text-box-outline" size={20}/>
                   ) : (
@@ -254,6 +251,13 @@ export default function Exames() {
                   ) : (
                     null
                   )}
+                  </View>
+                  <View style={cstyle.iconsView}>
+                    <Icon source={"calendar-range"} size={20}/>
+                      <Text style={cstyle.textoSecundario}>
+                        {dayjs(dataFormatada).format("ll")}
+                      </Text>
+                  </View>
                 </View>
               </Pressable> );
             }}
@@ -269,14 +273,13 @@ export default function Exames() {
           mode="flat"
         />
       </View>
-    </SafeAreaView>
   );
 }
 
 const cstyle = StyleSheet.create({
   card: {
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     gap: 2,
     marginBottom: 10,
     width: 350,
@@ -289,7 +292,7 @@ const cstyle = StyleSheet.create({
     width: 350,
     padding: 10,
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     gap: 2,
     borderRadius: 5,
     backgroundColor: '#FBFBFC',
@@ -302,7 +305,7 @@ const cstyle = StyleSheet.create({
   },
   midBar: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
   },
   textoPrincipal: {
     fontSize: 20,
@@ -330,6 +333,7 @@ const cstyle = StyleSheet.create({
   },
   tela: {
     flex: 1,
+    backgroundColor: '#FAFAFF'
   },
   lista: {
     paddingTop: 10,
@@ -341,5 +345,10 @@ const cstyle = StyleSheet.create({
   },
   rowBottom: {
     flexDirection: 'row',
+    justifyContent: 'space-between'
   },
+  iconsView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
 });
