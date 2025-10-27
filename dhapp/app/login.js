@@ -11,8 +11,8 @@ import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ActivityIndicator } from 'react-native-paper';
-import { supabase } from "../supabaseserver";
 import { getDB } from '../database';
+import { supabase } from "../supabaseserver";
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -38,7 +38,7 @@ export default function Login() {
     try {
       const emailFake = `${cpf}@meuapp.com`;
       const netInfo = await NetInfo.fetch();
-      const isOnline = false;
+      const isOnline = netInfo.isConnected;
 
       // Garante inicialização segura do banco
       const db = await getDB().catch((err) => {

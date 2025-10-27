@@ -3,8 +3,8 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { PacienteProvider, UsuarioProvider } from '../context/context';
-import AppInitializer from '../Initializer/appinitializer';
 import { getDB } from '../database';
+import AppInitializer from '../Initializer/appinitializer';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -12,9 +12,12 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     'Raleway': require('../assets/fonts/raleway-v37-latin-regular.ttf'),
     'Raleway-500': require('../assets/fonts/raleway-v37-latin-500.ttf'),
+    'Raleway-600': require('../assets/fonts/raleway-v37-latin-600.ttf'),
     'Raleway-700': require('../assets/fonts/raleway-v37-latin-700.ttf'),
     'Roboto': require('../assets/fonts/roboto-v49-latin-regular.ttf'),
     'Roboto-500': require('../assets/fonts/roboto-v49-latin-500.ttf'),
+    'Roboto-600': require('../assets/fonts/roboto-v49-latin-600.ttf'),
+    'Roboto-700': require('../assets/fonts/roboto-v49-latin-700.ttf'),
     'Roboto-500-italic': require("../assets/fonts/roboto-v49-latin-500-italic.ttf"),
   });
 

@@ -197,7 +197,7 @@ export default function Exames() {
 
   return (
     <SafeAreaView
-      edges={["bottom", "left", "right"]}
+      edges={["bottom", "left", "right",]}
       style={[styles.corEscura]}
     >
       <Stack.Screen
@@ -228,29 +228,32 @@ export default function Exames() {
                     <Text style={cstyle.textoSecundario}>
                       Dr. {item.medico_responsavel}
                     </Text>
-                    <Pressable onPress={() => deletarExame(item.id)}>
-                    <Icon source={"close-circle-outline"} ></Icon>
+                    <Pressable style={{marginRight: "-8"}} onPress={() => deletarExame(item.id)}>
+                      <Icon source={"close-circle-outline"} size={19}></Icon>
                     </Pressable>
                   </View>
                   <View style={cstyle.midBar}>
                     <Text style={cstyle.textoPrincipal}>{item.tipo_exame}</Text>
-                    <Text style={[cstyle.textoSecundario, { fontSize: 20 }]}>
-                      {dayjs(dataFormatada).format("ll")}
-                    </Text>
+                    <View style={{flexDirection: "row"}}>
+                      <Icon source={"calendar-range"} size={24}></Icon>
+                      <Text style={cstyle.textoSecundario}>
+                        {dayjs(dataFormatada).format("ll")}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={cstyle.rowBottom}>
-                    {item.obs ? (
-                      <Icon source="text-box-outline" size={20}/>
-                    ) : (
-                      null
-                    )
-                    }
-                    {item.imagem_url ? (
-                      <Icon source="image-outline" size={20}/>
-                    ) : (
-                      null
-                    )}
-                  </View>
+                </View>
+                <View style={cstyle.rowBottom}>
+                  {item.obs ? (
+                    <Icon source="text-box-outline" size={20}/>
+                  ) : (
+                    null
+                  )
+                  }
+                  {item.imagem_url ? (
+                    <Icon source="image-outline" size={20}/>
+                  ) : (
+                    null
+                  )}
                 </View>
               </Pressable> );
             }}
@@ -272,27 +275,25 @@ export default function Exames() {
 
 const cstyle = StyleSheet.create({
   card: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    gap: 2,
     marginBottom: 10,
     width: 350,
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingHorizontal: 10,
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
-    boxShadow: '0px 2px 2.1px -1.9px hsla(240, 25%, 60% / 0.38)',
-    // 0px 0.8px 0.9px -0.9px hsl(var(--shadow-color) / 0.36),
-    //0px 2px 2.1px -1.9px hsl(var(--shadow-color) / 0.33),
-    //0px 4.9px 5.3px -2.8px hsl(var(--shadow-color) / 0.31)',
+    boxShadow: '0px 1px 1px 1px hsla(240, 25%, 60% / 0.38)',
   },
   cardHighlight: {
     marginBottom: 10,
     width: 350,
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingHorizontal: 10,
+    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    gap: 2,
     borderRadius: 5,
     backgroundColor: '#FBFBFC',
-    boxShadow: '0px 2px 2.1px -1.9px hsla(240, 25%, 60% / 0.38)',
+    boxShadow: '0px 1px 1px 1.5px hsla(240, 25%, 60% / 0.38)',
   },
   container: {
     width: "100%",
@@ -304,13 +305,15 @@ const cstyle = StyleSheet.create({
     justifyContent: "space-between",
   },
   textoPrincipal: {
-    fontSize: 21,
+    fontSize: 20,
     fontWeight: "500",
     color: "#231F20",
+    fontFamily: 'Roboto-600'
   },
   textoSecundario: {
     color: "hsla(345, 6%, 33%, 1)",
-    fontSize: 17,
+    fontSize: 18,
+    fontFamily: 'Roboto-500',
   },
   botaoExcluir: {
     backgroundColor: "#d9534f",
@@ -329,6 +332,7 @@ const cstyle = StyleSheet.create({
     flex: 1,
   },
   lista: {
+    paddingTop: 10,
     alignItems: 'center',
   },
   rowTop: {
@@ -337,6 +341,5 @@ const cstyle = StyleSheet.create({
   },
   rowBottom: {
     flexDirection: 'row',
-    paddingTop: 5,
-  }
+  },
 });

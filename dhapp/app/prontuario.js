@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { MaskedText } from 'react-native-mask-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from "../supabaseserver";
 import { getDB } from "../database"; // 👈 importa seu helper moderno
+import { supabase } from "../supabaseserver";
 
 export default function Prontuario() {
   const { userId } = useUsuario();
@@ -314,10 +314,32 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     width: '100%',
   },
-  contNome: { alignSelf: 'center' },
-  dadosContainer: { gap: 8, marginBottom: 10 },
-  nome: { fontFamily: 'Roboto', color: '#231F20', fontSize: 19 },
-  titulo: { fontFamily: 'Raleway-700', color: '#231F20', fontSize: 18 },
-  text: { fontSize: 15, color: '#231F20', fontFamily: 'Roboto', textTransform: 'capitalize', marginTop: -2 },
-  label: { fontSize: 15, color: 'hsl(345, 6%, 43%)', fontFamily: 'Roboto-500' },
+  contNome: { 
+    alignSelf: 'center' 
+  },
+  dadosContainer: { 
+    gap: 8, marginBottom: 10 
+  },
+  nome: { 
+    fontFamily: 'Roboto', 
+    color: '#231F20', 
+    fontSize: 20 
+  },
+  titulo: { 
+    fontFamily: 'Roboto-700', 
+    color: '#231F20', 
+    fontSize: 19 
+  },
+  text: { 
+    fontSize: 16, 
+    color: '#231F20', 
+    fontFamily: 'Roboto', 
+    textTransform: 'capitalize',
+     marginTop: -2 
+    },
+  label: { 
+    fontSize: 15, 
+    color: 'hsl(345, 6%, 43%)', 
+    fontFamily: 'Roboto-500' 
+  },
 });
