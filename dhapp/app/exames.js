@@ -7,12 +7,11 @@ import updateLocale from 'dayjs/plugin/updateLocale';
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { FAB, Icon } from "react-native-paper";
+import { Icon, IconButton } from "react-native-paper";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getDB } from "../database"; // usa o helper seguro
 import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
-import styles from "./styleForms";
 
 export default function Exames() {
   const [exames, setExames] = useState([]);
@@ -42,7 +41,7 @@ export default function Exames() {
       if (error) throw error;
 
       setExames(examesData || []);
-      console.log("Exames carregados do Supabase:", examesData);
+      //console.log("Exames carregados do Supabase:", examesData);
 
       // Usa transação para garantir consistência
       await db.withTransactionAsync(async () => {
@@ -78,7 +77,7 @@ export default function Exames() {
     try {
       const result = await db.getAllAsync("SELECT * FROM exames WHERE usuario_id = ?", [userId]);
       setExames(result || []);
-      console.log("Exames carregados do SQLite:", result);
+     // console.log("Exames carregados do SQLite:", result);
     } catch (error) {
       console.error("Erro ao carregar exames do SQLite:", error);
     }
@@ -171,8 +170,6 @@ export default function Exames() {
             });
 
             setExames((prev) => prev.filter((ex) => ex.id !== id));
-
-            Alert.alert("Sucesso", "Exame excluído com sucesso!");
           },
         },
       ]);
@@ -203,17 +200,19 @@ export default function Exames() {
         options={{
           title: 'Exames',
           headerShadowVisible: true,
+          headerRight: () => <IconButton icon={"plus"} mode="outlined" iconColor="#2261C1" size={31} onPress={exameCad}/>,
         }}
       />
         <View style={[cstyle.container, {paddingBottom: insets.bottom}]}>
           <FlatList
-            data={exames}
+            data={exames.sort((a, b) => (
+              new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
+            ))}
             contentContainerStyle={cstyle.lista}
             keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
             renderItem={({ item }) => {
 
-              const data = `${item.data_exame}`
-              const dataFormatada = dayjs(data, 'DDMMYYYY').format('YYYY-MM-DD');
+              const dataFormatada = dayjs(item.data_exame, 'DDMMYYYY').format('YYYY-MM-DD');
               
               return (
 
@@ -225,15 +224,15 @@ export default function Exames() {
                   <View style={cstyle.rowTop}>
                     {item.medico_responsavel ? (
                       <Text style={cstyle.textoSecundario}>
-                        Dr. {item.medico_responsavel}
+                        Dr(a). {item.medico_responsavel}
                       </Text>
                     ) : (
                       <Text style={cstyle.textoSecundario}>
                         Médico não informado
                       </Text>
                     )}
-                    <Pressable style={{marginRight: "-14"}} onPress={() => deletarExame(item.id)}>
-                      <Icon source={"close-circle-outline"} size={19}></Icon>
+                    <Pressable style={{marginRight: "-10"}} onPress={() => deletarExame(item.id)}>
+                      <Icon source={"close-circle-outline"} size={20}></Icon>
                     </Pressable>
                   </View>
                   <View style={cstyle.midBar}>
@@ -243,13 +242,13 @@ export default function Exames() {
                 <View style={[cstyle.rowBottom]}>
                   <View style={cstyle.iconsView}>
                   {item.obs ? (
-                    <Icon source="text-box-outline" size={20}/>
+                    <Icon color="#2261C1" source="text-box-outline" size={20}/>
                   ) : (
                     null
                   )
                   }
                   {item.imagem_url ? (
-                    <Icon source="image-outline" size={20}/>
+                    <Icon color="#2261C1" source="image-outline" size={20}/>
                   ) : (
                     null
                   )}
@@ -265,24 +264,16 @@ export default function Exames() {
             }}
           />
         </View>
-
-        <FAB
-          icon="plus"
-          color="#FAFAFF"
-          style={styles.fab}
-          customSize={76}
-          onPress={exameCad}
-          mode="flat"
-        />
       </View>
   );
 }
 
 const cstyle = StyleSheet.create({
   card: {
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 9,
     paddingHorizontal: 20,
-    gap: 2,
+    gap: 4,
     marginBottom: 10,
     width: 350,
     borderRadius: 5,
@@ -295,7 +286,7 @@ const cstyle = StyleSheet.create({
     padding: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    gap: 2,
+    gap: 4,
     borderRadius: 5,
     backgroundColor: '#FBFBFC',
     boxShadow: '0px 1px 1px 1.5px hsla(240, 25%, 60% / 0.38)',
