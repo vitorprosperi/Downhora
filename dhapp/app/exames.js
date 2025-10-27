@@ -1,10 +1,14 @@
 import { useUsuario } from "@/context/context";
 import NetInfo from "@react-native-community/netinfo";
+import dayjs from "dayjs";
+import 'dayjs/locale/pt-br';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import updateLocale from 'dayjs/plugin/updateLocale';
 import { Stack, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { FAB } from "react-native-paper";
+import { FAB, Icon } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
@@ -155,45 +159,77 @@ export default function Exames() {
     }
   };
 
+
+  dayjs.extend(updateLocale)
+  dayjs.updateLocale('pt-br', {
+  formats: {
+    ll: 'DD [de] MMM[.] YYYY'
+  }
+})
+
+  dayjs.extend(localizedFormat);
+  dayjs.locale('pt-br');
+  // Formatador de data
+  var customParseFormat = require("dayjs/plugin/customParseFormat");
+  dayjs.extend(customParseFormat)
+
+
   return (
     <SafeAreaView
       edges={["bottom", "left", "right"]}
       style={[styles.corEscura]}
     >
       <Stack.Screen
-              options={{ title: 'Exames', 
-                headerShadowVisible: true,
-              }}
-            />
+        options={{
+          title: 'Exames',
+          headerShadowVisible: true,
+        }}
+      />
       <View style={cstyle.tela}>
         <View style={cstyle.container}>
           <FlatList
             data={exames}
             contentContainerStyle={cstyle.lista}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Pressable style={cstyle.card} onPress={() => abrirDetalhes(item)}>
+            renderItem={({ item }) => {
+
+              const data = `${item.data_exame}`
+              const dataFormatada = dayjs(data, 'DDMMYYYY').format('YYYY-MM-DD');
+              
+              return (
+
+              <Pressable 
+              style={({ pressed }) => (pressed ? cstyle.cardHighlight : cstyle.card)}
+              onPress={() => abrirDetalhes(item)}
+              >
                 <View>
-                  <Text style={cstyle.textoSecundario}>
-                    Dr. {item.medico_responsavel}
-                  </Text>
+                  <View style={cstyle.rowTop}>
+                    <Text style={cstyle.textoSecundario}>
+                      Dr. {item.medico_responsavel}
+                    </Text>
+                  </View>
                   <View style={cstyle.midBar}>
                     <Text style={cstyle.textoPrincipal}>{item.tipo_exame}</Text>
                     <Text style={[cstyle.textoSecundario, { fontSize: 20 }]}>
-                      {item.data_exame}
+                      {dayjs(dataFormatada).format("ll")}
                     </Text>
                   </View>
-                  <Text>{item.obs}</Text>
-
-                  <Pressable
-                    onPress={() => deletarExame(item.id)}
-                    style={cstyle.botaoExcluir}
-                  >
-                    <Text style={cstyle.textoExcluir}>Excluir</Text>
-                  </Pressable>
+                  <View style={cstyle.rowBottom}>
+                    {item.obs ? (
+                      <Icon source="text-box-outline" size={20}/>
+                    ) : (
+                      null
+                    )
+                    }
+                    {item.imagem_url ? (
+                      <Icon source="image-outline" size={20}/>
+                    ) : (
+                      null
+                    )}
+                  </View>
                 </View>
-              </Pressable>
-            )}
+              </Pressable> );
+            }}
           />
         </View>
 
@@ -214,14 +250,25 @@ const cstyle = StyleSheet.create({
   card: {
     marginBottom: 10,
     width: 350,
-    paddingVertical: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     paddingHorizontal: 10,
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     boxShadow: '0px 2px 2.1px -1.9px hsla(240, 25%, 60% / 0.38)',
-   // 0px 0.8px 0.9px -0.9px hsl(var(--shadow-color) / 0.36),
+    // 0px 0.8px 0.9px -0.9px hsl(var(--shadow-color) / 0.36),
     //0px 2px 2.1px -1.9px hsl(var(--shadow-color) / 0.33),
     //0px 4.9px 5.3px -2.8px hsl(var(--shadow-color) / 0.31)',
+  },
+  cardHighlight: {
+    marginBottom: 10,
+    width: 350,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: '#FBFBFC',
+    boxShadow: '0px 2px 2.1px -1.9px hsla(240, 25%, 60% / 0.38)',
   },
   container: {
     width: "100%",
@@ -259,5 +306,13 @@ const cstyle = StyleSheet.create({
   },
   lista: {
     alignItems: 'center',
+  },
+  rowTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  rowBottom: {
+    flexDirection: 'row',
+    paddingTop: 5,
   }
 });
