@@ -7,12 +7,12 @@ import { Checkbox } from 'expo-checkbox';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import * as SQLite from 'expo-sqlite';
 import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ActivityIndicator } from 'react-native-paper';
 import { supabase } from "../supabaseserver";
+import { getDB } from '../database';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
@@ -38,21 +38,21 @@ export default function Login() {
     try {
       const emailFake = `${cpf}@meuapp.com`;
       const netInfo = await NetInfo.fetch();
-      const isOnline = netInfo.isConnected;
+      const isOnline = false;
 
-      const db = await SQLite.openDatabaseAsync('downhora.db');
-      await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS usuarios (
-          id TEXT PRIMARY KEY NOT NULL,
-          nome TEXT,
-          access_token TEXT,
-          refresh_token TEXT
-        );
-      `);
+      // Garante inicialização segura do banco
+      const db = await getDB().catch((err) => {
+        console.error("Erro ao abrir o banco:", err);
+        return null;
+      });
 
-      //
+      if (!db) {
+        setLoginCarregando(false);
+        Alert.alert("Erro", "Falha ao inicializar o banco de dados local.");
+        return;
+      }
+
       // MODO ONLINE
-      //
       if (isOnline) {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: emailFake,
@@ -62,7 +62,7 @@ export default function Login() {
         if (error) {
           setLoginCarregando(false);
           console.error("Erro no login:", error.message);
-          Alert.alert("Erro", "CPF ou senha inválidos");
+          Alert.alert("Erro", "CPF ou senha inválidos.");
           return;
         }
 
@@ -74,7 +74,7 @@ export default function Login() {
         if (sessionData?.session) {
           const { access_token, refresh_token } = sessionData.session;
 
-          // Se marcar "Manter login", salva a sessão
+          // Salva sessão no SecureStore se marcado "manter login"
           if (isChecked) {
             await SecureStore.setItemAsync(
               'supabase_session',
@@ -83,12 +83,14 @@ export default function Login() {
             console.log("Sessão salva no SecureStore");
           }
 
-          // Sempre salva no SQLite (para login offline)
-          await db.runAsync(
-            `INSERT OR REPLACE INTO sessoes (usuario_id, access_token, refresh_token)
-             VALUES (?, ?, ?)`,
-            [user.id, access_token, refresh_token]
-          );
+          // Salva sessão localmente no SQLite com transação
+          await db.withTransactionAsync(async () => {
+            await db.runAsync(
+              `INSERT OR REPLACE INTO sessoes (usuario_id, cpf, access_token, refresh_token)
+               VALUES (?, ?, ?, ?)`,
+              [user.id, cpf, access_token, refresh_token]
+            );
+          });
 
           console.log("Sessão salva no SQLite");
         }
@@ -98,20 +100,21 @@ export default function Login() {
         router.dismissAll();
         router.replace("/telaInicial");
       }
-      //
+
       // MODO OFFLINE
-      //
       else {
-        const row = await db.getFirstAsync(
-          "SELECT id, nome FROM usuarios LIMIT 1"
+        const sessao = await db.getFirstAsync(
+          "SELECT usuario_id AS id, access_token, refresh_token FROM sessoes WHERE cpf = ?",
+          [cpf]
         );
 
-        if (row?.id) {
-          setUserId(row.id);
-          console.log("Login offline bem-sucedido:", row.nome);
-          Alert.alert("Modo Offline", `Bem-vindo de volta, ${row.nome}!`);
+        if (sessao?.id) {
+          setUserId(sessao.id);
+          console.log("Login offline bem-sucedido:", sessao.id);
+          Alert.alert("Modo Offline", "Bem-vindo de volta!");
           router.dismissAll();
           router.replace("/telaInicial");
+          console.log("Sessões salvas localmente:", await db.getAllAsync("SELECT * FROM sessoes"));
         } else {
           setLoginCarregando(false);
           Alert.alert(
@@ -126,7 +129,6 @@ export default function Login() {
       Alert.alert("Erro", "Não foi possível realizar o login.");
     }
   };
-
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
@@ -147,7 +149,6 @@ export default function Login() {
           <Text style={styles.titulo}>Login</Text>
 
           <View style={styles.containerForm}>
-            {/* CPF */}
             <View>
               <Text style={styles.textForm}>CPF</Text>
               <MyMaskInput
@@ -168,7 +169,6 @@ export default function Login() {
               />
             </View>
 
-            {/* Senha */}
             <View>
               <Text style={styles.textForm}>Senha</Text>
               <MyInput
@@ -183,21 +183,17 @@ export default function Login() {
               />
             </View>
 
-            {/* Checkbox "Manter login" */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Checkbox color={'#3A7ADC'} value={isChecked} onValueChange={setChecked} />
               <Text style={styles.textForm}>Manter login</Text>
             </View>
 
-            {/* Botão */}
             <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
-
               {loginCarregando ? (
-                <ButtonP onPress={login} label=<ActivityIndicator color='#FAFAFF'></ActivityIndicator> />
+                <ButtonP onPress={login} label={<ActivityIndicator color='#FAFAFF' />} />
               ) : (
                 <ButtonP label='Entrar' onPress={login} />
-              )
-              }
+              )}
             </View>
           </View>
         </View>

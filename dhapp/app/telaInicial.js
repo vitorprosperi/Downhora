@@ -1,6 +1,5 @@
 import { useUsuario } from '@/context/context';
 import { Stack, useRouter } from 'expo-router';
-import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -8,18 +7,20 @@ import { Icon } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { desenvolvimento, exames, prontuario, vacina } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
+import { getDB } from '../database'; // 👈 importa seu helper correto
 import styles from './styleForms';
 
 export default function TelaInicial() {
   const router = useRouter();
-  const db = useSQLiteContext();
   const { setUserId } = useUsuario();
   const [nomeUsuario, setNomeUsuario] = useState("Usuário");
 
   useEffect(() => {
     const buscarNomeUsuario = async () => {
       try {
+        const db = await getDB(); // ✅ usa o banco moderno
         const { data, error } = await supabase.auth.getUser();
+
         if (error || !data?.user) {
           console.log("Nenhum usuário autenticado no Supabase.");
           return;
@@ -27,6 +28,7 @@ export default function TelaInicial() {
 
         const userId = data.user.id;
 
+        // tenta achar o usuário local
         const localUser = await db.getFirstAsync(
           "SELECT nome FROM usuarios WHERE id = ?",
           [userId]
@@ -37,6 +39,7 @@ export default function TelaInicial() {
           return;
         }
 
+        // se não encontrar localmente, busca no Supabase
         const { data: remoto, error: erroSupabase } = await supabase
           .from("usuarios")
           .select("nome")
@@ -47,6 +50,12 @@ export default function TelaInicial() {
           console.error("Erro ao buscar no Supabase:", erroSupabase);
         } else if (remoto?.nome) {
           setNomeUsuario(remoto.nome);
+
+          // salva no banco local para cache futuro
+          await db.runAsync(
+            "INSERT OR REPLACE INTO usuarios (id, nome) VALUES (?, ?)",
+            [userId, remoto.nome]
+          );
         }
       } catch (err) {
         console.error("Erro ao carregar nome do usuário:", err);
@@ -94,49 +103,41 @@ export default function TelaInicial() {
               {nomeUsuario.split(" ")[0]}
             </Text>
           </View>
-          
+
           <View style={btstyle.botoesContainer}>
-            <View>
-              <TouchableOpacity>
-                <Pressable
-                  style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                  onPress={prontuario}
-                >
-                  <Icon source="content-paste" color="#2261c1" size={55} />
-                  <Text style={btstyle.text}>Prontuário</Text>
-                </Pressable>
-              </TouchableOpacity>
-            </View>
-
-            <View>
+            <TouchableOpacity>
               <Pressable
                 style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                onPress={exames}
+                onPress={prontuario}
               >
-                <Icon source="calendar-multiselect" color="#2261c1" size={55} />
-                <Text style={btstyle.text}>Exames</Text>
+                <Icon source="content-paste" color="#2261c1" size={55} />
+                <Text style={btstyle.text}>Prontuário</Text>
               </Pressable>
-            </View>
+            </TouchableOpacity>
 
-            <View>
-              <Pressable
-                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                onPress={vacina}
-              >
-                <Icon source="needle" color="#2261c1" size={55} />
-                <Text style={btstyle.text}>Vacinação</Text>
-              </Pressable>
-            </View>
+            <Pressable
+              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+              onPress={exames}
+            >
+              <Icon source="calendar-multiselect" color="#2261c1" size={55} />
+              <Text style={btstyle.text}>Exames</Text>
+            </Pressable>
 
-            <View>
-              <Pressable
-                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                onPress={desenvolvimento}
-              >
-                <Icon source="information-outline" color="#2261c1" size={55} />
-                <Text style={btstyle.text}>Informações</Text>
-              </Pressable>
-            </View>
+            <Pressable
+              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+              onPress={vacina}
+            >
+              <Icon source="needle" color="#2261c1" size={55} />
+              <Text style={btstyle.text}>Vacinação</Text>
+            </Pressable>
+
+            <Pressable
+              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+              onPress={desenvolvimento}
+            >
+              <Icon source="information-outline" color="#2261c1" size={55} />
+              <Text style={btstyle.text}>Informações</Text>
+            </Pressable>
           </View>
         </View>
       </KeyboardAwareScrollView>
@@ -145,13 +146,8 @@ export default function TelaInicial() {
 }
 
 const btstyle = StyleSheet.create({
-  contView: {
-    flex: 1,
-  },
-  contOla: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-  },
+  contView: { flex: 1 },
+  contOla: { flexDirection: 'row', alignSelf: 'center' },
   button: {
     alignItems: 'center',
     alignSelf: 'center',

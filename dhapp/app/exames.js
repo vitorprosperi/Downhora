@@ -5,11 +5,11 @@ import 'dayjs/locale/pt-br';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import { Stack, useRouter } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { FAB, Icon } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getDB } from "../database"; // usa o helper seguro
 import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
@@ -18,10 +18,19 @@ export default function Exames() {
   const [exames, setExames] = useState([]);
   const { userId } = useUsuario();
   const router = useRouter();
-  const db = useSQLiteContext();
 
-  // Carrega exames do Supabase (modo online)
-  const carregarSupabase = async () => {
+  // flag para evitar concorrência de sincronização
+  let sincronizacaoEmAndamento = false;
+
+  // 🔹 Carrega exames do Supabase e sincroniza com SQLite
+  const carregarSupabase = async (db) => {
+    if (sincronizacaoEmAndamento) {
+      console.log("Sincronização já em andamento, ignorando chamada duplicada.");
+      return;
+    }
+
+    sincronizacaoEmAndamento = true;
+
     try {
       const { data: examesData, error } = await supabase
         .from("exames")
@@ -33,24 +42,37 @@ export default function Exames() {
       setExames(examesData || []);
       console.log("Exames carregados do Supabase:", examesData);
 
-      // Sincroniza SQLite
-      await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
-      for (const ex of examesData) {
-        await db.runAsync(
-          `INSERT INTO exames 
-            (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-          [ex.id, ex.usuario_id, ex.tipo_exame, ex.data_exame, ex.medico_responsavel, ex.obs]
-        );
-      }
+      // Usa transação para garantir consistência
+      await db.withTransactionAsync(async () => {
+        await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
+
+        for (const ex of examesData) {
+          await db.runAsync(
+            `INSERT OR REPLACE INTO exames 
+             (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [
+              ex.id,
+              ex.usuario_id,
+              ex.tipo_exame,
+              ex.data_exame,
+              ex.medico_responsavel,
+              ex.obs,
+            ]
+          );
+        }
+      });
+
       console.log("Exames sincronizados com SQLite.");
     } catch (error) {
       console.error("Erro ao buscar dados no Supabase:", error.message);
+    } finally {
+      sincronizacaoEmAndamento = false;
     }
   };
 
-  // Carrega exames do SQLite (modo offline)
-  const carregarSQLite = async () => {
+  //  Carrega exames do SQLite (modo offline)
+  const carregarSQLite = async (db) => {
     try {
       const result = await db.getAllAsync("SELECT * FROM exames WHERE usuario_id = ?", [userId]);
       setExames(result || []);
@@ -60,22 +82,28 @@ export default function Exames() {
     }
   };
 
-  // Detecta se há conexão com a internet e decide de onde carregar
+  //  Decide entre Supabase e SQLite dependendo da conexão
   const carregarExames = async () => {
-    const state = await NetInfo.fetch();
-    const isOnline = state.isConnected;
-    if (isOnline) {
-      console.log("Modo online detectado. Carregando do Supabase...");
-      await carregarSupabase();
-    } else {
-      console.log("Modo offline detectado. Carregando do SQLite...");
-      await carregarSQLite();
+    try {
+      const db = await getDB(); // ✅ banco único e estável
+      const state = await NetInfo.fetch();
+      const isOnline = state.isConnected;
+
+      if (isOnline) {
+        console.log("Modo online detectado. Carregando do Supabase...");
+        await carregarSupabase(db);
+      } else {
+        console.log("Modo offline detectado. Carregando do SQLite...");
+        await carregarSQLite(db);
+      }
+    } catch (err) {
+      console.error("Erro ao inicializar banco ou carregar exames:", err);
     }
   };
 
   useEffect(() => {
     carregarExames();
-  }, []);
+  }, [userId]);
 
   const abrirDetalhes = (exame) => {
     router.push({
@@ -84,75 +112,68 @@ export default function Exames() {
     });
   };
 
-  // 🔹 Função para excluir exame e também imagem do Storage
+  //  Excluir exame (online + offline)
   const deletarExame = async (id) => {
     try {
-      Alert.alert(
-        "Excluir exame",
-        "Tem certeza que deseja excluir este exame?",
-        [
-          { text: "Cancelar", style: "cancel" },
-          {
-            text: "Excluir",
-            style: "destructive",
-            onPress: async () => {
-              const state = await NetInfo.fetch();
+      Alert.alert("Excluir exame", "Tem certeza que deseja excluir este exame?", [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            const db = await getDB();
+            const state = await NetInfo.fetch();
 
-              if (state.isConnected) {
-                // 🔹 Busca o exame no Supabase para obter a URL da imagem
-                const { data: exameData, error: fetchError } = await supabase
-                  .from("exames")
-                  .select("imagem_url")
-                  .eq("id", id)
-                  .single();
+            if (state.isConnected) {
+              // tenta remover imagem no Supabase Storage
+              const { data: exameData, error: fetchError } = await supabase
+                .from("exames")
+                .select("imagem_url")
+                .eq("id", id)
+                .single();
 
-                if (fetchError) {
-                  console.error("Erro ao buscar exame:", fetchError);
-                } else if (exameData?.imagem_url) {
-                  try {
-                    // 🔹 Extrai o caminho do arquivo do Supabase Storage
-                    // Exemplo: https://xyz.supabase.co/storage/v1/object/public/imagens/exames/123.jpg
-                    const url = exameData.imagem_url;
-                    const path = url.split("/imagens/")[1]; // pega "exames/123.jpg"
+              if (!fetchError && exameData?.imagem_url) {
+                try {
+                  const url = exameData.imagem_url;
+                  const path = url.split("/imagens/")[1]; // ex: "exames/123.jpg"
 
-                    if (path) {
-                      // 🔹 Exclui o arquivo do bucket "imagens"
-                      const { error: deleteImgError } = await supabase.storage
-                        .from("imagens")
-                        .remove([path]);
+                  if (path) {
+                    const { error: deleteImgError } = await supabase.storage
+                      .from("imagens")
+                      .remove([path]);
 
-                      if (deleteImgError) {
-                        console.error("Erro ao excluir imagem no Storage:", deleteImgError);
-                      } else {
-                        console.log("Imagem excluída do Storage:", path);
-                      }
-                    }
-                  } catch (err) {
-                    console.error("Erro ao processar URL da imagem:", err);
+                    if (deleteImgError)
+                      console.error("Erro ao excluir imagem no Storage:", deleteImgError);
+                    else console.log("Imagem excluída do Storage:", path);
                   }
+                } catch (err) {
+                  console.error("Erro ao processar URL da imagem:", err);
                 }
-
-                // 🔹 Depois exclui o registro no banco Supabase
-                const { error: deleteError } = await supabase
-                  .from("exames")
-                  .delete()
-                  .eq("id", id);
-
-                if (deleteError) throw deleteError;
-                console.log("Exame deletado no Supabase:", id);
-              } else {
-                console.log("Sem conexão, exclusão apenas local:", id);
               }
 
-              // 🔹 Exclui localmente no SQLite
-              await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
-              setExames((prev) => prev.filter((ex) => ex.id !== id));
+              // exclui o exame no Supabase
+              const { error: deleteError } = await supabase
+                .from("exames")
+                .delete()
+                .eq("id", id);
 
-              Alert.alert("Sucesso", "Exame excluído com sucesso!");
-            },
+              if (deleteError) throw deleteError;
+              console.log("Exame deletado no Supabase:", id);
+            } else {
+              console.log("Sem conexão — exclusão apenas local:", id);
+            }
+
+            // Exclui localmente no SQLite
+            await db.withTransactionAsync(async () => {
+              await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
+            });
+
+            setExames((prev) => prev.filter((ex) => ex.id !== id));
+
+            Alert.alert("Sucesso", "Exame excluído com sucesso!");
           },
-        ]
-      );
+        },
+      ]);
     } catch (error) {
       console.error("Erro ao excluir exame:", error);
       Alert.alert("Erro", "Não foi possível excluir o exame.");
@@ -190,7 +211,7 @@ export default function Exames() {
           <FlatList
             data={exames}
             contentContainerStyle={cstyle.lista}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
             renderItem={({ item }) => {
 
               const data = `${item.data_exame}`
@@ -207,6 +228,9 @@ export default function Exames() {
                     <Text style={cstyle.textoSecundario}>
                       Dr. {item.medico_responsavel}
                     </Text>
+                    <Pressable onPress={() => deletarExame(item.id)}>
+                    <Icon source={"close-circle-outline"} ></Icon>
+                    </Pressable>
                   </View>
                   <View style={cstyle.midBar}>
                     <Text style={cstyle.textoPrincipal}>{item.tipo_exame}</Text>
