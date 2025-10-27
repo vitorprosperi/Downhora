@@ -224,11 +224,11 @@ export default function Exames() {
                   <View style={cstyle.rowTop}>
                     {item.medico_responsavel ? (
                       <Text style={cstyle.textoSecundario}>
-                        Dr(a). {item.medico_responsavel}
+                        {item.medico_responsavel}
                       </Text>
                     ) : (
                       <Text style={cstyle.textoSecundario}>
-                        Médico não informado
+                        Profissional não informado
                       </Text>
                     )}
                     <Pressable style={{marginRight: "-10"}} onPress={() => deletarExame(item.id)}>
@@ -270,8 +270,7 @@ export default function Exames() {
 
 const cstyle = StyleSheet.create({
   card: {
-    paddingTop: 10,
-    paddingBottom: 9,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,
     marginBottom: 10,
@@ -283,7 +282,6 @@ const cstyle = StyleSheet.create({
   cardHighlight: {
     marginBottom: 10,
     width: 350,
-    padding: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,

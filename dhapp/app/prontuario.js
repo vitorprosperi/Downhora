@@ -335,10 +335,10 @@ const styles = StyleSheet.create({
     color: '#231F20', 
     fontFamily: 'Roboto', 
     textTransform: 'capitalize',
-     marginTop: -2 
+    marginTop: -2 
     },
   label: { 
-    fontSize: 15, 
+    fontSize: 16, 
     color: 'hsl(345, 6%, 43%)', 
     fontFamily: 'Roboto-500' 
   },

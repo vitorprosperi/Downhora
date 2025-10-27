@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   subTitulo: {
-    fontSize: 16,
+    fontSize: 17,
     fontFamily: 'Raleway-700',
   },
   title: {
@@ -160,17 +160,17 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   text: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
   textHeavy: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#231F20',
     fontFamily: 'Roboto-500',
   },
   textPequeno: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#231F20',
     fontFamily: 'Roboto',
   },

@@ -99,17 +99,17 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   text: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
   textHeavy: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#231F20',
     fontFamily: 'Roboto-500',
   },
   textPequeno: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
