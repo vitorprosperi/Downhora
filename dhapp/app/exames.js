@@ -225,10 +225,12 @@ export default function Exames() {
                   <View style={cstyle.rowTop}>
                     {item.medico_responsavel ? (
                       <Text style={cstyle.textoSecundario}>
-                      Dr. {item.medico_responsavel}
-                    </Text>
+                        Dr. {item.medico_responsavel}
+                      </Text>
                     ) : (
-                      <Text></Text>
+                      <Text style={cstyle.textoSecundario}>
+                        Médico não informado
+                      </Text>
                     )}
                     <Pressable style={{marginRight: "-14"}} onPress={() => deletarExame(item.id)}>
                       <Icon source={"close-circle-outline"} size={19}></Icon>
