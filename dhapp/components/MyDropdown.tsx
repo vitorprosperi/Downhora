@@ -8,8 +8,8 @@ export const MyDropdown = (props: JSX.IntrinsicAttributes & Pick<DropdownProps<a
   return (
     <Dropdown
       {...props}
-      style={[styles.input, isFocused && {borderWidth: 2, borderColor: '#2261C1'}]}
-      iconStyle={[props.iconStyle, isFocused && {tintColor: '#2261C1'}]}
+      style={[styles.input, isFocused && {borderWidth: 2, borderColor: '#F2AA08'}]}
+      iconStyle={[props.iconStyle, isFocused && {tintColor: '#F2AA08'}]}
       placeholderStyle={styles.exemplo}
       selectedTextStyle={styles.textForm}
       containerStyle={styles.dropdownContainer}

@@ -197,6 +197,7 @@ export default function Exames() {
   dayjs.extend(customParseFormat)
 
   const [filter, setFilter] = useState("padrao")
+  const [sortOrder, setSortOrder] = useState("asc")
 
   const dataFiltered = (dados) => {
     dados.sort((a, b) => (
@@ -216,15 +217,25 @@ export default function Exames() {
     }
   }
 
-
-  const desligarModal = (filtro) => {
-    setModalFilterVisible(!modalFilterVisible);
-    setFilter(filtro);
+  const toggleOrder = () => {
+    const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newSortOrder)
   }
 
+  const sortIcon = sortOrder === 'asc' ? 'arrow-up' : 'arrow-down';
 
+  const dataSorted = (dados) => {
+    const dadosFiltrados = dataFiltered(dados)
 
-  const [modalFilterVisible, setModalFilterVisible] = useState(false);
+    if (sortOrder === 'asc') {
+      return dadosFiltrados.sort((a, b) => (
+      new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
+    ));
+    } else if (sortOrder === 'desc'){
+      return dadosFiltrados.sort((a, b) => (
+      new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
+    ));
+  }}
 
   return (
     <View style={cstyle.tela}>
@@ -232,19 +243,35 @@ export default function Exames() {
         options={{
           title: 'Exames',
           headerShadowVisible: true,
-          headerRight: () => <IconButton icon={"plus"} mode="flat" iconColor="#2261C1" size={31} onPress={exameCad} />,
         }}
       />
       <View style={[cstyle.container, { paddingBottom: insets.bottom }]}>
         <FlatList
-          data={dataFiltered(exames)}
+          data={dataSorted(exames)}
           contentContainerStyle={cstyle.lista}
           keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
           ListHeaderComponent={
-            <View style={{ flexDirection: 'row', gap: 5, justifyContent: 'center' }}>
-              <FilterDropdown>
-                
-              </FilterDropdown>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
+              <View style={{flexDirection: "row", alignItems:'center'}}>
+              <IconButton
+                icon={sortIcon}
+                iconColor="#2261C1"
+                size={30}
+                onPress={() => toggleOrder()}
+              />
+              <FilterDropdown
+                onChange={item => {
+                  setFilter(item.value);
+                }}
+              />
+              </View>
+              <IconButton 
+              icon={"plus"} 
+              mode="flat" 
+              iconColor="#2261C1"
+              size={30} 
+              onPress={exameCad} 
+              />
             </View>
           }
           renderItem={({ item }) => {
@@ -307,6 +334,7 @@ export default function Exames() {
 
 const cstyle = StyleSheet.create({
   card: {
+    alignSelf: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,
@@ -317,6 +345,7 @@ const cstyle = StyleSheet.create({
     boxShadow: '0px 1px 1px 1px hsla(240, 25%, 60% / 0.38)',
   },
   cardHighlight: {
+    alignSelf: 'center',
     marginBottom: 10,
     width: 350,
     paddingVertical: 10,
@@ -374,7 +403,6 @@ const cstyle = StyleSheet.create({
   },
   lista: {
     paddingTop: 10,
-    alignItems: 'center',
   },
   rowTop: {
     flexDirection: 'row',
