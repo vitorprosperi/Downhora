@@ -2,8 +2,9 @@ import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacQuatro } from "../routes/rotas";
@@ -16,19 +17,21 @@ export default function CadastroPacDois() {
     const { pacientedados, setPacientedados } = usePaciente();
 
     // Estados para cada exame/avaliação
-    const [valor1, setValor1] = useState(null); // Cariótipo
+    const [valor1, setValor1] = useState(null); 
     const [dataCariotipo, setDataCariotipo] = useState('');
+    const [showCariotipoPicker, setShowCariotipoPicker] = useState(false);
 
-    const [valor2, setValor2] = useState(null); // Exame Auditivo
+    const [valor2, setValor2] = useState(null);
     const [dataAuditivo, setDataAuditivo] = useState('');
 
-    const [valor3, setValor3] = useState(null); // Exame Ecocardiograma
+    const [valor3, setValor3] = useState(null); 
     const [dataEco, setDataEco] = useState('');
 
-    const [valor4, setValor4] = useState(null); // Teste do pezinho
+    const [valor4, setValor4] = useState(null); 
     const [dataOrtopedica, setDataOrtopedica] = useState('');
+    const [showPePicker, setShowPePicker] = useState(false);
 
-    const [valor5, setValor5] = useState(null); // Consulta Oftalmologista
+    const [valor5, setValor5] = useState(null); 
     const [dataNeuro, setDataNeuro] = useState('');
 
     // Consultas adicionadas
@@ -50,13 +53,19 @@ export default function CadastroPacDois() {
     const [valorPsico, setValorPsico] = useState(null);
     const [dataPsico, setDataPsico] = useState('');
 
-
     // Itens dos dropdowns (Sim/não)
     const itensSimNao = [
         { label: 'Sim', value: 'Sim' },
         { label: 'Não', value: 'Não' },
     ];
 
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const day = d.getDate().toString().padStart(2, '0');
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -69,7 +78,6 @@ export default function CadastroPacDois() {
                             <Text style={styles.subTitulo}>Consultas e exames já realizados</Text>
                         </View>
 
-                        {/* EXAMES */}
                         <View>
                             <Text style={styles.textForm}>Exame cariótipo*</Text>
                             <MyDropdown
@@ -81,10 +89,11 @@ export default function CadastroPacDois() {
                                 onChange={item => {
                                     setValor1(item.value);
                                     setPacientedados(prev => ({ ...prev, cariotipo: item.value }));
+                                    if (item.value === 'Sim') setShowCariotipoPicker(true);
                                 }}
                             />
                             {valor1 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -93,12 +102,23 @@ export default function CadastroPacDois() {
                                         placeholderTextColor="grey"
                                         value={dataCariotipo}
                                         mask={dateMask}
-                                        maxLength={10}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataCariotipo(masked);
-                                            setPacientedados(prev => ({ ...prev, dataCariotipo: unmasked }));
-                                        }}
+                                        editable={false}
                                     />
+                                    {showCariotipoPicker && (
+                                        <DateTimePicker
+                                            value={new Date()}
+                                            mode="date"
+                                            display="calendar"
+                                            onChange={(event, selectedDate) => {
+                                                setShowCariotipoPicker(Platform.OS === 'ios');
+                                                if (selectedDate) {
+                                                    const formatted = formatDate(selectedDate);
+                                                    setDataCariotipo(formatted);
+                                                    setPacientedados(prev => ({ ...prev, dataCariotipo: formatted }));
+                                                }
+                                            }}
+                                        />
+                                    )}
                                 </View>
                             )}
                         </View>
@@ -117,7 +137,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor2 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -150,7 +170,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor3 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -180,24 +200,36 @@ export default function CadastroPacDois() {
                                 onChange={item => {
                                     setValor4(item.value);
                                     setPacientedados(prev => ({ ...prev, testePe: item.value }));
+                                    if (item.value === 'Sim') setShowPePicker(true);
                                 }}
                             />
                             {valor4 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <MyMaskInput
                                         style={styles.input}
                                         placeholder="Ex: DD/MM/YYYY"
                                         keyboardType="numeric"
                                         placeholderTextColor="grey"
-                                        maxLength={10}
-                                        mask={dateMask}
                                         value={dataOrtopedica}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataOrtopedica(masked);
-                                            setPacientedados(prev => ({ ...prev, dataPe: unmasked }));
-                                        }}
+                                        mask={dateMask}
+                                        editable={false}
                                     />
+                                    {showPePicker && (
+                                        <DateTimePicker
+                                            value={new Date()}
+                                            mode="date"
+                                            display="calendar"
+                                            onChange={(event, selectedDate) => {
+                                                setShowPePicker(Platform.OS === 'ios');
+                                                if (selectedDate) {
+                                                    const formatted = formatDate(selectedDate);
+                                                    setDataOrtopedica(formatted);
+                                                    setPacientedados(prev => ({ ...prev, dataPe: formatted }));
+                                                }
+                                            }}
+                                        />
+                                    )}
                                 </View>
                             )}
                         </View>
@@ -216,7 +248,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor5 === 'Sim' && (
-                                <View style={{marginTop: 10}}> 
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -235,7 +267,6 @@ export default function CadastroPacDois() {
                             )}
                         </View>
 
-                        {/* CONSULTAS */}
                         <View>
                             <Text style={styles.textForm}>Consulta fonoaudiologia*</Text>
                             <MyDropdown
@@ -250,7 +281,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorFono === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -262,7 +293,7 @@ export default function CadastroPacDois() {
                                         mask={dateMask}
                                         onChangeText={(masked, unmasked) => {
                                             setDataFono(masked);
-                                            setPacientedados(prev => ({ ...prev, dataFono: unmasked}));
+                                            setPacientedados(prev => ({ ...prev, dataFono: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -283,7 +314,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorOdonto === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -316,7 +347,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorEndocrino === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -349,7 +380,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorFisio === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -382,7 +413,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorTerapia === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -415,7 +446,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorPsico === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -433,6 +464,7 @@ export default function CadastroPacDois() {
                                 </View>
                             )}
                         </View>
+
                     </View>
 
                     <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
