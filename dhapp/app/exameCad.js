@@ -1,16 +1,16 @@
 import { ButtonP } from '@/components/ButtonP';
+import { MyDropdown } from '@/components/MyDropdown';
+import { MyInput } from '@/components/MyInput';
+import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
 import NetInfo from "@react-native-community/netinfo";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
-import MaskInput from 'react-native-mask-input';
-import { TextInput } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from "../supabaseserver";
 import { getDB } from "../database";
+import { supabase } from "../supabaseserver";
 import styles from "./styleForms";
 
 export default function ExameCad() {
@@ -171,8 +171,7 @@ export default function ExameCad() {
           <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>
 
           <Text style={styles.textForm}>Tipo de exame*</Text>
-          <Dropdown
-            style={[styles.input, { paddingHorizontal: 10 }]}
+          <MyDropdown
             data={tiposExames}
             labelField="label"
             valueField="value"
@@ -185,8 +184,8 @@ export default function ExameCad() {
           {exame === 'Outro' && (
             <View>
               <Text style={styles.textForm}>Informe o exame</Text>
-              <TextInput
-                style={styles.input}
+              <MyInput
+              style={styles.input}
                 placeholder='Digite o nome do exame'
                 placeholderTextColor={'grey'}
                 value={outroExame}
@@ -197,7 +196,7 @@ export default function ExameCad() {
 
           {(exame === 'Cariótipo' || exame === 'Pezinho') && (
             <Pressable
-              style={[styles.botaoUpload, { backgroundColor: '#3478f6', marginTop: 10, borderRadius: 10, padding: 10 }]}
+              style={[styles.botaoUpload, { backgroundColor: '#3478f6', borderRadius: 10, padding: 10 }]}
               onPress={escolherImagem}
               disabled={uploading}
             >
@@ -213,22 +212,23 @@ export default function ExameCad() {
 
           <View>
             <Text style={styles.textForm}>Data do exame*</Text>
-            <MaskInput
-              style={styles.input}
+            <MyMaskInput
+            style={styles.input}
               keyboardType="numeric"
               mask={dateMask}
               value={data}
               onChangeText={(masked) => setData(masked)}
               maxLength={10}
-              placeholder='ex: DD/MM/YYYY'
+              placeholder='Ex: DD/MM/YYYY'
               placeholderTextColor={'grey'}
             />
           </View>
 
           <View>
-            <Text style={styles.textForm}>Médico responsável</Text>
-            <TextInput
-              style={styles.input}
+            <Text style={styles.textForm}>Profissional responsável</Text>
+            <MyInput
+            style={styles.input}
+              placeholder='Ex: Dra. Cátia.'
               placeholderTextColor={'grey'}
               value={medico}
               onChangeText={setMedico}
@@ -237,8 +237,9 @@ export default function ExameCad() {
 
           <View>
             <Text style={styles.textForm}>Observações</Text>
-            <TextInput
-              style={styles.input}
+            <MyInput
+            style={styles.input}
+            placeholder='Ex: Informações adicionais, resultados.'
               placeholderTextColor={'grey'}
               value={obs}
               onChangeText={setObs}

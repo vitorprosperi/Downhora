@@ -125,8 +125,8 @@ export default function CadastroPac() {
   const ref_input9 = useRef();
 
   return (
-    <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
-      <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.corEscura]}>
+      <KeyboardAwareScrollView contentContainerStyle={[styles.corEscura, {backgroundColor: 'orange'}]} extraHeight={280}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
 
@@ -208,6 +208,7 @@ export default function CadastroPac() {
                 valueField="value"
                 placeholder="Selecione"
                 value={genero}
+                dropdownPosition='bottom'
                 onChange={item => {
                   setGenero(item.value);
                   setPacientedados(prev => ({ ...prev, genero: item.value }));
@@ -217,10 +218,9 @@ export default function CadastroPac() {
 
             <View>
               <Text style={styles.textForm}>Senha*</Text>
-              <View style={{flexDirection: 'row'}}>
               <MyInput
                 ref={ref_input4}
-                style={[styles.input, {width: '100%'}]}
+                style={styles.input}
                 placeholder='Digite uma senha segura'
                 placeholderTextColor={'grey'}
                 returnKeyType="next"
@@ -231,7 +231,6 @@ export default function CadastroPac() {
                   setPacientedados(prev => ({ ...prev, senha: text }));}}
                 secureTextEntry
               />
-              </View>
               {(senhaForca == '') ? (
                 null
               ) : (
@@ -336,7 +335,7 @@ export default function CadastroPac() {
             </View>
 
           </View>
-          <View ref={ref_botao} style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
+          <View ref={ref_botao} style={{ marginBottom: 0, marginTop: 10, width: 200 }}>
 
               <ButtonP label="Próximo" onPress={Proximo} /> 
 

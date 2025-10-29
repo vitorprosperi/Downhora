@@ -5,9 +5,9 @@ import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-nativ
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getDB } from '../database'; // 👈 importa seu helper correto
 import { desenvolvimento, exames, prontuario, vacina } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
-import { getDB } from '../database'; // 👈 importa seu helper correto
 import styles from './styleForms';
 
 export default function TelaInicial() {
@@ -166,7 +166,7 @@ const btstyle = StyleSheet.create({
     width: '80%',
     paddingVertical: 20,
     borderRadius: 20,
-    boxShadow: '0.25px 0.5px 1px 0px hsl(216, 60%, 35%)',
+    boxShadow: '0.25px 0.5px 1.5px 0px hsl(216, 60%, 35%)',
   },
   text: {
     color: '#2261C1',

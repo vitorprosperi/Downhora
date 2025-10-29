@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { Icon, IconButton } from "react-native-paper";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FilterDropdown } from "../components/FilterDropdown";
 import { getDB } from "../database"; // usa o helper seguro
 import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
@@ -77,7 +78,7 @@ export default function Exames() {
     try {
       const result = await db.getAllAsync("SELECT * FROM exames WHERE usuario_id = ?", [userId]);
       setExames(result || []);
-     // console.log("Exames carregados do SQLite:", result);
+      // console.log("Exames carregados do SQLite:", result);
     } catch (error) {
       console.error("Erro ao carregar exames do SQLite:", error);
     }
@@ -180,12 +181,14 @@ export default function Exames() {
   };
 
 
+
+
   dayjs.extend(updateLocale)
   dayjs.updateLocale('pt-br', {
-  formats: {
-    ll: 'DD [de] MMM[.] YYYY'
-  }
-})
+    formats: {
+      ll: 'DD [de] MMM[.] YYYY'
+    }
+  })
 
   dayjs.extend(localizedFormat);
   dayjs.locale('pt-br');
@@ -193,45 +196,78 @@ export default function Exames() {
   var customParseFormat = require("dayjs/plugin/customParseFormat");
   dayjs.extend(customParseFormat)
 
+  const [filter, setFilter] = useState("padrao")
+
+  const dataFiltered = (dados) => {
+    dados.sort((a, b) => (
+      new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
+    ))
+
+    if (filter == 'padrao') {
+      return dados
+    } else if (filter == 'datasPassadas') {
+      return dados.filter((d) => (
+        new Date(dayjs(d.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) < dayjs()
+      ))
+    } else if (filter == 'datasFuturas') {
+      return dados.filter((d) => (
+        new Date(dayjs(d.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) > dayjs()
+      ))
+    }
+  }
+
+
+  const desligarModal = (filtro) => {
+    setModalFilterVisible(!modalFilterVisible);
+    setFilter(filtro);
+  }
+
+
+
+  const [modalFilterVisible, setModalFilterVisible] = useState(false);
 
   return (
-      <View style={cstyle.tela}>
-        <Stack.Screen
+    <View style={cstyle.tela}>
+      <Stack.Screen
         options={{
           title: 'Exames',
           headerShadowVisible: true,
-          headerRight: () => <IconButton icon={"plus"} mode="outlined" iconColor="#2261C1" size={31} onPress={exameCad}/>,
+          headerRight: () => <IconButton icon={"plus"} mode="flat" iconColor="#2261C1" size={31} onPress={exameCad} />,
         }}
       />
-        <View style={[cstyle.container, {paddingBottom: insets.bottom}]}>
-          <FlatList
-            data={exames.sort((a, b) => (
-              new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
-            ))}
-            contentContainerStyle={cstyle.lista}
-            keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-            renderItem={({ item }) => {
+      <View style={[cstyle.container, { paddingBottom: insets.bottom }]}>
+        <FlatList
+          data={dataFiltered(exames)}
+          contentContainerStyle={cstyle.lista}
+          keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+          ListHeaderComponent={
+            <View style={{ flexDirection: 'row', gap: 5, justifyContent: 'center' }}>
+              <FilterDropdown>
+                
+              </FilterDropdown>
+            </View>
+          }
+          renderItem={({ item }) => {
 
-              const dataFormatada = dayjs(item.data_exame, 'DDMMYYYY').format('YYYY-MM-DD');
-              
-              return (
+            const dataFormatada = dayjs(item.data_exame, 'DDMMYYYY').format('YYYY-MM-DD');
 
-              <Pressable 
-              style={({ pressed }) => (pressed ? cstyle.cardHighlight : cstyle.card)}
-              onPress={() => abrirDetalhes(item)}
+            return (
+              <Pressable
+                style={({ pressed }) => (pressed ? cstyle.cardHighlight : cstyle.card)}
+                onPress={() => abrirDetalhes(item)}
               >
                 <View style={cstyle.rowGroup}>
                   <View style={cstyle.rowTop}>
                     {item.medico_responsavel ? (
                       <Text style={cstyle.textoSecundario}>
-                        Dr(a). {item.medico_responsavel}
+                        {item.medico_responsavel}
                       </Text>
                     ) : (
                       <Text style={cstyle.textoSecundario}>
-                        Médico não informado
+                        Profissional não informado
                       </Text>
                     )}
-                    <Pressable style={{marginRight: "-10"}} onPress={() => deletarExame(item.id)}>
+                    <Pressable style={{ marginRight: "-10" }} onPress={() => deletarExame(item.id)}>
                       <Icon source={"close-circle-outline"} size={20}></Icon>
                     </Pressable>
                   </View>
@@ -241,37 +277,37 @@ export default function Exames() {
                 </View>
                 <View style={[cstyle.rowBottom]}>
                   <View style={cstyle.iconsView}>
-                  {item.obs ? (
-                    <Icon color="#2261C1" source="text-box-outline" size={20}/>
-                  ) : (
-                    null
-                  )
-                  }
-                  {item.imagem_url ? (
-                    <Icon color="#2261C1" source="image-outline" size={20}/>
-                  ) : (
-                    null
-                  )}
+                    {item.obs ? (
+                      <Icon color="#2261C1" source="text-box-outline" size={20} />
+                    ) : (
+                      null
+                    )
+                    }
+                    {item.imagem_url ? (
+                      <Icon color="#2261C1" source="image-outline" size={20} />
+                    ) : (
+                      null
+                    )}
                   </View>
                   <View style={cstyle.iconsView}>
-                    <Icon source={"calendar-range"} size={20}/>
-                      <Text style={cstyle.textoSecundario}>
-                        {dayjs(dataFormatada).format("ll")}
-                      </Text>
+                    <Icon source={"calendar-range"} size={20} />
+                    <Text style={cstyle.textoSecundario}>
+                      {dayjs(dataFormatada).format("ll")}
+                    </Text>
                   </View>
                 </View>
-              </Pressable> );
-            }}
-          />
-        </View>
+              </Pressable>
+            );
+          }}
+        />
       </View>
+    </View>
   );
 }
 
 const cstyle = StyleSheet.create({
   card: {
-    paddingTop: 10,
-    paddingBottom: 9,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,
     marginBottom: 10,
@@ -283,7 +319,6 @@ const cstyle = StyleSheet.create({
   cardHighlight: {
     marginBottom: 10,
     width: 350,
-    padding: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,
@@ -302,7 +337,6 @@ const cstyle = StyleSheet.create({
   },
   textoPrincipal: {
     fontSize: 20,
-    fontWeight: "500",
     color: "#231F20",
     fontFamily: 'Roboto-600'
   },
@@ -310,6 +344,16 @@ const cstyle = StyleSheet.create({
     color: "hsla(345, 6%, 33%, 1)",
     fontSize: 18,
     fontFamily: 'Roboto-500',
+  },
+  textoEscolha: {
+    color: "#231F20",
+    fontSize: 18,
+    fontFamily: 'Roboto'
+  },
+  textoEscolhaPressed: {
+    color: "#231F20",
+    fontSize: 18,
+    fontFamily: 'Roboto'
   },
   botaoExcluir: {
     backgroundColor: "#d9534f",
@@ -343,5 +387,9 @@ const cstyle = StyleSheet.create({
   iconsView: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  modalPress: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   }
 });
