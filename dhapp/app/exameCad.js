@@ -73,11 +73,23 @@ export default function ExameCad() {
 
     try {
       setUploading(true);
-      const db = await getDB(); // ✅ sempre obtém o mesmo handle, sem race condition
+
+      // Inicializa o banco com segurança
+      const db = await getDB().catch((err) => {
+        console.error("Erro ao abrir banco SQLite:", err);
+        return null;
+      });
+
+      if (!db) {
+        setUploading(false);
+        Alert.alert("Erro", "Falha ao inicializar o banco de dados local.");
+        return;
+      }
+
       const netInfo = await NetInfo.fetch();
       const isOnline = netInfo.isConnected;
 
-      // Upload de imagem (apenas online)
+      // Upload da imagem apenas se online
       if (imagemSelecionada && imagemSelecionada.base64 && isOnline) {
         const base64Image = imagemSelecionada.base64;
         const fileExt = imagemSelecionada.uri.split(".").pop() || "jpg";
@@ -105,10 +117,9 @@ export default function ExameCad() {
       };
 
       if (isOnline) {
-        // ONLINE: salva Supabase + SQLite
-        const { data: supaData, error } = await supabase.from('exames').insert([novoExame]);
+        // ONLINE: salva no Supabase e também localmente
+        const { error } = await supabase.from('exames').insert([novoExame]);
         if (error) console.error("Erro Supabase:", error);
-        else console.log("Exame salvo online:", supaData);
 
         await db.withTransactionAsync(async () => {
           await db.runAsync(
@@ -120,8 +131,16 @@ export default function ExameCad() {
 
         Alert.alert("Sucesso", "Exame salvo com sucesso!");
       } else {
-        // OFFLINE: salva na fila de sincronização
+        // OFFLINE: salva no SQLite e adiciona na fila de sincronização
         await db.withTransactionAsync(async () => {
+          // salva localmente para exibir no app
+          await db.runAsync(
+            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
+             VALUES (?, ?, ?, ?, ?)`,
+            [userId, tipoSelecionado, data, medico, obs]
+          );
+
+          // adiciona à fila de sincronização
           await db.runAsync(
             `INSERT INTO fila_sinc (acao, nome_tabela, payload)
              VALUES (?, ?, ?)`,
@@ -136,7 +155,7 @@ export default function ExameCad() {
       router.replace('/exames');
 
     } catch (err) {
-      console.error("Erro inesperado:", err);
+      console.error("Erro inesperado ao salvar exame:", err);
       Alert.alert("Erro", "Não foi possível salvar o exame.");
     } finally {
       setUploading(false);
@@ -225,7 +244,6 @@ export default function ExameCad() {
               onChangeText={setObs}
             />
           </View>
-
         </View>
 
         <View style={{ marginBottom: 20, width: 200 }}>
