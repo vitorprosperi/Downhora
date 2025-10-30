@@ -4,7 +4,7 @@ import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from "react";
-import { Platform, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacQuatro } from "../routes/rotas";
@@ -17,21 +17,21 @@ export default function CadastroPacDois() {
     const { pacientedados, setPacientedados } = usePaciente();
 
     // Estados para cada exame/avaliação
-    const [valor1, setValor1] = useState(null); 
+    const [valor1, setValor1] = useState(null);
     const [dataCariotipo, setDataCariotipo] = useState('');
     const [showCariotipoPicker, setShowCariotipoPicker] = useState(false);
 
     const [valor2, setValor2] = useState(null);
     const [dataAuditivo, setDataAuditivo] = useState('');
 
-    const [valor3, setValor3] = useState(null); 
+    const [valor3, setValor3] = useState(null);
     const [dataEco, setDataEco] = useState('');
 
-    const [valor4, setValor4] = useState(null); 
+    const [valor4, setValor4] = useState(null);
     const [dataOrtopedica, setDataOrtopedica] = useState('');
     const [showPePicker, setShowPePicker] = useState(false);
 
-    const [valor5, setValor5] = useState(null); 
+    const [valor5, setValor5] = useState(null);
     const [dataNeuro, setDataNeuro] = useState('');
 
     // Consultas adicionadas
@@ -90,27 +90,33 @@ export default function CadastroPacDois() {
                                     setValor1(item.value);
                                     setPacientedados(prev => ({ ...prev, cariotipo: item.value }));
                                     if (item.value === 'Sim') setShowCariotipoPicker(true);
+                                    else setShowCariotipoPicker(false);
                                 }}
                             />
+
                             {valor1 === 'Sim' && (
                                 <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data do exame</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataCariotipo}
-                                        mask={dateMask}
-                                        editable={false}
-                                    />
+
+                                    <Pressable onPress={() => setShowCariotipoPicker(true)}>
+                                        <MyMaskInput
+                                            style={styles.input}
+                                            placeholder="Ex: DD/MM/YYYY"
+                                            keyboardType="numeric"
+                                            placeholderTextColor="grey"
+                                            value={dataCariotipo}
+                                            mask={dateMask}
+                                            editable={false}
+                                        />
+                                    </Pressable>
+
                                     {showCariotipoPicker && (
                                         <DateTimePicker
                                             value={new Date()}
                                             mode="date"
-                                            display="calendar"
+                                            display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
                                             onChange={(event, selectedDate) => {
-                                                setShowCariotipoPicker(Platform.OS === 'ios');
+                                                if (Platform.OS !== 'ios') setShowCariotipoPicker(false);
                                                 if (selectedDate) {
                                                     const formatted = formatDate(selectedDate);
                                                     setDataCariotipo(formatted);
@@ -201,27 +207,33 @@ export default function CadastroPacDois() {
                                     setValor4(item.value);
                                     setPacientedados(prev => ({ ...prev, testePe: item.value }));
                                     if (item.value === 'Sim') setShowPePicker(true);
+                                    else setShowPePicker(false);
                                 }}
                             />
+
                             {valor4 === 'Sim' && (
                                 <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataOrtopedica}
-                                        mask={dateMask}
-                                        editable={false}
-                                    />
+
+                                    <Pressable onPress={() => setShowPePicker(true)}>
+                                        <MyMaskInput
+                                            style={styles.input}
+                                            placeholder="Ex: DD/MM/YYYY"
+                                            keyboardType="numeric"
+                                            placeholderTextColor="grey"
+                                            value={dataOrtopedica}
+                                            mask={dateMask}
+                                            editable={false}
+                                        />
+                                    </Pressable>
+
                                     {showPePicker && (
                                         <DateTimePicker
                                             value={new Date()}
                                             mode="date"
-                                            display="calendar"
+                                            display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
                                             onChange={(event, selectedDate) => {
-                                                setShowPePicker(Platform.OS === 'ios');
+                                                if (Platform.OS !== 'ios') setShowPePicker(false);
                                                 if (selectedDate) {
                                                     const formatted = formatDate(selectedDate);
                                                     setDataOrtopedica(formatted);
