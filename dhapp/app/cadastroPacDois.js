@@ -51,7 +51,7 @@ export default function CadastroPacDois() {
 
                         <View>
                             <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
-                            <Text style={styles.subTitulo}>Histórico médico</Text>
+                            <Text style={styles.subTitulo}>Histórico médico (Passo 2 de 4)</Text>
                         </View>
                         
                         {/* Tipo de comorbidade */}

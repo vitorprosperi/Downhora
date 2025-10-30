@@ -113,7 +113,7 @@ export default function CadastroPac() {
     }
   }
 
-  const ref_botao = useRef();
+
   const ref_inputGenero = useRef();
   const ref_input2 = useRef();
   const ref_input3 = useRef();
@@ -132,12 +132,12 @@ export default function CadastroPac() {
 
             <View>
               <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
-              <Text style={styles.subTitulo}>Dados pessoais</Text>
+              <Text style={styles.subTitulo}>Dados pessoais (Passo 1 de 4)</Text>
             </View>
 
             
             <View>
-              <Text style={styles.textForm}>Nome completo*</Text>
+              <Text style={styles.textForm}>Nome completo</Text>
               <MyInput
                 style={styles.input}
                 placeholder='Ex: João Silva Santos'
@@ -150,7 +150,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>CPF*</Text>
+              <Text style={styles.textForm}>CPF</Text>
               <MyMaskInput
                 ref={ref_input2}
                 style={styles.input}
@@ -180,7 +180,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Data de nascimento*</Text>
+              <Text style={styles.textForm}>Data de nascimento</Text>
               <MyMaskInput
                 style={styles.input}
                 keyboardType="numeric"
@@ -200,7 +200,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Gênero*</Text>
+              <Text style={styles.textForm}>Gênero</Text>
               <MyDropdown
               ref={ref_inputGenero}
                 data={itensGenero}
@@ -217,7 +217,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Senha*</Text>
+              <Text style={styles.textForm}>Senha</Text>
               <MyInput
                 ref={ref_input4}
                 style={styles.input}
@@ -240,7 +240,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Confirmar senha*</Text>
+              <Text style={styles.textForm}>Confirmar senha</Text>
               <MyInput
                 ref={ref_input5}
                 style={styles.input}
@@ -256,7 +256,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Nome da mãe*</Text>
+              <Text style={styles.textForm}>Nome da mãe</Text>
               <MyInput
                 ref={ref_input6}
                 style={styles.input}
@@ -270,7 +270,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Nome do responsável*</Text>
+              <Text style={styles.textForm}>Nome do responsável</Text>
               <MyInput
                 ref={ref_input7}
                 style={styles.input}
@@ -284,7 +284,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Telefone do responsável*</Text>
+              <Text style={styles.textForm}>Telefone do responsável</Text>
               <MyMaskInput
                 ref={ref_input8}
                 style={styles.input}
@@ -314,7 +314,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>E-mail do responsável*</Text>
+              <Text style={styles.textForm}>E-mail do responsável</Text>
               <MyInput
                 ref={ref_input9}
                 style={styles.input}
@@ -335,7 +335,7 @@ export default function CadastroPac() {
             </View>
 
           </View>
-          <View ref={ref_botao} style={{ marginBottom: 0, marginTop: 10, width: 200 }}>
+          <View style={{ marginBottom: 0, marginTop: 10, width: 200 }}>
 
               <ButtonP label="Próximo" onPress={Proximo} /> 
 

@@ -4,12 +4,12 @@ import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
 import { router } from 'expo-router';
-import { getDB } from '../database';
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getDB } from '../database';
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
 
@@ -241,7 +241,7 @@ export default function CadastroPacQuatro() {
           <View style={styles.containerForm}>
             <View>
               <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
-              <Text style={styles.subTitulo}>Informações complementares</Text>
+              <Text style={styles.subTitulo}>Informações complementares (Passo 4 de 4)</Text>
             </View>
 
             <View>
@@ -270,7 +270,7 @@ export default function CadastroPacQuatro() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Unidade escolar 1:</Text>
+              <Text style={styles.textForm}>Unidade escolar 1</Text>
               <MyInput
                 style={styles.input}
                 placeholder='Ex: Colégio Cora Coralina'
@@ -283,7 +283,7 @@ export default function CadastroPacQuatro() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Unidade escolar 2:</Text>
+              <Text style={styles.textForm}>Unidade escolar 2</Text>
               <MyInput
                 ref={ref_input1}
                 style={styles.input}
@@ -297,7 +297,7 @@ export default function CadastroPacQuatro() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Unidade escolar 3:</Text>
+              <Text style={styles.textForm}>Unidade escolar 3</Text>
               <MyInput
                 ref={ref_input2}
                 style={styles.input}
@@ -329,7 +329,7 @@ export default function CadastroPacQuatro() {
             {cadastroCarregando ? (
               <ButtonP onPress={salvarPaciente} label={<ActivityIndicator color='#FAFAFF' />} />
             ) : (
-              <ButtonP onPress={salvarPaciente} label="Finalizar" />
+              <ButtonP onPress={salvarPaciente} label="Cadastrar" />
             )}
           </View>
         </View>
