@@ -2,6 +2,7 @@ import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
+import { Stack } from 'expo-router';
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -60,12 +61,22 @@ export default function CadastroPacDois() {
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+            <Stack.Screen
+                options={{
+                    title: 'Cadastro de pessoa com síndrome de Down',
+                    headerShadowVisible: true,
+                    headerTitle: ({ children: title }) => {
+                        return (
+                            <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
+                        )
+                    },
+                }}
+            />
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
 
                         <View>
-                            <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
                             <Text style={styles.subTitulo}>Consultas e exames já realizados (Passo 3 de 4)</Text>
                         </View>
 
@@ -84,7 +95,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor1 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -117,7 +128,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor2 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -150,7 +161,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor3 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data do exame</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -183,7 +194,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor4 === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -216,7 +227,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valor5 === 'Sim' && (
-                                <View style={{marginTop: 10}}> 
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da avaliação</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -250,7 +261,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorFono === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -262,7 +273,7 @@ export default function CadastroPacDois() {
                                         mask={dateMask}
                                         onChangeText={(masked, unmasked) => {
                                             setDataFono(masked);
-                                            setPacientedados(prev => ({ ...prev, dataFono: unmasked}));
+                                            setPacientedados(prev => ({ ...prev, dataFono: unmasked }));
                                         }}
                                     />
                                 </View>
@@ -283,7 +294,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorOdonto === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -316,7 +327,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorEndocrino === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -349,7 +360,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorFisio === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -382,7 +393,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorTerapia === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}
@@ -415,7 +426,7 @@ export default function CadastroPacDois() {
                                 }}
                             />
                             {valorPsico === 'Sim' && (
-                                <View style={{marginTop: 10}}>
+                                <View style={{ marginTop: 10 }}>
                                     <Text style={styles.textForm}>Data da consulta</Text>
                                     <MyMaskInput
                                         style={styles.input}

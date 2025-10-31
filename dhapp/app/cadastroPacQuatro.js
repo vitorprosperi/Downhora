@@ -3,7 +3,7 @@ import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useEffect, useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -233,14 +233,25 @@ export default function CadastroPacQuatro() {
 
   const ref_input1 = useRef();
   const ref_input2 = useRef();
+  
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+      <Stack.Screen
+        options={{
+          title: 'Cadastro de pessoa com síndrome de Down',
+          headerShadowVisible: true,
+          headerTitle: ({ children: title }) => {
+            return (
+              <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
+            )
+          },
+        }}
+      />
       <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
             <View>
-              <Text style={styles.titulo}>Cadastro de Pessoa com Sd. Down</Text>
               <Text style={styles.subTitulo}>Informações complementares (Passo 4 de 4)</Text>
             </View>
 
