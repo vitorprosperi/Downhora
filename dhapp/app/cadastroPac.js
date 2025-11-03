@@ -64,7 +64,7 @@ export default function CadastroPac() {
         <DateTimePicker
           value={dataNascimento ? new Date(dataNascimento.split('/').reverse().join('-')) : new Date()}
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+          display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
           onChange={(event, selectedDate) => {
             if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
             if (selectedDate) {
@@ -241,7 +241,7 @@ export default function CadastroPac() {
                       : new Date()
                   }
                   mode="date"
-                  display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+                  display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
                   onChange={(event, selectedDate) => {
                     if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
                     if (selectedDate) {
