@@ -3,9 +3,10 @@ import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, Platform, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Masks } from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -32,9 +33,43 @@ export default function CadastroPac() {
 
   // Estados para os campos mascarados
   const [dataNascimento, setDataNascimento] = useState('');
+  const [showNascimentoPicker, setShowNascimentoPicker] = useState(false);
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+
+  // Função para formatar a data selecionada
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Função para renderizar o DateTimePicker
+  const renderNascimentoPicker = () => (
+    <>
+      <Pressable onPress={() => setShowNascimentoPicker(true)}> <View style={styles.input}>
+        <Text style={{ color: dataNascimento ? 'black' : 'grey' }}>
+          {dataNascimento || 'Selecione a data'} </Text> </View> </Pressable>
+      {showNascimentoPicker && (
+        <DateTimePicker
+          value={dataNascimento ? new Date(dataNascimento.split('/').reverse().join('-')) : new Date()}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
+          onChange={(event, selectedDate) => {
+            if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
+            if (selectedDate) {
+              const formatted = formatDate(selectedDate);
+              setDataNascimento(formatted);
+              setPacientedados(prev => ({ ...prev, data_nascimento: formatted }));
+            }
+          }}
+        />
+      )}
+    </>
+  );
 
   function Proximo() {
     // Lista de campos obrigatórios
@@ -49,6 +84,7 @@ export default function CadastroPac() {
       { nome: 'telefone_responsavel', label: 'Telefone do responsável' },
       { nome: 'email_responsavel', label: 'E-mail do responsável' },
     ];
+
 
     // Verifica se algum campo obrigatório está vazio
     const vazio = obrigatorios.find(campo => !pacientedados[campo.nome] || pacientedados[campo.nome].toString().trim() === '');
@@ -69,6 +105,8 @@ export default function CadastroPac() {
       return;
     }
     cadastropacDois();
+
+
   }
 
   function checkEmail() {
@@ -106,7 +144,6 @@ export default function CadastroPac() {
     }
   }
 
-
   const ref_inputGenero = useRef();
   const ref_input2 = useRef();
   const ref_input3 = useRef();
@@ -124,8 +161,7 @@ export default function CadastroPac() {
           title: 'Cadastro de pessoa com síndrome de Down',
           headerShadowVisible: true,
           headerTitle: ({ children: title }) => {
-            return (
-              <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
+            return (<Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
             )
           },
         }}
@@ -185,23 +221,40 @@ export default function CadastroPac() {
 
             <View>
               <Text style={styles.textForm}>Data de nascimento</Text>
-              <MyMaskInput
-                style={styles.input}
-                keyboardType="numeric"
-                mask={Masks.DATE_DDMMYYYY}
-                returnKeyType="next"
-                maxLength={10}
-                value={dataNascimento}
-                placeholder='Ex: DD/MM/YYYY'
-                placeholderTextColor={'grey'}
-                ref={ref_input3}
-                onChangeText={(masked, unmasked) => {
-                  console.log(cpfValido);
-                  setDataNascimento(masked);
-                  setPacientedados(prev => ({ ...prev, data_nascimento: unmasked }));
-                }}
-                onSubmitEditing={() => ref_inputGenero.current.open()}
-              />
+              <Pressable onPress={() => setShowNascimentoPicker(true)}>
+                <View style={styles.input}>
+                  <Text style={{ color: dataNascimento ? 'black' : 'grey' }}>
+                    {dataNascimento || 'Selecione a data'}
+                  </Text>
+                </View>
+              </Pressable>
+
+              {showNascimentoPicker && (
+                <DateTimePicker
+                  value={
+                    dataNascimento
+                      ? new Date(dataNascimento.split('/').reverse().join('-'))
+                      : new Date()
+                  }
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
+                  onChange={(event, selectedDate) => {
+                    if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
+                    if (selectedDate) {
+                      const d = new Date(selectedDate);
+                      const day = d.getDate().toString().padStart(2, '0');
+                      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+                      const year = d.getFullYear();
+                      const formatted = `${day}/${month}/${year}`;
+                      setDataNascimento(formatted);
+                      setPacientedados(prev => ({
+                        ...prev,
+                        data_nascimento: formatted
+                      }));
+                    }
+                  }}
+                />
+              )}
             </View>
 
             <View>
@@ -350,5 +403,7 @@ export default function CadastroPac() {
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
+
+
   );
 }

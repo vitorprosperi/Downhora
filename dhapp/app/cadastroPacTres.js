@@ -1,10 +1,10 @@
 import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
-import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Stack } from 'expo-router';
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacQuatro } from "../routes/rotas";
@@ -12,52 +12,93 @@ import styles from './styleForms';
 
 export default function CadastroPacDois() {
 
-    const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 
     const { pacientedados, setPacientedados } = usePaciente();
 
     // Estados para cada exame/avaliação
-    const [valor1, setValor1] = useState(null); // Cariótipo
+    const [valor1, setValor1] = useState(null);
     const [dataCariotipo, setDataCariotipo] = useState('');
+    const [showCariotipoPicker, setShowCariotipoPicker] = useState(false);
 
-    const [valor2, setValor2] = useState(null); // Exame Auditivo
+    const [valor2, setValor2] = useState(null);
     const [dataAuditivo, setDataAuditivo] = useState('');
+    const [showAuditivoPicker, setShowAuditivoPicker] = useState(false);
 
-    const [valor3, setValor3] = useState(null); // Exame Ecocardiograma
+    const [valor3, setValor3] = useState(null);
     const [dataEco, setDataEco] = useState('');
+    const [showCardioPicker, setShowCardioPicker] = useState(false);
 
-    const [valor4, setValor4] = useState(null); // Teste do pezinho
+    const [valor4, setValor4] = useState(null);
     const [dataOrtopedica, setDataOrtopedica] = useState('');
+    const [showPePicker, setShowPePicker] = useState(false);
 
-    const [valor5, setValor5] = useState(null); // Consulta Oftalmologista
+    const [valor5, setValor5] = useState(null);
     const [dataNeuro, setDataNeuro] = useState('');
+    const [showOftalPicker, setShowOftalPicker] = useState(false);
 
-    // Consultas adicionadas
     const [valorFono, setValorFono] = useState(null);
     const [dataFono, setDataFono] = useState('');
+    const [showFonoPicker, setShowFonoPicker] = useState(false);
 
     const [valorOdonto, setValorOdonto] = useState(null);
     const [dataOdonto, setDataOdonto] = useState('');
+    const [showOdontoPicker, setShowOdontoPicker] = useState(false);
 
     const [valorEndocrino, setValorEndocrino] = useState(null);
     const [dataEndocrino, setDataEndocrino] = useState('');
+    const [showEndocrinoPicker, setShowEndocrinoPicker] = useState(false);
 
     const [valorFisio, setValorFisio] = useState(null);
     const [dataFisio, setDataFisio] = useState('');
+    const [showFisioPicker, setShowFisioPicker] = useState(false);
 
     const [valorTerapia, setValorTerapia] = useState(null);
     const [dataTerapia, setDataTerapia] = useState('');
+    const [showTerapiaPicker, setShowTerapiaPicker] = useState(false);
 
     const [valorPsico, setValorPsico] = useState(null);
     const [dataPsico, setDataPsico] = useState('');
+    const [showPsicoPicker, setShowPsicoPicker] = useState(false);
 
-
-    // Itens dos dropdowns (Sim/não)
     const itensSimNao = [
         { label: 'Sim', value: 'Sim' },
         { label: 'Não', value: 'Não' },
     ];
 
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const day = d.getDate().toString().padStart(2, '0');
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    const renderDatePicker = (showPicker, setShowPicker, dataValue, setDataValue, fieldName) => (
+        <>
+            <Pressable onPress={() => setShowPicker(true)}>
+                <View style={styles.input}>
+                    <Text style={{ color: dataValue ? 'black' : 'grey' }}>
+                        {dataValue || 'Selecione a data'}
+                    </Text>
+                </View>
+            </Pressable>
+            {showPicker && (
+                <DateTimePicker
+                    value={dataValue ? new Date(dataValue.split('/').reverse().join('-')) : new Date()}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+                    onChange={(event, selectedDate) => {
+                        if (Platform.OS !== 'ios') setShowPicker(false);
+                        if (selectedDate) {
+                            const formatted = formatDate(selectedDate);
+                            setDataValue(formatted);
+                            setPacientedados(prev => ({ ...prev, [fieldName]: formatted }));
+                        }
+                    }}
+                />
+            )}
+        </>
+    );
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -65,393 +106,188 @@ export default function CadastroPacDois() {
                 options={{
                     title: 'Cadastro de pessoa com síndrome de Down',
                     headerShadowVisible: true,
-                    headerTitle: ({ children: title }) => {
-                        return (
-                            <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
-                        )
-                    },
+                    headerTitle: ({ children: title }) => (
+                        <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
+                    ),
                 }}
             />
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
+                        <Text style={styles.subTitulo}>Consultas e exames já realizados (Passo 3 de 4)</Text>
 
-                        <View>
-                            <Text style={styles.subTitulo}>Consultas e exames já realizados (Passo 3 de 4)</Text>
-                        </View>
+                        <Text style={styles.textForm}>Exame cariótipo</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valor1}
+                            onChange={item => {
+                                setValor1(item.value);
+                                setPacientedados(prev => ({ ...prev, cariotipo: item.value }));
+                                setShowCariotipoPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valor1 === 'Sim' && renderDatePicker(showCariotipoPicker, setShowCariotipoPicker, dataCariotipo, setDataCariotipo, 'dataCariotipo')}
 
-                        {/* EXAMES */}
-                        <View>
-                            <Text style={styles.textForm}>Exame cariótipo</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valor1}
-                                onChange={item => {
-                                    setValor1(item.value);
-                                    setPacientedados(prev => ({ ...prev, cariotipo: item.value }));
-                                }}
-                            />
-                            {valor1 === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data do exame</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataCariotipo}
-                                        mask={dateMask}
-                                        maxLength={10}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataCariotipo(masked);
-                                            setPacientedados(prev => ({ ...prev, dataCariotipo: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Triagem auditiva</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valor2}
+                            onChange={item => {
+                                setValor2(item.value);
+                                setPacientedados(prev => ({ ...prev, exameAuditivo: item.value }));
+                                setShowAuditivoPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valor2 === 'Sim' && renderDatePicker(showAuditivoPicker, setShowAuditivoPicker, dataAuditivo, setDataAuditivo, 'dataAuditivo')}
 
-                        <View>
-                            <Text style={styles.textForm}>Triagem auditiva</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valor2}
-                                onChange={item => {
-                                    setValor2(item.value);
-                                    setPacientedados(prev => ({ ...prev, exameAuditivo: item.value }));
-                                }}
-                            />
-                            {valor2 === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data do exame</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        value={dataAuditivo}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataAuditivo(masked);
-                                            setPacientedados(prev => ({ ...prev, dataAuditivo: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta cardiologista</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valor3}
+                            onChange={item => {
+                                setValor3(item.value);
+                                setPacientedados(prev => ({ ...prev, consultCardio: item.value }));
+                                setShowCardioPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valor3 === 'Sim' && renderDatePicker(showCardioPicker, setShowCardioPicker, dataEco, setDataEco, 'dataCard')}
 
-                        <View>
-                            <Text style={styles.textForm}>Consulta cardiologista</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valor3}
-                                onChange={item => {
-                                    setValor3(item.value);
-                                    setPacientedados(prev => ({ ...prev, consultCardio: item.value }));
-                                }}
-                            />
-                            {valor3 === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data do exame</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataEco}
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataEco(masked);
-                                            setPacientedados(prev => ({ ...prev, dataCard: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Teste do pezinho</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valor4}
+                            onChange={item => {
+                                setValor4(item.value);
+                                setPacientedados(prev => ({ ...prev, testePe: item.value }));
+                                setShowPePicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valor4 === 'Sim' && renderDatePicker(showPePicker, setShowPePicker, dataOrtopedica, setDataOrtopedica, 'dataPe')}
 
-                        <View>
-                            <Text style={styles.textForm}>Teste do pezinho</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valor4}
-                                onChange={item => {
-                                    setValor4(item.value);
-                                    setPacientedados(prev => ({ ...prev, testePe: item.value }));
-                                }}
-                            />
-                            {valor4 === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da avaliação</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        value={dataOrtopedica}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataOrtopedica(masked);
-                                            setPacientedados(prev => ({ ...prev, dataPe: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta oftalmologista</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valor5}
+                            onChange={item => {
+                                setValor5(item.value);
+                                setPacientedados(prev => ({ ...prev, oftalmo: item.value }));
+                                setShowOftalPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valor5 === 'Sim' && renderDatePicker(showOftalPicker, setShowOftalPicker, dataNeuro, setDataNeuro, 'dataOftal')}
 
-                        <View>
-                            <Text style={styles.textForm}>Consulta oftalmologista</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valor5}
-                                onChange={item => {
-                                    setValor5(item.value);
-                                    setPacientedados(prev => ({ ...prev, oftalmo: item.value }));
-                                }}
-                            />
-                            {valor5 === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da avaliação</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        value={dataNeuro}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataNeuro(masked);
-                                            setPacientedados(prev => ({ ...prev, dataOftal: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta fonoaudiologia</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valorFono}
+                            onChange={item => {
+                                setValorFono(item.value);
+                                setPacientedados(prev => ({ ...prev, consultaFono: item.value }));
+                                setShowFonoPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valorFono === 'Sim' && renderDatePicker(showFonoPicker, setShowFonoPicker, dataFono, setDataFono, 'dataFono')}
 
-                        {/* CONSULTAS */}
-                        <View>
-                            <Text style={styles.textForm}>Consulta fonoaudiologia</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valorFono}
-                                onChange={item => {
-                                    setValorFono(item.value);
-                                    setPacientedados(prev => ({ ...prev, consultaFono: item.value }));
-                                }}
-                            />
-                            {valorFono === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataFono}
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataFono(masked);
-                                            setPacientedados(prev => ({ ...prev, dataFono: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta odontologia</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valorOdonto}
+                            onChange={item => {
+                                setValorOdonto(item.value);
+                                setPacientedados(prev => ({ ...prev, consultaOdonto: item.value }));
+                                setShowOdontoPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valorOdonto === 'Sim' && renderDatePicker(showOdontoPicker, setShowOdontoPicker, dataOdonto, setDataOdonto, 'dataOdonto')}
 
-                        <View>
-                            <Text style={styles.textForm}>Consulta odontologia</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valorOdonto}
-                                onChange={item => {
-                                    setValorOdonto(item.value);
-                                    setPacientedados(prev => ({ ...prev, consultaOdonto: item.value }));
-                                }}
-                            />
-                            {valorOdonto === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataOdonto}
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataOdonto(masked);
-                                            setPacientedados(prev => ({ ...prev, dataOdonto: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta endocrinologia</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valorEndocrino}
+                            onChange={item => {
+                                setValorEndocrino(item.value);
+                                setPacientedados(prev => ({ ...prev, consultaEndocrino: item.value }));
+                                setShowEndocrinoPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valorEndocrino === 'Sim' && renderDatePicker(showEndocrinoPicker, setShowEndocrinoPicker, dataEndocrino, setDataEndocrino, 'dataEndocrino')}
 
-                        <View>
-                            <Text style={styles.textForm}>Consulta endocrinologia</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valorEndocrino}
-                                onChange={item => {
-                                    setValorEndocrino(item.value);
-                                    setPacientedados(prev => ({ ...prev, consultaEndocrino: item.value }));
-                                }}
-                            />
-                            {valorEndocrino === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataEndocrino}
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataEndocrino(masked);
-                                            setPacientedados(prev => ({ ...prev, dataEndocrino: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta fisioterapia</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valorFisio}
+                            onChange={item => {
+                                setValorFisio(item.value);
+                                setPacientedados(prev => ({ ...prev, consultaFisio: item.value }));
+                                setShowFisioPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valorFisio === 'Sim' && renderDatePicker(showFisioPicker, setShowFisioPicker, dataFisio, setDataFisio, 'dataFisio')}
 
-                        <View>
-                            <Text style={styles.textForm}>Consulta fisioterapia</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valorFisio}
-                                onChange={item => {
-                                    setValorFisio(item.value);
-                                    setPacientedados(prev => ({ ...prev, consultaFisio: item.value }));
-                                }}
-                            />
-                            {valorFisio === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataFisio}
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataFisio(masked);
-                                            setPacientedados(prev => ({ ...prev, dataFisio: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta terapia ocupacional</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valorTerapia}
+                            onChange={item => {
+                                setValorTerapia(item.value);
+                                setPacientedados(prev => ({ ...prev, consultaTerapia: item.value }));
+                                setShowTerapiaPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valorTerapia === 'Sim' && renderDatePicker(showTerapiaPicker, setShowTerapiaPicker, dataTerapia, setDataTerapia, 'dataTerapia')}
 
-                        <View>
-                            <Text style={styles.textForm}>Consulta terapia ocupacional</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valorTerapia}
-                                onChange={item => {
-                                    setValorTerapia(item.value);
-                                    setPacientedados(prev => ({ ...prev, consultaTerapia: item.value }));
-                                }}
-                            />
-                            {valorTerapia === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataTerapia}
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataTerapia(masked);
-                                            setPacientedados(prev => ({ ...prev, dataTerapia: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
-
-                        <View>
-                            <Text style={styles.textForm}>Consulta psicopedagogo</Text>
-                            <MyDropdown
-                                data={itensSimNao}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Selecione"
-                                value={valorPsico}
-                                onChange={item => {
-                                    setValorPsico(item.value);
-                                    setPacientedados(prev => ({ ...prev, consultaPsico: item.value }));
-                                }}
-                            />
-                            {valorPsico === 'Sim' && (
-                                <View style={{ marginTop: 10 }}>
-                                    <Text style={styles.textForm}>Data da consulta</Text>
-                                    <MyMaskInput
-                                        style={styles.input}
-                                        placeholder="Ex: DD/MM/YYYY"
-                                        keyboardType="numeric"
-                                        placeholderTextColor="grey"
-                                        value={dataPsico}
-                                        maxLength={10}
-                                        mask={dateMask}
-                                        onChangeText={(masked, unmasked) => {
-                                            setDataPsico(masked);
-                                            setPacientedados(prev => ({ ...prev, dataPsico: unmasked }));
-                                        }}
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <Text style={styles.textForm}>Consulta psicopedagogo</Text>
+                        <MyDropdown
+                            data={itensSimNao}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Selecione"
+                            value={valorPsico}
+                            onChange={item => {
+                                setValorPsico(item.value);
+                                setPacientedados(prev => ({ ...prev, consultaPsico: item.value }));
+                                setShowPsicoPicker(item.value === 'Sim');
+                            }}
+                        />
+                        {valorPsico === 'Sim' && renderDatePicker(showPsicoPicker, setShowPsicoPicker, dataPsico, setDataPsico, 'dataPsico')}
                     </View>
 
                     <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
                         <ButtonP label="Próximo" onPress={cadastropacQuatro} />
                     </View>
-
                 </View>
             </KeyboardAwareScrollView>
         </SafeAreaView>
     )
+
 }
