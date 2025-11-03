@@ -3,6 +3,7 @@ import { MyDropdown } from '@/components/MyDropdown';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Stack } from 'expo-router';
 import { useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -69,17 +70,27 @@ export default function CadastroPacDois() {
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+            <Stack.Screen
+                options={{
+                    title: 'Cadastro de pessoa com síndrome de Down',
+                    headerShadowVisible: true,
+                    headerTitle: ({ children: title }) => {
+                        return (
+                            <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
+                        )
+                    },
+                }}
+            />
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
 
                         <View>
-                            <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
-                            <Text style={styles.subTitulo}>Consultas e exames já realizados</Text>
+                            <Text style={styles.subTitulo}>Consultas e exames já realizados (Passo 3 de 4)</Text>
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Exame cariótipo*</Text>
+                            <Text style={styles.textForm}>Exame cariótipo</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -130,7 +141,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Triagem auditiva*</Text>
+                            <Text style={styles.textForm}>Triagem auditiva</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -163,7 +174,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta cardiologista*</Text>
+                            <Text style={styles.textForm}>Consulta cardiologista</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -196,7 +207,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Teste do pezinho*</Text>
+                            <Text style={styles.textForm}>Teste do pezinho</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -247,7 +258,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta oftalmologista*</Text>
+                            <Text style={styles.textForm}>Consulta oftalmologista</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -280,7 +291,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta fonoaudiologia*</Text>
+                            <Text style={styles.textForm}>Consulta fonoaudiologia</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -313,7 +324,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta odontologia*</Text>
+                            <Text style={styles.textForm}>Consulta odontologia</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -346,7 +357,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta endocrinologia*</Text>
+                            <Text style={styles.textForm}>Consulta endocrinologia</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -379,7 +390,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta fisioterapia*</Text>
+                            <Text style={styles.textForm}>Consulta fisioterapia</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"
@@ -412,7 +423,7 @@ export default function CadastroPacDois() {
                         </View>
 
                         <View>
-                            <Text style={styles.textForm}>Consulta terapia ocupacional*</Text>
+                            <Text style={styles.textForm}>Consulta terapia ocupacional</Text>
                             <MyDropdown
                                 data={itensSimNao}
                                 labelField="label"

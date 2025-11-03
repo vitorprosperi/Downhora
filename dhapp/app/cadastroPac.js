@@ -3,6 +3,7 @@ import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
+import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -18,7 +19,7 @@ export default function CadastroPac() {
   const [tel, setTel] = useState('');
   const [cpfUnmasked, setCpfUnmasked] = useState('');
   const [senhaForca, setSenhaForca] = useState('');
-  
+
 
   // Máscaras
   const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
@@ -105,15 +106,15 @@ export default function CadastroPac() {
     }
   }
 
-  function checkSenha(){
-    if (validator.isStrongPassword(senhaForca, {minUppercase: 0, minSymbols: 0})) {
+  function checkSenha() {
+    if (validator.isStrongPassword(senhaForca, { minUppercase: 0, minSymbols: 0 })) {
       return;
     } else {
       return <Text style={styles.textFormErro}>Senha fraca</Text>;
     }
   }
 
-  const ref_botao = useRef();
+
   const ref_inputGenero = useRef();
   const ref_input2 = useRef();
   const ref_input3 = useRef();
@@ -126,18 +127,27 @@ export default function CadastroPac() {
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.corEscura]}>
-      <KeyboardAwareScrollView contentContainerStyle={[styles.corEscura, {backgroundColor: 'orange'}]} extraHeight={280}>
+      <Stack.Screen
+        options={{
+          title: 'Cadastro de pessoa com síndrome de Down',
+          headerShadowVisible: true,
+          headerTitle: ({ children: title }) => {
+            return (
+              <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
+            )
+          },
+        }}
+      />
+      <KeyboardAwareScrollView contentContainerStyle={[styles.corEscura, { backgroundColor: 'orange' }]} extraHeight={280}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
 
             <View>
-              <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
-              <Text style={styles.subTitulo}>Dados pessoais</Text>
+              <Text style={styles.subTitulo}>Dados pessoais (Passo 1 de 4)</Text>
             </View>
 
-            
             <View>
-              <Text style={styles.textForm}>Nome completo*</Text>
+              <Text style={styles.textForm}>Nome completo</Text>
               <MyInput
                 style={styles.input}
                 placeholder='Ex: João Silva Santos'
@@ -150,7 +160,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>CPF*</Text>
+              <Text style={styles.textForm}>CPF</Text>
               <MyMaskInput
                 ref={ref_input2}
                 style={styles.input}
@@ -180,7 +190,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Data de nascimento*</Text>
+              <Text style={styles.textForm}>Data de nascimento</Text>
               <MyMaskInput
                 style={styles.input}
                 keyboardType="numeric"
@@ -200,9 +210,9 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Gênero*</Text>
+              <Text style={styles.textForm}>Gênero</Text>
               <MyDropdown
-              ref={ref_inputGenero}
+                ref={ref_inputGenero}
                 data={itensGenero}
                 labelField="label"
                 valueField="value"
@@ -217,7 +227,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Senha*</Text>
+              <Text style={styles.textForm}>Senha</Text>
               <MyInput
                 ref={ref_input4}
                 style={styles.input}
@@ -228,7 +238,8 @@ export default function CadastroPac() {
                 onSubmitEditing={() => ref_input5.current.focus()}
                 onChangeText={(text) => {
                   setSenhaForca(text);
-                  setPacientedados(prev => ({ ...prev, senha: text }));}}
+                  setPacientedados(prev => ({ ...prev, senha: text }));
+                }}
                 secureTextEntry
               />
               {(senhaForca == '') ? (
@@ -240,7 +251,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Confirmar senha*</Text>
+              <Text style={styles.textForm}>Confirmar senha</Text>
               <MyInput
                 ref={ref_input5}
                 style={styles.input}
@@ -256,7 +267,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Nome da mãe*</Text>
+              <Text style={styles.textForm}>Nome da mãe</Text>
               <MyInput
                 ref={ref_input6}
                 style={styles.input}
@@ -270,7 +281,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Nome do responsável*</Text>
+              <Text style={styles.textForm}>Nome do responsável</Text>
               <MyInput
                 ref={ref_input7}
                 style={styles.input}
@@ -284,7 +295,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>Telefone do responsável*</Text>
+              <Text style={styles.textForm}>Telefone do responsável</Text>
               <MyMaskInput
                 ref={ref_input8}
                 style={styles.input}
@@ -304,7 +315,7 @@ export default function CadastroPac() {
                 }}
               />
 
-              
+
               {(tel == '') ? (
                 null
               ) : (
@@ -314,7 +325,7 @@ export default function CadastroPac() {
             </View>
 
             <View>
-              <Text style={styles.textForm}>E-mail do responsável*</Text>
+              <Text style={styles.textForm}>E-mail do responsável</Text>
               <MyInput
                 ref={ref_input9}
                 style={styles.input}
@@ -322,9 +333,10 @@ export default function CadastroPac() {
                 keyboardType='email-address'
                 placeholder='Ex: maria@gmail.com'
                 placeholderTextColor={'grey'}
-                onChangeText={(text) => { 
+                onChangeText={(text) => {
                   setEmail(text);
-                  setPacientedados(prev => ({ ...prev, email_responsavel: text }))}}
+                  setPacientedados(prev => ({ ...prev, email_responsavel: text }))
+                }}
               />
               {(email == '') ? (
                 null
@@ -335,9 +347,9 @@ export default function CadastroPac() {
             </View>
 
           </View>
-          <View ref={ref_botao} style={{ marginBottom: 0, marginTop: 10, width: 200 }}>
+          <View style={{ marginBottom: 10, marginTop: 10, width: 200 }}>
 
-              <ButtonP label="Próximo" onPress={Proximo} /> 
+            <ButtonP label="Próximo" onPress={Proximo} />
 
           </View>
         </View>

@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: 10,
     width: '90%',
+    paddingTop: 20,
   },
   dropdownContainer: {
     backgroundColor: '#FAFAFF',
@@ -63,8 +64,8 @@ const styles = StyleSheet.create({
   },
   subTitulo: {
     color: '#231F20',
-    fontSize: 18,
-    fontFamily: 'Raleway',
+    fontSize: 16,
+    fontFamily: 'Roboto-500',
   },
   textoPequeno: {
     color: '#231F20',
@@ -91,6 +92,11 @@ const styles = StyleSheet.create({
   textFormErro: {
     fontFamily: 'Roboto',
     color: 'red',
+  },
+  headerCadastro: {
+    fontFamily: 'Raleway-700',
+    color: '#231F20',
+    fontSize: 20,
   } 
 })
 

@@ -2,6 +2,7 @@ import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { usePaciente } from '@/context/context';
+import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -45,15 +46,25 @@ export default function CadastroPacDois() {
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+            <Stack.Screen
+                options={{
+                    title: 'Cadastro de pessoa com síndrome de Down',
+                    headerShadowVisible: true,
+                    headerTitle: ({ children: title }) => {
+                        return (
+                            <Text style={styles.headerCadastro} numberOfLines={2}>{title}</Text>
+                        )
+                    },
+                }}
+            />
             <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
                 <View style={styles.container}>
                     <View style={styles.containerForm}>
 
                         <View>
-                            <Text style={styles.titulo}>Cadastro de pessoa com síndrome de Down</Text>
-                            <Text style={styles.subTitulo}>Histórico médico</Text>
+                            <Text style={styles.subTitulo}>Histórico médico (Passo 2 de 4)</Text>
                         </View>
-                        
+
                         {/* Tipo de comorbidade */}
                         <View>
                             <Text style={styles.textForm}>Doenças relacionadas</Text>
@@ -72,7 +83,7 @@ export default function CadastroPacDois() {
                         <View>
                             <Text style={styles.textForm}>Medicamentos em uso</Text>
                             <MyInput
-                            ref={ref_input2}
+                                ref={ref_input2}
                                 style={styles.input}
                                 placeholder='Ex: Losartana'
                                 placeholderTextColor={'grey'}
@@ -86,7 +97,7 @@ export default function CadastroPacDois() {
                         <View>
                             <Text style={styles.textForm}>Alergias</Text>
                             <MyDropdown
-                            ref={ref_input3}
+                                ref={ref_input3}
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"
@@ -103,17 +114,17 @@ export default function CadastroPacDois() {
                             />
                         </View>
                         {valor6 === 'Sim' && (
-                                <View>
-                                    <Text style={styles.textForm}>Quais alergias?</Text>
-                                    <MyInput
-                                        style={styles.input}
-                                        placeholder='Ex: Rinite alérgica'
-                                        placeholderTextColor={'grey'}
-                                        value={pacientedados.alergia === 'não' ? '' : pacientedados.alergia || ''}
-                                        onChangeText={text => setPacientedados(prev => ({ ...prev, alergia: text }))}
-                                    />
-                                </View>
-                            )}
+                            <View>
+                                <Text style={styles.textForm}>Quais alergias?</Text>
+                                <MyInput
+                                    style={styles.input}
+                                    placeholder='Ex: Rinite alérgica'
+                                    placeholderTextColor={'grey'}
+                                    value={pacientedados.alergia === 'não' ? '' : pacientedados.alergia || ''}
+                                    onChangeText={text => setPacientedados(prev => ({ ...prev, alergia: text }))}
+                                />
+                            </View>
+                        )}
 
                         {/* Tipo sanguíneo */}
                         <View>

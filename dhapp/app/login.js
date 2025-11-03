@@ -184,7 +184,7 @@ export default function Login() {
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Checkbox color={'#3A7ADC'} value={isChecked} onValueChange={setChecked} />
+              <Checkbox color={'#3A7ADC'} value={isChecked} onValueChange={() => setChecked(!isChecked)} ></Checkbox>
               <Text style={styles.textForm}>Manter login</Text>
             </View>
 
