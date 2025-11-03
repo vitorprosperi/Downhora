@@ -246,12 +246,7 @@ export default function Exames() {
         }}
       />
       <View style={[cstyle.container, { paddingBottom: insets.bottom }]}>
-        <FlatList
-          data={dataSorted(exames)}
-          contentContainerStyle={cstyle.lista}
-          keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-          ListHeaderComponent={
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
               <View style={{flexDirection: "row", alignItems:'center'}}>
               <IconButton
                 icon={sortIcon}
@@ -273,7 +268,11 @@ export default function Exames() {
               onPress={exameCad} 
               />
             </View>
-          }
+          
+        <FlatList
+          data={dataSorted(exames)}
+          contentContainerStyle={cstyle.lista}
+          keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
           renderItem={({ item }) => {
 
             const dataFormatada = dayjs(item.data_exame, 'DDMMYYYY').format('YYYY-MM-DD');
@@ -338,22 +337,21 @@ const cstyle = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,
-    marginBottom: 10,
-    width: 350,
-    borderRadius: 5,
+    width: '100%',
+    borderRadius: 0,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#2261c1',
     backgroundColor: '#FFFFFF',
-    boxShadow: '0px 1px 1px 1px hsla(240, 25%, 60% / 0.38)',
   },
   cardHighlight: {
     alignSelf: 'center',
-    marginBottom: 10,
-    width: 350,
+    width: '100%',
     paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,
-    borderRadius: 5,
-    backgroundColor: '#FBFBFC',
-    boxShadow: '0px 1px 1px 1.5px hsla(240, 25%, 60% / 0.38)',
+    backgroundColor: 'hsla(240, 10%, 90%, 1)',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#2261c1',
   },
   container: {
     width: "100%",
@@ -402,7 +400,8 @@ const cstyle = StyleSheet.create({
     backgroundColor: '#FAFAFF'
   },
   lista: {
-    paddingTop: 10,
+   borderTopColor: '#2261c1',
+   borderTopWidth: 0.5,
   },
   rowTop: {
     flexDirection: 'row',

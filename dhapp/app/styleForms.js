@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     position: 'static',
   },
   textFormErro: {
-    fontFamily: 'Roboto',
+    fontFamily: 'Roboto-500',
     color: 'red',
   },
   headerCadastro: {

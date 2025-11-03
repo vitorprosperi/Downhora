@@ -7,7 +7,7 @@ export const MyInput = (props: any) => {
     <TextInput
       {...props}
       style={[props.style, isFocused && {borderWidth: 2, borderColor: '#F2AA08'}]}
-      onBlur={() => {setIsFocused(false); props.onBlurPlus}}
+      onBlur={() => setIsFocused(false)}
       onFocus={() => setIsFocused(true)}
     />
   );

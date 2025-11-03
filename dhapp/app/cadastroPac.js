@@ -7,6 +7,7 @@ import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Masks } from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import validator from 'validator';
 import { cadastropacDois } from '../routes/rotas';
@@ -19,16 +20,6 @@ export default function CadastroPac() {
   const [tel, setTel] = useState('');
   const [cpfUnmasked, setCpfUnmasked] = useState('');
   const [senhaForca, setSenhaForca] = useState('');
-
-
-  // Máscaras
-  const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
-  const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
-  const phoneMask = [
-    '(', /\d/, /\d/, ')', ' ',
-    /\d/, /\d/, /\d/, /\d/, /\d/, '-',
-    /\d/, /\d/, /\d/, /\d/
-  ];
 
   // Estados separados
   const [genero, setGenero] = useState(null);
@@ -97,12 +88,13 @@ export default function CadastroPac() {
   }
 
   const validateCpf = require('validar-cpf');
+  const [cpfValido, setCPFValido] = useState(true);
 
-  function checkCpf() {
-    if (validateCpf(cpfUnmasked)) {
-      return;
+  function checkCpf(valorcpf) {
+    if (validateCpf(valorcpf)) {
+      setCPFValido(true);
     } else {
-      return <Text style={styles.textFormErro}>CPF inválido</Text>;
+      setCPFValido(false);
     }
   }
 
@@ -165,7 +157,7 @@ export default function CadastroPac() {
                 ref={ref_input2}
                 style={styles.input}
                 keyboardType="numeric"
-                mask={cpfMask}
+                mask={Masks.BRL_CPF}
                 maxLength={14}
                 value={cpf}
                 autoComplete='off'
@@ -174,17 +166,19 @@ export default function CadastroPac() {
                 onSubmitEditing={() => ref_input3.current.focus()}
                 returnKeyType="next"
                 submitBehavior='submit'
+                onBlur={() => {checkCpf(cpfUnmasked); console.log(cpfUnmasked);}}
                 onChangeText={(masked, unmasked) => {
                   setCpf(masked);
                   setCpfUnmasked(unmasked);
+                  checkCpf(unmasked);
                   setPacientedados(prev => ({ ...prev, cpf: unmasked }));
                 }}
               />
 
-              {(cpfUnmasked == '') ? (
+              {(cpfValido) ? (
                 null
               ) : (
-                checkCpf()
+               <Text style={styles.textFormErro}>CPF inválido</Text>
               )
               }
             </View>
@@ -194,7 +188,7 @@ export default function CadastroPac() {
               <MyMaskInput
                 style={styles.input}
                 keyboardType="numeric"
-                mask={dateMask}
+                mask={Masks.DATE_DDMMYYYY}
                 returnKeyType="next"
                 maxLength={10}
                 value={dataNascimento}
@@ -202,6 +196,7 @@ export default function CadastroPac() {
                 placeholderTextColor={'grey'}
                 ref={ref_input3}
                 onChangeText={(masked, unmasked) => {
+                  console.log(cpfValido);
                   setDataNascimento(masked);
                   setPacientedados(prev => ({ ...prev, data_nascimento: unmasked }));
                 }}
@@ -302,7 +297,7 @@ export default function CadastroPac() {
                 placeholder='Ex: (12) 34567-8901'
                 placeholderTextColor={'grey'}
                 keyboardType="phone-pad"
-                mask={phoneMask}
+                mask={Masks.BRL_PHONE}
                 maxLength={15}
                 value={telResp}
                 returnKeyType="next"

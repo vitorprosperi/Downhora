@@ -14,7 +14,7 @@ export const MyDropdown = (props: JSX.IntrinsicAttributes & Pick<DropdownProps<a
       selectedTextStyle={styles.textForm}
       containerStyle={styles.dropdownContainer}
       itemTextStyle={styles.textForm}
-      activeColor='hsla(216, 70%, 80%, 0.2)'
+      activeColor='	hsla(42, 94%, 49%, 0.5)'
       onBlur={() => setIsFocused(false)}
       onFocus={() => setIsFocused(true)}
     />

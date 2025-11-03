@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
 const dataFilter = [
@@ -19,11 +19,11 @@ export const FilterDropdown = (props) => {
         labelField="label"
         valueField="value"
         value={'padrao'}
-        renderRightIcon={() => <View></View>}
+        iconColor="#FFF"
         selectedTextStyle={styles.selectedText}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        ></Dropdown>
+        />
     )
 }
 
@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
       margin: 5,
       height: 50,
       width: '120',
-      borderColor: 'hsl(216 69.7% 62.3%)',
-      borderWidth: 0.8,
-      backgroundColor: '#fff',
+      backgroundColor: '#2261C1',
       borderRadius: 22,
       paddingHorizontal: 8,
+      
     },
     selectedText: {
         textAlign: 'center',
         fontFamily: 'Roboto',
+        color: '#FFF'
     }
 })

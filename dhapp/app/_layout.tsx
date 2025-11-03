@@ -36,7 +36,7 @@ export default function RootLayout() {
         <PacienteProvider>
           <Stack
             screenOptions={{
-              headerStyle: { backgroundColor: '#FAFAFF' },
+              headerStyle: { backgroundColor: '#FFFFFF' },
               headerTintColor: '#231F20',
               headerTitleStyle: { fontFamily: 'Raleway-700' },
               title: '',
