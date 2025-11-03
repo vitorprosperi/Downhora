@@ -246,7 +246,7 @@ export default function Exames() {
         }}
       />
       <View style={[cstyle.container, { paddingBottom: insets.bottom }]}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, paddingBottom: 5 }}>
               <View style={{flexDirection: "row", alignItems:'center'}}>
               <IconButton
                 icon={sortIcon}
@@ -349,13 +349,12 @@ const cstyle = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 4,
-    backgroundColor: 'hsla(240, 10%, 90%, 1)',
+    backgroundColor: '#FBFBFC',
     borderBottomWidth: 0.5,
     borderBottomColor: '#2261c1',
   },
   container: {
     width: "100%",
-    gap: 10,
     flex: 1,
   },
   midBar: {

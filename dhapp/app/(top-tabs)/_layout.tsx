@@ -22,9 +22,9 @@ export default function TabLayout() {
   return (
     
     <MaterialTopTabs>
-      <MaterialTopTabs.Screen name="index" options={{ title: "Desenvolvimento", tabBarStyle: {backgroundColor: "#FAFAFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12,}, tabBarIndicatorStyle: {backgroundColor: '#2261C1'}}} />
-      <MaterialTopTabs.Screen name="direitos" options={{ title: "Direitos", tabBarStyle: {backgroundColor: "#FAFAFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12}, tabBarIndicatorStyle: {backgroundColor: '#2261C1'}}} />
-      <MaterialTopTabs.Screen name="alimentacao" options={{ title: "Alimentos", tabBarStyle: {backgroundColor: "#FAFAFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12}, tabBarIndicatorStyle: {backgroundColor: '#2261C1'}}} />
+      <MaterialTopTabs.Screen name="index" options={{ title: "Desenvolvimento", tabBarStyle: {backgroundColor: "#FFFFFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12,}, tabBarIndicatorStyle: {backgroundColor: '#2261C1'}}} />
+      <MaterialTopTabs.Screen name="direitos" options={{ title: "Direitos", tabBarStyle: {backgroundColor: "#FFFFFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12}, tabBarIndicatorStyle: {backgroundColor: '#2261C1'}}} />
+      <MaterialTopTabs.Screen name="alimentacao" options={{ title: "Alimentos", tabBarStyle: {backgroundColor: "#FFFFFF"}, tabBarLabelStyle: {fontFamily: 'Raleway-500', fontSize: 12}, tabBarIndicatorStyle: {backgroundColor: '#2261C1'}}} />
     </MaterialTopTabs>
   );
 }
