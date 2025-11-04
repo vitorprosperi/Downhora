@@ -93,7 +93,7 @@ export default function CadastroPacDois() {
         <DateTimePicker
           value={dataDisplay ? new Date(dataDisplay.split('/').reverse().join('-')) : new Date()}
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+          display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
           onChange={(event, selectedDate) => {
             if (Platform.OS !== 'ios') setShowPicker(false);
             if (selectedDate) {

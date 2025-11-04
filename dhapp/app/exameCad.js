@@ -1,13 +1,13 @@
 import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
-import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from "@react-native-community/netinfo";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Platform, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDB } from "../database";
 import { supabase } from "../supabaseserver";
@@ -26,6 +26,21 @@ export default function ExameCad() {
   const [outroExame, setOutroExame] = useState('');
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const abrirCalendario = () => {
+    setShowDatePicker(true);
+  };
+
+  const onChangeDate = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      const dia = String(selectedDate.getDate()).padStart(2, '0');
+      const mes = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const ano = selectedDate.getFullYear();
+      setData(`${dia}/${mes}/${ano}`);
+    }
+  };
 
   const tiposExames = [
     { label: 'Cariótipo', value: 'Cariótipo' },
@@ -185,7 +200,7 @@ export default function ExameCad() {
             <View>
               <Text style={styles.textForm}>Informe o exame</Text>
               <MyInput
-              style={styles.input}
+                style={styles.input}
                 placeholder='Digite o nome do exame'
                 placeholderTextColor={'grey'}
                 value={outroExame}
@@ -212,22 +227,36 @@ export default function ExameCad() {
 
           <View>
             <Text style={styles.textForm}>Data do exame*</Text>
-            <MyMaskInput
-            style={styles.input}
-              keyboardType="numeric"
-              mask={dateMask}
-              value={data}
-              onChangeText={(masked) => setData(masked)}
-              maxLength={10}
-              placeholder='Ex: DD/MM/YYYY'
-              placeholderTextColor={'grey'}
-            />
+            <Pressable onPress={() => setShowDatePicker(true)}>
+              <View style={styles.input}>
+                <Text style={{ color: data ? 'black' : 'grey' }}>
+                  {data || 'Selecione a data'}
+                </Text>
+              </View>
+            </Pressable>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={data ? new Date(data.split('/').reverse().join('-')) : new Date()}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
+                onChange={(event, selectedDate) => {
+                  if (Platform.OS !== 'ios') setShowDatePicker(false);
+                  if (selectedDate) {
+                    const dia = String(selectedDate.getDate()).padStart(2, '0');
+                    const mes = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                    const ano = selectedDate.getFullYear();
+                    setData(`${dia}/${mes}/${ano}`);
+                  }
+                }}
+              />
+            )}
           </View>
 
           <View>
             <Text style={styles.textForm}>Profissional responsável</Text>
             <MyInput
-            style={styles.input}
+              style={styles.input}
               placeholder='Ex: Dra. Cátia.'
               placeholderTextColor={'grey'}
               value={medico}
@@ -238,8 +267,8 @@ export default function ExameCad() {
           <View>
             <Text style={styles.textForm}>Observações</Text>
             <MyInput
-            style={styles.input}
-            placeholder='Ex: Informações adicionais, resultados.'
+              style={styles.input}
+              placeholder='Ex: Informações adicionais, resultados.'
               placeholderTextColor={'grey'}
               value={obs}
               onChangeText={setObs}
