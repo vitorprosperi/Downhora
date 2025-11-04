@@ -13,6 +13,8 @@ import styles from './styleForms';
 export default function CadastroPacDois() {
   const { pacientedados, setPacientedados } = usePaciente();
 
+  const [dataValor, setDataValor] = useState(null);
+
   const [valor1, setValor1] = useState(null);
   const [dataCariotipo, setDataCariotipo] = useState('');
   const [showCariotipoPicker, setShowCariotipoPicker] = useState(false);
@@ -64,19 +66,11 @@ export default function CadastroPacDois() {
 
   // Formatações
   const formatarParaBR = (date) => {
-    const d = new Date(date);
-    const day = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
+    return new Date(date).toLocaleDateString('pt-BR');
   };
 
   const formatarParaISO = (date) => {
-    const d = new Date(date);
-    const day = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const year = d.getFullYear();
-    return `${year}-${month}-${day}`;
+    return dayjs(date).format('YYYY-MM-DD');
   };
 
   // Reutilizável para todos os DatePickers
@@ -91,12 +85,13 @@ export default function CadastroPacDois() {
       </Pressable>
       {showPicker && (
         <DateTimePicker
-          value={dataDisplay ? new Date(dataDisplay.split('/').reverse().join('-')) : new Date()}
+          value={dataDisplay ? new Date(dataValor) : new Date()}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
           onChange={(event, selectedDate) => {
             if (Platform.OS !== 'ios') setShowPicker(false);
             if (selectedDate) {
+              setDataValor(selectedDate);
               const formattedDisplay = formatarParaBR(selectedDate);
               const formattedISO = formatarParaISO(selectedDate);
 
