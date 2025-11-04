@@ -4,6 +4,7 @@ import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
 import { usePaciente } from '@/context/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import dayjs from 'dayjs';
 import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
 import { Alert, Platform, Pressable, Text, View } from "react-native";
@@ -27,6 +28,7 @@ export default function CadastroPac() {
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [dataValor, setDataValor] = useState(null);
 
   const itensGenero = [
     { label: 'Masculino', value: 'masculino' },
@@ -36,30 +38,23 @@ export default function CadastroPac() {
 
   // Função para formatar a data em br
   const formatarParaBR = (date) => {
-    const d = new Date(date);
-    const day = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
+    return new Date(date).toLocaleDateString('pt-BR');
   };
 
   // Função para formatar a data em ISO
   const formatarParaISO = (date) => {
-    const d = new Date(date);
-    const day = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const year = d.getFullYear();
-    return `${year}-${month}-${day}`;
+    return dayjs(date).format('YYYY-MM-DD');
   };
 
   // Ao selecionar a data
   const handleDataNascimentoChange = (event, selectedDate) => {
     if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
     if (selectedDate) {
+      setDataValor(selectedDate);
       const formattedDisplay = formatarParaBR(selectedDate);
       const formattedISO = formatarParaISO(selectedDate);
 
-      setDataNascimentoDisplay(formattedDisplay);
+      setDataNascimentoDisplay(formattedDisplay)
       setPacientedados(prev => ({
         ...prev,
         data_nascimento: formattedISO // formato usado no Supabase/SQLite
@@ -196,7 +191,7 @@ export default function CadastroPac() {
               {showNascimentoPicker && (
                 <DateTimePicker
                   value={dataNascimentoDisplay
-                    ? new Date(dataNascimentoDisplay.split('/').reverse().join('-'))
+                    ? new Date(dataValor)
                     : new Date()}
                   mode="date"
                   display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
