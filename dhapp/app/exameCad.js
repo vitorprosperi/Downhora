@@ -17,9 +17,8 @@ export default function ExameCad() {
   const router = useRouter();
   const { userId } = useUsuario();
 
-  const dateMask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
-
-  const [data, setData] = useState('');
+  const [dataDisplay, setDataDisplay] = useState('');
+  const [dataISO, setDataISO] = useState('');
   const [exame, setExame] = useState('');
   const [medico, setMedico] = useState('');
   const [obs, setObs] = useState('');
@@ -28,25 +27,43 @@ export default function ExameCad() {
   const [uploading, setUploading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const abrirCalendario = () => {
-    setShowDatePicker(true);
-  };
-
-  const onChangeDate = (event, selectedDate) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      const dia = String(selectedDate.getDate()).padStart(2, '0');
-      const mes = String(selectedDate.getMonth() + 1).padStart(2, '0');
-      const ano = selectedDate.getFullYear();
-      setData(`${dia}/${mes}/${ano}`);
-    }
-  };
-
   const tiposExames = [
     { label: 'Cariótipo', value: 'Cariótipo' },
     { label: 'Pezinho', value: 'Pezinho' },
     { label: 'Outro', value: 'Outro' },
   ];
+
+  // Função para formatar para exibição BR
+  const formatarParaBR = (date) => {
+    const d = new Date(date);
+    const dia = d.getDate().toString().padStart(2, '0');
+    const mes = (d.getMonth() + 1).toString().padStart(2, '0');
+    const ano = d.getFullYear();
+    return `${dia}/${mes}/${ano}`;
+  };
+
+  // Função para formatar para ISO 
+  const formatarParaISO = (date) => {
+    const d = new Date(date);
+    const dia = d.getDate().toString().padStart(2, '0');
+    const mes = (d.getMonth() + 1).toString().padStart(2, '0');
+    const ano = d.getFullYear();
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  // Abrir calendário
+  const abrirCalendario = () => setShowDatePicker(true);
+
+  // Quando o usuário escolhe uma data
+  const onChangeDate = (event, selectedDate) => {
+    if (Platform.OS !== 'ios') setShowDatePicker(false);
+    if (selectedDate) {
+      const display = formatarParaBR(selectedDate);
+      const iso = formatarParaISO(selectedDate);
+      setDataDisplay(display);
+      setDataISO(iso);
+    }
+  };
 
   // Selecionar imagem
   const escolherImagem = async () => {
@@ -63,10 +80,7 @@ export default function ExameCad() {
         base64: true,
       });
 
-      if (result.canceled || !result.assets?.length) {
-        Alert.alert("Aviso", "Seleção de imagem cancelada.");
-        return;
-      }
+      if (result.canceled || !result.assets?.length) return;
 
       setImagemSelecionada(result.assets[0]);
       Alert.alert("Imagem selecionada", "A imagem foi selecionada com sucesso!");
@@ -76,10 +90,15 @@ export default function ExameCad() {
     }
   };
 
-  // Salvar exame (com suporte offline)
+  // Salvar exame
   const salvarExame = async () => {
     if (!userId) {
       Alert.alert("Erro", "ID do paciente não encontrado.");
+      return;
+    }
+
+    if (!dataISO) {
+      Alert.alert("Atenção", "Selecione a data do exame.");
       return;
     }
 
@@ -88,24 +107,11 @@ export default function ExameCad() {
 
     try {
       setUploading(true);
-
-      // Inicializa o banco com segurança
-      const db = await getDB().catch((err) => {
-        console.error("Erro ao abrir banco SQLite:", err);
-        return null;
-      });
-
-      if (!db) {
-        setUploading(false);
-        Alert.alert("Erro", "Falha ao inicializar o banco de dados local.");
-        return;
-      }
-
-      const netInfo = await NetInfo.fetch();
-      const isOnline = netInfo.isConnected;
+      const db = await getDB();
+      const { isConnected } = await NetInfo.fetch();
 
       // Upload da imagem apenas se online
-      if (imagemSelecionada && imagemSelecionada.base64 && isOnline) {
+      if (imagemSelecionada && imagemSelecionada.base64 && isConnected) {
         const base64Image = imagemSelecionada.base64;
         const fileExt = imagemSelecionada.uri.split(".").pop() || "jpg";
         const fileName = `${Date.now()}.${fileExt}`;
@@ -125,14 +131,14 @@ export default function ExameCad() {
       const novoExame = {
         usuario_id: userId,
         tipo_exame: tipoSelecionado,
-        data_exame: data,
+        data_exame: dataISO,
         medico_responsavel: medico,
         obs,
         imagem_url: imagemUrlFinal,
       };
 
-      if (isOnline) {
-        // ONLINE: salva no Supabase e também localmente
+      if (isConnected) {
+        // ONLINE
         const { error } = await supabase.from('exames').insert([novoExame]);
         if (error) console.error("Erro Supabase:", error);
 
@@ -140,22 +146,20 @@ export default function ExameCad() {
           await db.runAsync(
             `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
              VALUES (?, ?, ?, ?, ?)`,
-            [userId, tipoSelecionado, data, medico, obs]
+            [userId, tipoSelecionado, dataISO, medico, obs]
           );
         });
 
         Alert.alert("Sucesso", "Exame salvo com sucesso!");
       } else {
-        // OFFLINE: salva no SQLite e adiciona na fila de sincronização
+        // OFFLINE
         await db.withTransactionAsync(async () => {
-          // salva localmente para exibir no app
           await db.runAsync(
             `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
              VALUES (?, ?, ?, ?, ?)`,
-            [userId, tipoSelecionado, data, medico, obs]
+            [userId, tipoSelecionado, dataISO, medico, obs]
           );
 
-          // adiciona à fila de sincronização
           await db.runAsync(
             `INSERT INTO fila_sinc (acao, nome_tabela, payload)
              VALUES (?, ?, ?)`,
@@ -202,7 +206,7 @@ export default function ExameCad() {
               <MyInput
                 style={styles.input}
                 placeholder='Digite o nome do exame'
-                placeholderTextColor={'grey'}
+                placeholderTextColor='grey'
                 value={outroExame}
                 onChangeText={setOutroExame}
               />
@@ -227,28 +231,20 @@ export default function ExameCad() {
 
           <View>
             <Text style={styles.textForm}>Data do exame*</Text>
-            <Pressable onPress={() => setShowDatePicker(true)}>
+            <Pressable onPress={abrirCalendario}>
               <View style={styles.input}>
-                <Text style={{ color: data ? 'black' : 'grey' }}>
-                  {data || 'Selecione a data'}
+                <Text style={{ color: dataDisplay ? 'black' : 'grey' }}>
+                  {dataDisplay || 'Selecione a data'}
                 </Text>
               </View>
             </Pressable>
 
             {showDatePicker && (
               <DateTimePicker
-                value={data ? new Date(data.split('/').reverse().join('-')) : new Date()}
+                value={dataISO ? new Date(dataISO) : new Date()}
                 mode="date"
                 display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
-                onChange={(event, selectedDate) => {
-                  if (Platform.OS !== 'ios') setShowDatePicker(false);
-                  if (selectedDate) {
-                    const dia = String(selectedDate.getDate()).padStart(2, '0');
-                    const mes = String(selectedDate.getMonth() + 1).padStart(2, '0');
-                    const ano = selectedDate.getFullYear();
-                    setData(`${dia}/${mes}/${ano}`);
-                  }
-                }}
+                onChange={onChangeDate}
               />
             )}
           </View>
@@ -258,7 +254,7 @@ export default function ExameCad() {
             <MyInput
               style={styles.input}
               placeholder='Ex: Dra. Cátia.'
-              placeholderTextColor={'grey'}
+              placeholderTextColor='grey'
               value={medico}
               onChangeText={setMedico}
             />
@@ -269,7 +265,7 @@ export default function ExameCad() {
             <MyInput
               style={styles.input}
               placeholder='Ex: Informações adicionais, resultados.'
-              placeholderTextColor={'grey'}
+              placeholderTextColor='grey'
               value={obs}
               onChangeText={setObs}
             />
