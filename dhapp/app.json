@@ -42,8 +42,7 @@
       "expo-font",
       "expo-web-browser",
       "expo-secure-store",
-      "./plugins/withCustomNavigationBarColor",
-      "./plugins/my-custom-styles.js"
+      "./plugins/withCustomNavigationBarColor"
     ],
     "experiments": {
       "typedRoutes": true
