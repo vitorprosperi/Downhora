@@ -13,7 +13,7 @@ import { useState } from "react";
 import { ActivityIndicator, Alert, Platform, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDB } from "../database";
-import { supabase } from "../supabaseserver";
+import { supabase } from '../supabaseserver';
 import styles from "./styleForms";
 
 export default function ExameCad() {

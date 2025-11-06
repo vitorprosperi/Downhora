@@ -10,7 +10,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDB } from '../database';
-import { supabase } from "../supabaseserver";
+import { supabase } from '../supabaseserver';
 import styles from './styleForms';
 
 export default function CadastroPacQuatro() {
