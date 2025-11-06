@@ -4,7 +4,7 @@ import { usePaciente } from '@/context/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Stack } from 'expo-router';
 import { useState } from "react";
-import { Platform, Pressable, Text, View } from "react-native";
+import { Platform, Pressable, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { cadastropacQuatro } from "../routes/rotas";
@@ -12,8 +12,6 @@ import styles from './styleForms';
 
 export default function CadastroPacDois() {
   const { pacientedados, setPacientedados } = usePaciente();
-
-  const [dataValor, setDataValor] = useState(null);
 
   const [valor1, setValor1] = useState(null);
   const [dataCariotipo, setDataCariotipo] = useState('');
@@ -66,32 +64,38 @@ export default function CadastroPacDois() {
 
   // Formatações
   const formatarParaBR = (date) => {
-    return new Date(date).toLocaleDateString('pt-BR');
+    const d = new Date(date).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+    console.log(d)
+    return d;
   };
 
   const formatarParaISO = (date) => {
-    return dayjs(date).format('YYYY-MM-DD');
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear();
+    return `${year}-${month}-${day}`;
   };
 
   // Reutilizável para todos os DatePickers
   const renderDatePicker = (showPicker, setShowPicker, dataDisplay, setDataDisplay, fieldName) => (
-    <>
+    <View>
       <Pressable onPress={() => setShowPicker(true)}>
-        <View style={styles.input}>
-          <Text style={{ color: dataDisplay ? 'black' : 'grey' }}>
+        <Text style={styles.textForm}>Data</Text>
+          <TextInput editable={false} style={[styles.input, { color: dataDisplay ? '#231F20': 'grey' }]}>
             {dataDisplay || 'Selecione a data'}
-          </Text>
-        </View>
+          </TextInput>
       </Pressable>
       {showPicker && (
         <DateTimePicker
-          value={dataDisplay ? new Date(dataValor) : new Date()}
+          value={dataDisplay ? new Date(dataDisplay.split('/').reverse().join('-')) : new Date()}
           mode="date"
           display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
+          design='material'
+          timeZoneName='UTC'
           onChange={(event, selectedDate) => {
             if (Platform.OS !== 'ios') setShowPicker(false);
             if (selectedDate) {
-              setDataValor(selectedDate);
               const formattedDisplay = formatarParaBR(selectedDate);
               const formattedISO = formatarParaISO(selectedDate);
 
@@ -103,7 +107,7 @@ export default function CadastroPacDois() {
           }}
         />
       )}
-    </>
+    </View>
   );
 
   return (
@@ -123,6 +127,7 @@ export default function CadastroPacDois() {
           <View style={styles.containerForm}>
             <Text style={styles.subTitulo}>Consultas e exames já realizados (Passo 3 de 4)</Text>
 
+<View>
             <Text style={styles.textForm}>Exame cariótipo</Text>
             <MyDropdown
               data={itensSimNao}
@@ -136,9 +141,11 @@ export default function CadastroPacDois() {
                 setShowCariotipoPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valor1 === 'Sim' &&
               renderDatePicker(showCariotipoPicker, setShowCariotipoPicker, dataCariotipo, setDataCariotipo, 'dataCariotipo')}
-
+              
+<View>
             <Text style={styles.textForm}>Triagem auditiva</Text>
             <MyDropdown
               data={itensSimNao}
@@ -152,9 +159,11 @@ export default function CadastroPacDois() {
                 setShowAuditivoPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valor2 === 'Sim' &&
               renderDatePicker(showAuditivoPicker, setShowAuditivoPicker, dataAuditivo, setDataAuditivo, 'dataAuditivo')}
 
+<View>
             <Text style={styles.textForm}>Consulta cardiologista</Text>
             <MyDropdown
               data={itensSimNao}
@@ -170,7 +179,9 @@ export default function CadastroPacDois() {
             />
             {valor3 === 'Sim' &&
               renderDatePicker(showCardioPicker, setShowCardioPicker, dataEco, setDataEco, 'dataCard')}
+              </View>
 
+<View>
             <Text style={styles.textForm}>Teste do pezinho</Text>
             <MyDropdown
               data={itensSimNao}
@@ -186,7 +197,9 @@ export default function CadastroPacDois() {
             />
             {valor4 === 'Sim' &&
               renderDatePicker(showPePicker, setShowPePicker, dataOrtopedica, setDataOrtopedica, 'dataPe')}
+              </View>
 
+<View>
             <Text style={styles.textForm}>Consulta oftalmologista</Text>
             <MyDropdown
               data={itensSimNao}
@@ -200,9 +213,11 @@ export default function CadastroPacDois() {
                 setShowOftalPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valor5 === 'Sim' &&
               renderDatePicker(showOftalPicker, setShowOftalPicker, dataNeuro, setDataNeuro, 'dataOftal')}
 
+<View>
             <Text style={styles.textForm}>Consulta fonoaudiologia</Text>
             <MyDropdown
               data={itensSimNao}
@@ -216,9 +231,11 @@ export default function CadastroPacDois() {
                 setShowFonoPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valorFono === 'Sim' &&
               renderDatePicker(showFonoPicker, setShowFonoPicker, dataFono, setDataFono, 'dataFono')}
 
+<View>
             <Text style={styles.textForm}>Consulta odontologia</Text>
             <MyDropdown
               data={itensSimNao}
@@ -232,9 +249,11 @@ export default function CadastroPacDois() {
                 setShowOdontoPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valorOdonto === 'Sim' &&
               renderDatePicker(showOdontoPicker, setShowOdontoPicker, dataOdonto, setDataOdonto, 'dataOdonto')}
 
+<View>
             <Text style={styles.textForm}>Consulta endocrinologia</Text>
             <MyDropdown
               data={itensSimNao}
@@ -248,9 +267,11 @@ export default function CadastroPacDois() {
                 setShowEndocrinoPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valorEndocrino === 'Sim' &&
               renderDatePicker(showEndocrinoPicker, setShowEndocrinoPicker, dataEndocrino, setDataEndocrino, 'dataEndocrino')}
 
+<View>
             <Text style={styles.textForm}>Consulta fisioterapia</Text>
             <MyDropdown
               data={itensSimNao}
@@ -264,9 +285,11 @@ export default function CadastroPacDois() {
                 setShowFisioPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valorFisio === 'Sim' &&
               renderDatePicker(showFisioPicker, setShowFisioPicker, dataFisio, setDataFisio, 'dataFisio')}
 
+<View>
             <Text style={styles.textForm}>Consulta terapia ocupacional</Text>
             <MyDropdown
               data={itensSimNao}
@@ -280,9 +303,11 @@ export default function CadastroPacDois() {
                 setShowTerapiaPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valorTerapia === 'Sim' &&
               renderDatePicker(showTerapiaPicker, setShowTerapiaPicker, dataTerapia, setDataTerapia, 'dataTerapia')}
 
+<View>
             <Text style={styles.textForm}>Consulta psicopedagogo</Text>
             <MyDropdown
               data={itensSimNao}
@@ -296,6 +321,7 @@ export default function CadastroPacDois() {
                 setShowPsicoPicker(item.value === 'Sim');
               }}
             />
+            </View>
             {valorPsico === 'Sim' &&
               renderDatePicker(showPsicoPicker, setShowPsicoPicker, dataPsico, setDataPsico, 'dataPsico')}
           </View>

@@ -4,8 +4,11 @@ import { MyInput } from '@/components/MyInput';
 import { useUsuario } from '@/context/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from "@react-native-community/netinfo";
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import updateLocale from 'dayjs/plugin/updateLocale';
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Platform, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -181,14 +184,30 @@ export default function ExameCad() {
     }
   };
 
+    dayjs.extend(updateLocale)
+    dayjs.updateLocale('pt-br', {
+      formats: {
+        ll: 'DD [de] MMM[.] YYYY'
+      }
+    })
+  
+    dayjs.extend(localizedFormat);
+    dayjs.locale('pt-br');
+
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
+      <Stack.Screen
+        options={{
+          title: 'Cadastro de exames',
+          headerShadowVisible: true,
+        }}
+      />
       <View style={styles.container}>
         <View style={styles.containerForm}>
-          <Text style={styles.titulo}>Cadastro de exames</Text>
           <Text style={styles.subTitulo}>Informações do exame</Text>
           <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>
 
+<View>
           <Text style={styles.textForm}>Tipo de exame*</Text>
           <MyDropdown
             data={tiposExames}
@@ -199,6 +218,7 @@ export default function ExameCad() {
             value={exame}
             onChange={item => setExame(item.value)}
           />
+          </View>
 
           {exame === 'Outro' && (
             <View>
@@ -232,10 +252,10 @@ export default function ExameCad() {
           <View>
             <Text style={styles.textForm}>Data do exame*</Text>
             <Pressable onPress={abrirCalendario}>
-              <View style={styles.input}>
-                <Text style={{ color: dataDisplay ? 'black' : 'grey' }}>
+              <View>
+                <MyInput editable={false} style={[styles.input, { color: dataDisplay ? '#231F20' : 'grey' }]}>
                   {dataDisplay || 'Selecione a data'}
-                </Text>
+                </MyInput>
               </View>
             </Pressable>
 
