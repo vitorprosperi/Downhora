@@ -1,11 +1,7 @@
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import updateLocale from 'dayjs/plugin/updateLocale';
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import ImageViewing from "react-native-image-viewing";
-
 
 export default function DetalheExame() {
   const { exame } = useLocalSearchParams();
@@ -13,51 +9,20 @@ export default function DetalheExame() {
   const imagemUrl = dados.imagem_url;
   const [isVisible, setIsVisible] = useState(false);
 
-  dayjs.extend(updateLocale)
-    dayjs.updateLocale('pt-br', {
-      formats: {
-        ll: 'DD [de] MMM[.] YYYY'
-      }
-    })
-  
-  dayjs.extend(localizedFormat);
-  dayjs.locale('pt-br');
-
   return (
     <ScrollView contentContainerStyle={estilos.container}>
-      <Stack.Screen
-        options={{
-          title: 'Tela de exame',
-          headerShadowVisible: true,
-        }}
-      />
-      <View style={estilos.dadosView}>
-      <View>
-        <Text>Exame</Text>
       <Text style={estilos.titulo}>{dados.tipo_exame}</Text>
-      </View>
-      <View>
-        <Text>Profissional responsável</Text>
-      <Text style={estilos.titulo}>{dados.medico_responsavel}</Text>
-      </View>
-      <View>
-        <Text>Data do exame</Text>
-      <Text style={estilos.titulo}>{dayjs(dados.data_exame).format('ll')}</Text>
-      </View>
-      <View>
-        <Text>Observações</Text>
-      <Text style={estilos.titulo}>{dados.obs}</Text>
-      </View>
-      </View>
+      <Text style={estilos.subtitulo}>Dr. {dados.medico_responsavel}</Text>
+      <Text style={estilos.data}>Data: {dados.data_exame}</Text>
+      <Text style={estilos.obs}>{dados.obs}</Text>
 
-<View style={estilos.imageContainer}>
       {imagemUrl ? (
         <>
-          <Pressable onPress={() => setIsVisible(true)}>
+          <Pressable onPress={() => setIsVisible(true)} style={estilos.imageContainer}>
             <Image
               source={{ uri: imagemUrl }}
               style={estilos.imagem}
-              resizeMode="contain"
+              resizeMode="cover"
               onError={(e) =>
                 console.log("Erro ao carregar imagem:", e.nativeEvent.error)
               }
@@ -75,7 +40,6 @@ export default function DetalheExame() {
       ) : (
         <Text style={estilos.semImagem}>Nenhuma imagem disponível</Text>
       )}
-      </View>
     </ScrollView>
   );
 }
@@ -83,13 +47,15 @@ export default function DetalheExame() {
 const estilos = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#FAFAFF",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    backgroundColor: "#FAFAFA",
   },
   titulo: {
-    fontSize: 20,
-    fontFamily: 'Roboto',
+    fontSize: 26,
+    fontWeight: "700",
     marginBottom: 5,
-    marginTop: -2,
   },
   subtitulo: {
     fontSize: 18,
@@ -101,24 +67,19 @@ const estilos = StyleSheet.create({
     color: "#777",
     marginBottom: 20,
   },
-  dadosView: {
-    backgroundColor: 'white',
-    paddingHorizontal: 10,
-    paddingTop: 10,
-  },
   obs: {
     fontSize: 16,
     marginBottom: 30,
   },
   imageContainer: {
-    paddingTop: 10,
-    paddingBottom: 5,
-    backgroundColor: "#FFF",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
   },
   imagem: {
-    width: '100%', 
-    height: 450,
-    backgroundColor: "#FFF",
+    width: 300, 
+    height: 300,
+    backgroundColor: "#eee",
   },
   toqueTexto: {
     textAlign: "center",

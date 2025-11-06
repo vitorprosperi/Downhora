@@ -38,7 +38,7 @@ export default function CadastroPac() {
 
   // Função para formatar a data em br
   const formatarParaBR = (date) => {
-    return new Date(date).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+    return new Date(date).toLocaleDateString('pt-BR');
   };
 
   // Função para formatar a data em ISO
@@ -50,7 +50,6 @@ export default function CadastroPac() {
   const handleDataNascimentoChange = (event, selectedDate) => {
     if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
     if (selectedDate) {
-      console.log(new Date(selectedDate).toString())
       setDataValor(selectedDate);
       const formattedDisplay = formatarParaBR(selectedDate);
       const formattedISO = formatarParaISO(selectedDate);
@@ -182,10 +181,10 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Data de nascimento</Text>
               <Pressable onPress={() => setShowNascimentoPicker(true)}>
-                <View>
-                  <MyInput editable={false} style={[styles.input, { color: dataNascimentoDisplay ? '#231F20' : 'grey' }]}>
+                <View style={styles.input}>
+                  <Text style={{ color: dataNascimentoDisplay ? 'black' : 'grey' }}>
                     {dataNascimentoDisplay || 'Selecione a data'}
-                  </MyInput>
+                  </Text>
                 </View>
               </Pressable>
 
@@ -195,9 +194,7 @@ export default function CadastroPac() {
                     ? new Date(dataValor)
                     : new Date()}
                   mode="date"
-                  display={Platform.OS === 'ios' ? 'compact' : 'default'}
-                  design='material'
-                  timeZoneName='UTC'
+                  display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
                   onChange={handleDataNascimentoChange}
                 />
               )}
