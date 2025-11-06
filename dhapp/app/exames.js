@@ -198,18 +198,18 @@ export default function Exames() {
 
   const dataFiltered = (dados) => {
     dados.sort((a, b) => (
-      new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
+      new Date(b.data_exame) - new Date(a.data_exame)
     ))
 
     if (filter == 'padrao') {
       return dados
     } else if (filter == 'datasPassadas') {
       return dados.filter((d) => (
-        new Date(dayjs(d.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) < dayjs()
+        new Date(d.data_exame) < dayjs()
       ))
     } else if (filter == 'datasFuturas') {
       return dados.filter((d) => (
-        new Date(dayjs(d.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) > dayjs()
+        new Date(d.data_exame) > dayjs()
       ))
     }
   }
@@ -226,11 +226,11 @@ export default function Exames() {
 
     if (sortOrder === 'asc') {
       return dadosFiltrados.sort((a, b) => (
-      new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
+      new Date(b.data_exame) - new Date(a.data_exame)
     ));
     } else if (sortOrder === 'desc'){
       return dadosFiltrados.sort((a, b) => (
-      new Date(dayjs(a.data_exame, 'DDMMYYYY').format('YYYY-MM-DD')) - new Date(dayjs(b.data_exame, 'DDMMYYYY').format('YYYY-MM-DD'))
+      new Date(a.data_exame) - new Date(b.data_exame)
     ));
   }}
 
