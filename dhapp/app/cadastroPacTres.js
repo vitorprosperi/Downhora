@@ -91,7 +91,6 @@ export default function CadastroPacDois() {
           value={dataDisplay ? new Date(dataDisplay.split('/').reverse().join('-')) : new Date()}
           mode="date"
           display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
-          design='material'
           timeZoneName='UTC'
           onChange={(event, selectedDate) => {
             if (Platform.OS !== 'ios') setShowPicker(false);
