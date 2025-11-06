@@ -192,9 +192,6 @@ export default function Exames() {
 
   dayjs.extend(localizedFormat);
   dayjs.locale('pt-br');
-  // Formatador de data
-  var customParseFormat = require("dayjs/plugin/customParseFormat");
-  dayjs.extend(customParseFormat)
 
   const [filter, setFilter] = useState("padrao")
   const [sortOrder, setSortOrder] = useState("asc")
@@ -246,7 +243,7 @@ export default function Exames() {
         }}
       />
       <View style={[cstyle.container, { paddingBottom: insets.bottom }]}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, paddingBottom: 5 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 5 }}>
               <View style={{flexDirection: "row", alignItems:'center'}}>
               <IconButton
                 icon={sortIcon}
@@ -274,8 +271,6 @@ export default function Exames() {
           contentContainerStyle={cstyle.lista}
           keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
           renderItem={({ item }) => {
-
-            const dataFormatada = dayjs(item.data_exame, 'DDMMYYYY').format('YYYY-MM-DD');
 
             return (
               <Pressable
@@ -318,7 +313,7 @@ export default function Exames() {
                   <View style={cstyle.iconsView}>
                     <Icon source={"calendar-range"} size={20} />
                     <Text style={cstyle.textoSecundario}>
-                      {dayjs(dataFormatada).format("ll")}
+                      {dayjs(item.data_exame).format("ll")}
                     </Text>
                   </View>
                 </View>

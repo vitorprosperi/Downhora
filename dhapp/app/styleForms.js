@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: 10,
     width: '90%',
-    paddingTop: 20,
+    paddingTop: 10,
   },
   dropdownContainer: {
     backgroundColor: '#FAFAFF',

@@ -136,13 +136,14 @@ export default function Prontuario() {
     complementares.find((h) => h.usuario_id === pacienteId || h.pessoa_id === pacienteId);
 
   const mostrarExame = (label, valor, dataCampo) => {
+    const dataFormatadaExame = new Date(dataCampo).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
     if (valor?.toLowerCase() === "sim") {
       return (
         <View>
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.text}>{valor}</Text>
           <Text style={styles.label}>Data mais recente</Text>
-          <MaskedText mask="99/99/9999" style={styles.text}>{dataCampo}</MaskedText>
+          <Text style={styles.text}>{dataFormatadaExame}</Text>
         </View>
       );
     }
@@ -173,7 +174,7 @@ export default function Prontuario() {
           renderItem={({ item }) => {
             const historico = HistoricoPorPacienteId(item.id);
             const infoComp = InfoPorPacienteId(item.id);
-            const data = `${item.data_nascimento}`;
+            const data = new Date(item.data_nascimento).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
             const dataFormatada = dayjs(data, 'DDMMYYYY').format('YYYY-MM-DD');
             const idade = dayjs().diff(dataFormatada, 'y');
 
@@ -195,7 +196,7 @@ export default function Prontuario() {
 
                   <View>
                     <Text style={styles.label}>Data de nascimento</Text>
-                    <MaskedText mask="99/99/9999" style={styles.text}>{item.data_nascimento}</MaskedText>
+                    <Text style={styles.text}>{data}</Text>
                   </View>
 
                   <View>
@@ -297,7 +298,7 @@ export default function Prontuario() {
 
 const styles = StyleSheet.create({
   safeView: { flex: 1, backgroundColor: '#FAFAFF' },
-  container: { alignItems: 'flex-start', alignSelf: 'center', width: '92%' },
+  container: { alignItems: 'flex-start', alignSelf: 'center', width: '95%', paddingTop: 10 },
   contTitulo: {
     alignSelf: 'center',
     backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
