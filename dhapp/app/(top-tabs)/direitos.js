@@ -19,7 +19,7 @@ export default function telaDireitos() {
           <Text style={styles.text}>✅ Acesso a <Text style={styles.textHeavy}>vacinas</Text> do calendário básico.</Text>
           <Text style={styles.text}><Text style={styles.textHeavy}>✅ Terapias gratuitas</Text> de estimulação precoce (fonoaudiologia, fisioterapia, terapia ocupacional, psicologia).</Text>
           <Text style={styles.text}>✅ Fornecimento de <Text style={styles.textHeavy}>medicamentos</Text> e insumos pelo SUS, quando prescritos.</Text>
-          <Text style={styles.text}>✅ Acompanhamento pelo <Text style={styles.textHeavy}>Programa de Saúde da Pessoa com Deficiência</Text> em municípios que possuem o programa.</Text>
+          <Text style={styles.text}>✅ Acompanhamento pelo <Text style={styles.textHeavy}>Programa de Saúde da Criança e/ou da Pessoa com Deficiência</Text></Text>
         </View>
         <View style={styles.contTexto}>
             <View style={styles.cardPar}>
