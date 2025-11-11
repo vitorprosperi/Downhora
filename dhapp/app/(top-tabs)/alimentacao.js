@@ -66,7 +66,7 @@ export default function telaDireitos() {
           </Text>
           <Text style={styles.text}>4- <Text style={styles.textHeavy}>Não pule refeições</Text>! É importante comer várias vezes ao dia (café da manhã, almoço, jantar e lanches entre as refeições principais);</Text>
           <Text style={styles.text}>5- Tome <Text style={styles.textHeavy}>café da manhã</Text>, pois essa é uma das refeições mais importantes do dia!</Text>
-          <Text style={styles.text}>6- <Text style={styles.textHeavy}>Evite</Text> o consumo de <Text style={styles.textHeavy}>fast food</Text>;</Text>
+          <Text style={styles.text}>6- <Text style={styles.textHeavy}>Evite</Text> o consumo de <Text style={styles.textHeavy}>comidas com baixo valor nutricional.</Text>;</Text>
           <Text style={styles.text}>7- Limite a ingestão de suco, mesmo que natural, à 240ml por dia;</Text>
           <Text style={styles.text}>8- Evite frituras (prefira os alimentos cozidos, assados, grelhados);</Text>
           <Text style={styles.text}>9- Consuma fontes de <Text style={styles.textHeavy}>cálcio</Text> (leite, derivados, vegetais verdes escuro), pois esse mineral é fundamental na formação dos <Text style={styles.textHeavy}>ossos e dentes</Text>;</Text>
@@ -97,7 +97,7 @@ export default function telaDireitos() {
         </View>
         <View style={styles.contTexto}>
           <Text style={styles.text}>Pensando na analogia dos grupos alimentares com um semáforo, temos:</Text>
-          <Text style={styles.text}><Text style={[styles.textHeavy, { color: 'green', }]}>Verde</Text> – <Text style={styles.textHeavy}>alimentos in natura e minimamente processados:</Text> podem ser consumidos em <Text style={styles.textHeavy}>maiores quantidades</Text>.</Text>
+          <Text style={styles.text}><Text style={[styles.textHeavy, { color: 'green', }]}>Verde</Text> – <Text style={styles.textHeavy}>alimentos <Text style={{ fontFamily: 'Roboto-500-italic' }}>in natura</Text> e minimamente processados:</Text> podem ser consumidos em <Text style={styles.textHeavy}>maiores quantidades</Text>.</Text>
           <Text style={styles.text}><Text style={[styles.textHeavy, { color: '#DAA520' }]}>Amarelo</Text> – <Text style={styles.textHeavy}>alimentos processados</Text>: indicam que o consumo deve ser <Text style={styles.textHeavy}>moderado</Text>.</Text>
           <Text style={styles.text}><Text style={[styles.textHeavy, { color: 'red' }]}>Vermelho</Text> – <Text style={styles.textHeavy}>alimentos ultraprocessados</Text>: devem ser <Text style={styles.textHeavy}>evitados sempre que possível</Text>.</Text>
           <Text style={styles.text}>Essa analogia ajuda a entender de forma simples <Text style={styles.textHeavy}>quais alimentos podem ser consumidos mais, com moderação ou evitados</Text>.</Text>
