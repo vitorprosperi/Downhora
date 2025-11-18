@@ -49,3 +49,11 @@ export function exameCad () {
 export function desenvolvimento () {
     router.navigate('/(top-tabs)');
 }
+
+export function perfil () {
+    router.push('/perfil');
+}
+
+export function editarPerfil () {
+    router.push('/editarPerfil');
+}

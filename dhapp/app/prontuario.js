@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { MaskedText } from 'react-native-mask-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getDB } from "../database"; // 👈 importa seu helper moderno
+import { getDB } from "../database";
 import { supabase } from "../supabaseserver";
 
 export default function Prontuario() {
@@ -41,7 +41,7 @@ export default function Prontuario() {
       if (compError) throw compError;
       setComplementares(compData || []);
 
-      // 💾 Atualiza o cache local
+      // Atualiza o cache local
       if (pacienteData?.length) {
         for (const p of pacienteData) {
           await db.runAsync(
@@ -114,7 +114,7 @@ export default function Prontuario() {
 
   useEffect(() => {
     const buscarDados = async () => {
-      const db = await getDB(); // ✅ banco moderno
+      const db = await getDB(); 
       const netState = await NetInfo.fetch();
 
       if (netState.isConnected && userId) {
