@@ -61,29 +61,40 @@ export default function Login() {
 
         if (error) {
           setLoginCarregando(false);
-          console.error("Erro no login:", error.message);
           Alert.alert("Erro", "CPF ou senha inválidos.");
           return;
         }
 
         const user = data.user;
-        console.log("Usuário logado (online):", user);
 
+        //Verifica SE o perfil existe
+        const { data: perfil } = await supabase
+          .from("usuarios")
+          .select("*")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (!perfil) {
+          setLoginCarregando(false);
+          Alert.alert("Erro", "CPF ou senha inválidos.");
+          return;
+        }
+
+        // Obtém a sessão do Supabase
         const { data: sessionData } = await supabase.auth.getSession();
 
         if (sessionData?.session) {
           const { access_token, refresh_token } = sessionData.session;
 
-          // Salva sessão no SecureStore se marcado "manter login"
+          // Salvar sessão no SecureStore (se marcado)
           if (isChecked) {
             await SecureStore.setItemAsync(
               'supabase_session',
               JSON.stringify(sessionData.session)
             );
-            console.log("Sessão salva no SecureStore");
           }
 
-          // Salva sessão localmente no SQLite com transação
+          // Salvar sessão no SQLite
           await db.withTransactionAsync(async () => {
             await db.runAsync(
               `INSERT OR REPLACE INTO sessoes (usuario_id, cpf, access_token, refresh_token)
@@ -91,8 +102,6 @@ export default function Login() {
               [user.id, cpf, access_token, refresh_token]
             );
           });
-
-          console.log("Sessão salva no SQLite");
         }
 
         setUserId(user.id);
@@ -101,33 +110,48 @@ export default function Login() {
         router.replace("/telaInicial");
       }
 
-      // MODO OFFLINE
+      
+      // MODO OFFLINE 
       else {
+        // Busca sessão no SQLite
         const sessao = await db.getFirstAsync(
           "SELECT usuario_id AS id, access_token, refresh_token FROM sessoes WHERE cpf = ?",
           [cpf]
         );
 
-        if (sessao?.id) {
-          setUserId(sessao.id);
-          console.log("Login offline bem-sucedido:", sessao.id);
-          Alert.alert("Modo Offline", "Bem-vindo de volta!");
-          router.dismissAll();
-          router.replace("/telaInicial");
-          console.log("Sessões salvas localmente:", await db.getAllAsync("SELECT * FROM sessoes"));
-        } else {
+        if (!sessao?.id) {
           setLoginCarregando(false);
           Alert.alert(
             "Sem conexão",
-            "Nenhum login anterior encontrado. Conecte-se à internet para fazer login pela primeira vez."
+            "Nenhum login anterior encontrado. Faça login uma vez com internet."
           );
+          return;
         }
+
+        // Verifica se o usuário existe no SQLite
+        const usuarioLocal = await db.getFirstAsync(
+          "SELECT * FROM usuarios WHERE id = ?",
+          [sessao.id]
+        );
+
+        if (!usuarioLocal) {
+          setLoginCarregando(false);
+          Alert.alert("Erro", "Sessão inválida. Faça login online novamente.");
+          return;
+        }
+
+        setUserId(sessao.id);
+        Alert.alert("Modo Offline", "Bem-vindo de volta!");
+        router.dismissAll();
+        router.replace("/telaInicial");
       }
+
     } catch (err) {
-      setLoginCarregando(false);
       console.error("Erro inesperado:", err);
       Alert.alert("Erro", "Não foi possível realizar o login.");
     }
+
+    setLoginCarregando(false);
   };
 
   return (
@@ -140,6 +164,7 @@ export default function Login() {
           headerShadowVisible: false,
         }}
       />
+
       <View style={styles.loginEstilo}>
         <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
           <View style={styles.imageContainer}>
@@ -184,7 +209,11 @@ export default function Login() {
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Checkbox color={'#3A7ADC'} value={isChecked} onValueChange={() => setChecked(!isChecked)} ></Checkbox>
+              <Checkbox 
+                color={'#3A7ADC'} 
+                value={isChecked} 
+                onValueChange={() => setChecked(!isChecked)} 
+              />
               <Text style={styles.textForm}>Manter login</Text>
             </View>
 
