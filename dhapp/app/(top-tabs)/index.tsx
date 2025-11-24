@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Dimensions, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,17 +36,12 @@ export default function telaDesenvolvimento() {
             O importante é acompanhar as conquistas, estimular no dia a dia e contar com o apoio de profissionais de saúde.
           </Text>
         </View>
+        <View>
         <View style={{flexDirection: 'row'}}>
-          <Button
-        title="Prev"
-        onPress={() => {
-          ref.current?.prev(); // 6. Call the "next" method on the ref
-        }}
-      />
         <Carousel
         ref={ref}
           height={300}
-          width={width - 100}
+          width={width - 30}
           data={data}
           onProgressChange={progress}
           renderItem={({ index }) => (
@@ -89,22 +84,20 @@ export default function telaDesenvolvimento() {
                 ) : <Text>nothing here</Text>
               }
             </View>
+            
           )}
         />
-        <Button
-        title="Next"
-        onPress={() => {
-          ref.current?.next(); // 6. Call the "next" method on the ref
-        }}
-      />
+        
       </View>
-        <Pagination.Basic
+      <Pagination.Basic
         progress={progress}
         data={data}
         dotStyle={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 50 }}
-        containerStyle={{ gap: 5, marginTop: 10 }}
+        containerStyle={{ gap: 5, marginTop: 10}}
         onPress={onPressPagination}
       />
+      </View>
+        
 
         <View style={styles.contTexto}>
           <Text style={styles.subTitulo}>Como estimular o desenvolvimento?</Text>
