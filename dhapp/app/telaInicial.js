@@ -5,8 +5,8 @@ import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-nativ
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getDB } from '../database'; // 👈 importa seu helper correto
-import { desenvolvimento, exames, prontuario, vacina } from "../routes/rotas";
+import { getDB } from '../database'; 
+import { desenvolvimento, exames, prontuario, vacina, perfil } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
 
@@ -18,7 +18,7 @@ export default function TelaInicial() {
   useEffect(() => {
     const buscarNomeUsuario = async () => {
       try {
-        const db = await getDB(); // ✅ usa o banco moderno
+        const db = await getDB(); // usa o banco sqlite
         const { data, error } = await supabase.auth.getUser();
 
         if (error || !data?.user) {
@@ -105,6 +105,15 @@ export default function TelaInicial() {
           </View>
 
           <View style={btstyle.botoesContainer}>
+
+          <Pressable
+                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+                onPress={perfil}
+              >
+                <Icon source="account" color="#2261c1" size={55} />
+                <Text style={btstyle.text}>Perfil</Text>
+          </Pressable>
+
             <TouchableOpacity>
               <Pressable
                 style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}

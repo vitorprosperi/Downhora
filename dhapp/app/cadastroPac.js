@@ -31,9 +31,9 @@ export default function CadastroPac() {
   const [dataValor, setDataValor] = useState(null);
 
   const itensGenero = [
-    { label: 'Masculino', value: 'masculino' },
-    { label: 'Feminino', value: 'feminino' },
-    { label: 'Outro', value: 'outro' },
+    { label: 'Masculino', value: 'Masculino' },
+    { label: 'Feminino', value: 'Feminino' },
+    { label: 'Outro', value: 'Outro' },
   ];
 
   // Função para formatar a data em br
