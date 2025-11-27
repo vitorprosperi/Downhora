@@ -1,8 +1,14 @@
+import { MyDropdownUnstyled } from '@/components/MyDropdownUnstyled';
 import { MyInput } from '@/components/MyInput';
+import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { router, Stack } from 'expo-router';
 import { useEffect, useState } from "react";
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { Alert, Button, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Masks } from 'react-native-mask-input';
 import { getDB } from "../database";
 import { supabase } from "../supabaseserver";
 
@@ -16,6 +22,34 @@ export default function EditarPerfil() {
     const [genero, setGenero] = useState('');
     const [nomeMae, setNomeMae] = useState('');
     const [nomeResponsavel, setNomeResponsavel] = useState('');
+
+    const [showNascimentoPicker, setShowNascimentoPicker] = useState(false);
+
+      const itensGenero = [
+    { label: 'Masculino', value: 'Masculino' },
+    { label: 'Feminino', value: 'Feminino' },
+    { label: 'Outro', value: 'Outro' },
+  ];
+
+    dayjs.extend(utc)
+
+    const formatarParaISO = (date) => {
+        console.log(date)
+        return dayjs(date).utc().format('YYYY-MM-DD');
+      };
+    
+      // Ao selecionar a data
+      const handleDataNascimentoChange = (event, selectedDate) => {
+        if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
+        if (selectedDate) {
+            selectedDate = dayjs(selectedDate)
+            console.log(selectedDate)
+          const formattedISO = formatarParaISO(selectedDate);
+          console.log(formattedISO)
+    
+          setDataNascimento(formattedISO);
+        }
+      };
 
     const CarregarDados = async () => {
         try {
@@ -137,6 +171,7 @@ export default function EditarPerfil() {
                 <View style={styles.infoDiv}>
                     <Text style={styles.label}>Email: </Text>
                     <MyInput
+                    keyboardType='email-address'
                         style={styles.informacao}
                         value={email}
                         onChangeText={setEmail}
@@ -145,29 +180,51 @@ export default function EditarPerfil() {
 
                 <View style={styles.infoDiv}>
                     <Text style={styles.label}>Data de Nasc.: </Text>
+                    <Pressable onPress={() => setShowNascimentoPicker(true)}>
                     <MyInput
+                    editable={false}
                         style={styles.informacao}
-                        value={dataNascimento}
-                        onChangeText={setDataNascimento}
+                        value={new Date(dataNascimento).toLocaleDateString('pt-br', {timeZone: 'UTC'})}
                     />
+                    </Pressable>
+
+                    {showNascimentoPicker && (
+                <DateTimePicker
+                  value={new Date(dataNascimento)}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'compact' : 'default'}
+                  design='material'
+                  onChange={handleDataNascimentoChange}
+                />
+              )}
                 </View>
 
                 <View style={styles.infoDiv}>
                     <Text style={styles.label}>Telefone: </Text>
-                    <MyInput
+                    <MyMaskInput
                         style={styles.informacao}
+                        mask={Masks.BRL_PHONE}
+                        keyboardType='phone-pad'
                         value={telefone}
-                        onChangeText={setTelefone}
+                        onChangeText={(masked, unmasked) => {
+                  setTelefone(unmasked);
+                        }}
                     />
                 </View>
 
                 <View style={styles.infoDiv}>
                     <Text style={styles.label}>Gênero: </Text>
-                    <MyInput
-                        style={styles.informacao}
-                        value={genero}
-                        onChangeText={setGenero}
-                    />
+                    <MyDropdownUnstyled
+                data={itensGenero}
+                labelField="label"
+                valueField="value"
+                placeholder={genero}
+                value={genero}
+                style={styles.informacao}
+                onChange={item => {
+                  setGenero(item.value);
+                }}
+              />
                 </View>
 
                 <View style={styles.infoDiv}>
