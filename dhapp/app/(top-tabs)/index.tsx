@@ -1,6 +1,5 @@
-import { BlurView } from 'expo-blur';
 import * as React from "react";
-import { Dimensions, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -41,7 +40,7 @@ export default function telaDesenvolvimento() {
         <View style={{flexDirection: 'row'}}>
         <Carousel
         ref={ref}
-          height={500}
+          height={200}
           width={width - 20}
           data={data}
           onProgressChange={progress}
@@ -54,15 +53,13 @@ export default function telaDesenvolvimento() {
             >
               {
                 index == 0 ? (
-                  <ImageBackground style={styles.contImg}>
-                    <BlurView experimentalBlurMethod='dimezisBlurView' intensity={90} tint='extraLight' style={styles.blurCont}>
+                    <View style={styles.contTexto}>
                       <Text style={styles.titleCar}>Até 1 ano</Text>
                       <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Sorriso social:</Text> entre 1,5 e 5 meses.</Text>
                       <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Sentar sozinho:</Text> pode acontecer a partir de 6 meses, mas pode levar até 2 anos e meio.</Text>
                       <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Engatinhar ou se deslocar:</Text> geralmente entre 8 meses e quase 2 anos.</Text>
                       <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Comer com os dedos:</Text> pode iniciar entre 10 meses e 2 anos.</Text>
-                    </BlurView>
-                  </ImageBackground>
+                    </View>
                 ) : index == 1 ? (
                   <View style={styles.contTexto}>
                     <View style={styles.cardImpar}>
