@@ -1,3 +1,4 @@
+import { ButtonP } from '@/components/ButtonP';
 import { MyDropdownUnstyled } from '@/components/MyDropdownUnstyled';
 import { MyInput } from '@/components/MyInput';
 import { MyMaskInput } from '@/components/MyMaskInput';
@@ -7,7 +8,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { router, Stack } from 'expo-router';
 import { useEffect, useState } from "react";
-import { Alert, Button, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { Masks } from 'react-native-mask-input';
 import { getDB } from "../database";
 import { supabase } from "../supabaseserver";
@@ -244,10 +245,9 @@ export default function EditarPerfil() {
                         onChangeText={setNomeResponsavel}
                     />
                 </View>
-
-                <View style={{ marginTop: 20 }}>
-                    <Button title="Salvar" onPress={EditarDados} />
-                </View>
+                <View style={styles.botao}>
+                      <ButtonP label="Salvar informações" onPress={EditarDados} />
+                      </View>
             </View>
         </View>
     );
