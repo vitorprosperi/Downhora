@@ -1,5 +1,6 @@
+import { BlurView } from 'expo-blur';
 import * as React from "react";
-import { Dimensions, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -40,8 +41,8 @@ export default function telaDesenvolvimento() {
         <View style={{flexDirection: 'row'}}>
         <Carousel
         ref={ref}
-          height={300}
-          width={width - 30}
+          height={500}
+          width={width - 20}
           data={data}
           onProgressChange={progress}
           renderItem={({ index }) => (
@@ -53,15 +54,15 @@ export default function telaDesenvolvimento() {
             >
               {
                 index == 0 ? (
-                  <View style={styles.contTexto}>
-                    <View style={styles.cardImpar}>
-                      <Text style={[styles.title, { textAlign: 'left' }]}>Até 1 ano</Text>
-                    </View>
-                    <Text style={styles.text}><Text style={styles.textHeavy}> · Sorriso social:</Text> entre 1,5 e 5 meses.</Text>
-                    <Text style={styles.text}><Text style={styles.textHeavy}> · Sentar sozinho:</Text> pode acontecer a partir de 6 meses, mas pode levar até 2 anos e meio.</Text>
-                    <Text style={styles.text}><Text style={styles.textHeavy}> · Engatinhar ou se deslocar:</Text> geralmente entre 8 meses e quase 2 anos.</Text>
-                    <Text style={styles.text}><Text style={styles.textHeavy}> · Comer com os dedos:</Text> pode iniciar entre 10 meses e 2 anos.</Text>
-                  </View>
+                  <ImageBackground style={styles.contImg}>
+                    <BlurView experimentalBlurMethod='dimezisBlurView' intensity={90} tint='extraLight' style={styles.blurCont}>
+                      <Text style={styles.titleCar}>Até 1 ano</Text>
+                      <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Sorriso social:</Text> entre 1,5 e 5 meses.</Text>
+                      <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Sentar sozinho:</Text> pode acontecer a partir de 6 meses, mas pode levar até 2 anos e meio.</Text>
+                      <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Engatinhar ou se deslocar:</Text> geralmente entre 8 meses e quase 2 anos.</Text>
+                      <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Comer com os dedos:</Text> pode iniciar entre 10 meses e 2 anos.</Text>
+                    </BlurView>
+                  </ImageBackground>
                 ) : index == 1 ? (
                   <View style={styles.contTexto}>
                     <View style={styles.cardImpar}>
@@ -92,7 +93,12 @@ export default function telaDesenvolvimento() {
       <Pagination.Basic
         progress={progress}
         data={data}
-        dotStyle={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 50 }}
+        dotStyle={{ backgroundColor: "rgba(0,0,0,0.3)", borderRadius: 50 }}
+        activeDotStyle={{
+          backgroundColor: "#2261C1", 
+          borderRadius: 50,
+          overflow: 'hidden'
+        }}
         containerStyle={{ gap: 5, marginTop: 10}}
         onPress={onPressPagination}
       />
@@ -142,6 +148,11 @@ const styles = StyleSheet.create({
   },
   contTexto: {
     marginBottom: 10,
+    paddingHorizontal: 5,
+  },
+  contImg: {
+    height: '100%',
+        
   },
   cardTitle: {
     alignItems: 'center',
@@ -176,15 +187,35 @@ const styles = StyleSheet.create({
     color: '#231F20',
     textAlign: 'center'
   },
+  titleCar: {
+    fontSize: 20,
+    fontFamily: 'Roboto-600',
+    color: 'black',
+    textAlign: 'left'
+  },
   text: {
     fontSize: 16,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
+  textCarro: {
+    fontSize: 18,
+    color: 'back',
+    fontFamily: 'Roboto',
+  },
+  blurCont:{
+    marginTop: 'auto',
+    paddingLeft: 5,
+  },
   textHeavy: {
     fontSize: 16,
     color: '#231F20',
     fontFamily: 'Roboto-500',
+  },
+  textHeavyCar: {
+    fontSize: 18,
+    color: 'black',
+    fontFamily: 'Roboto-600',
   },
   textPequeno: {
     fontSize: 14,

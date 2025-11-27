@@ -5,8 +5,8 @@ import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-nativ
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getDB } from '../database'; 
-import { desenvolvimento, exames, prontuario, vacina, perfil } from "../routes/rotas";
+import { getDB } from '../database';
+import { desenvolvimento, exames, perfil, prontuario, vacina } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
 
@@ -106,39 +106,41 @@ export default function TelaInicial() {
 
           <View style={btstyle.botoesContainer}>
 
-          <Pressable
+
+              <Pressable
                 style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
                 onPress={perfil}
               >
                 <Icon source="account" color="#2261c1" size={55} />
                 <Text style={btstyle.text}>Perfil</Text>
-          </Pressable>
+              </Pressable>
 
-            <TouchableOpacity>
+              <TouchableOpacity>
+                <Pressable
+                  style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+                  onPress={prontuario}
+                >
+                  <Icon source="content-paste" color="#2261c1" size={55} />
+                  <Text style={btstyle.text}>Prontuário</Text>
+                </Pressable>
+              </TouchableOpacity>
+
               <Pressable
                 style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                onPress={prontuario}
+                onPress={exames}
               >
-                <Icon source="content-paste" color="#2261c1" size={55} />
-                <Text style={btstyle.text}>Prontuário</Text>
+                <Icon source="calendar-multiselect" color="#2261c1" size={55} />
+                <Text style={btstyle.text}>Exames</Text>
               </Pressable>
-            </TouchableOpacity>
 
-            <Pressable
-              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-              onPress={exames}
-            >
-              <Icon source="calendar-multiselect" color="#2261c1" size={55} />
-              <Text style={btstyle.text}>Exames</Text>
-            </Pressable>
+              <Pressable
+                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+                onPress={vacina}
+              >
+                <Icon source="needle" color="#2261c1" size={55} />
+                <Text style={btstyle.text}>Vacinação</Text>
+              </Pressable>
 
-            <Pressable
-              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-              onPress={vacina}
-            >
-              <Icon source="needle" color="#2261c1" size={55} />
-              <Text style={btstyle.text}>Vacinação</Text>
-            </Pressable>
 
             <Pressable
               style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
@@ -162,7 +164,7 @@ const btstyle = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    width: '80%',
+    width: '70%',
     paddingVertical: 20,
     borderRadius: 20,
     boxShadow: '0.25px 0.5px 1px 0px hsl(216, 60%, 35%)',
@@ -172,7 +174,7 @@ const btstyle = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#FBFBFC',
-    width: '80%',
+    width: '70%',
     paddingVertical: 20,
     borderRadius: 20,
     boxShadow: '0.25px 0.5px 1.5px 0px hsl(216, 60%, 35%)',
@@ -190,9 +192,8 @@ const btstyle = StyleSheet.create({
   botoesContainer: {
     flexDirection: 'column',
     width: '100%',
-    gap: 20,
-    marginTop: 'auto',
-    marginBottom: '20%',
+    gap: 10,
+    marginTop: 10,
   },
   logoutContainer: {
     width: '100%',
