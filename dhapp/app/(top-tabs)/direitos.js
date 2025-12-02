@@ -119,12 +119,13 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    width: '95%',
     alignSelf: 'center',
+    paddingHorizontal: 15,
   },
   subTitulo: {
-    fontSize: 17,
-   fontFamily: 'Raleway-700', 
+    fontSize: 18,
+    fontFamily: 'Roboto-600',
+    color: '#231F20',
   },
   title: {
     fontSize: 19,
