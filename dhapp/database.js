@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const DB_VERSION = 20;
+const DB_VERSION = 21;
 let dbInstance = null;
 let dbPromise = null; // garante inicialização única
 
@@ -50,27 +50,27 @@ export async function getDB() {
         CREATE TABLE IF NOT EXISTS historico_medico (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           usuario_id TEXT NOT NULL,
-          exame_cariotipo TEXT NOT NULL,
+          exame_cariotipo TEXT,
           data_cariotipo TEXT,
-          triagem_auditiva TEXT NOT NULL,
+          triagem_auditiva TEXT,
           data_triagem TEXT,
-          consulta_cardiologista TEXT NOT NULL,
+          consulta_cardiologista TEXT,
           data_cardiologista TEXT,
-          teste_pezinho TEXT NOT NULL,
+          teste_pezinho TEXT,
           data_pezinho TEXT,
-          consulta_oftalmo TEXT NOT NULL,
+          consulta_oftalmo TEXT,
           data_oftalmo TEXT,
-          consulta_fono TEXT NOT NULL,
+          consulta_fono TEXT,
           data_fono TEXT,
-          consulta_odonto TEXT NOT NULL,
+          consulta_odonto TEXT,
           data_odonto TEXT,
-          consulta_endocrinologia TEXT NOT NULL,
+          consulta_endocrinologia TEXT,
           data_endocrinologia TEXT,
-          consulta_fisio TEXT NOT NULL,
+          consulta_fisio TEXT,
           data_fisio TEXT,
-          consulta_terapia TEXT NOT NULL,
+          consulta_terapia TEXT,
           data_terapia TEXT,
-          consulta_psicopedagogo TEXT NOT NULL,
+          consulta_psicopedagogo TEXT,
           data_psicopedagogo TEXT,
           comorbidades TEXT,
           medicamentos TEXT,
