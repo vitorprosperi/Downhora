@@ -1,7 +1,34 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import * as React from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import Collapsible from 'react-native-collapsible';
 import { SafeAreaView } from "react-native-safe-area-context";
 
+
 export default function telaDireitos() {
+  const [collapsedUm, setCollapsedUm] = React.useState(true);
+  const [collapsedDois, setCollapsedDois] = React.useState(true);
+
+  const [chevOne, setChevOne] = React.useState('chevron-right');
+  const [chevTwo, setChevTwo] = React.useState('chevron-right');
+
+  const handleUm = () => {
+    setCollapsedUm(!collapsedUm)
+    if (chevOne == 'chevron-right') {
+      setChevOne('chevron-down')
+    } else {
+      setChevOne('chevron-right')
+    }
+  };
+
+  const handleDois = () => {
+    setCollapsedDois(!collapsedDois)
+    if (chevTwo == 'chevron-right') {
+      setChevTwo('chevron-down')
+    } else {
+      setChevTwo('chevron-right')
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
 
@@ -22,41 +49,50 @@ export default function telaDireitos() {
             qualquer alteração e planejar os cuidados necessários para proporcionar uma vida mais saudável.
           </Text>
         </View>
-        <View style={styles.contTexto}>
-          <View style={styles.cardImpar}>
-            <Text style={styles.title}>15 passos para uma alimentação saudável de crianças com síndrome de Down</Text>
-          </View>
-          <Text style={styles.text}>1- <Text style={styles.textHeavy}>Aleitamento materno exclusivo</Text> até os <Text style={styles.textHeavy}>6 meses de idade</Text>;</Text>
-          <Text style={styles.text}>2- Oferecer o <Text style={styles.textHeavy}>leite materno como complemento até 2 anos de idade ou mais</Text>;</Text>
-          <Text style={styles.text}>3- A <Text style={styles.textHeavy}>introdução dos alimentos</Text> deve começar somente quando o pediatra orientar e quando a <Text style={styles.textHeavy}>criança mostrar que já está pronta</Text>.</Text>
-          <Text style={styles.text}>4- A <Text style={styles.textHeavy}>alimentação da família</Text> também deve ser introduzida respeitando o <Text style={styles.textHeavy}>desenvolvimento da criança</Text>;</Text>
-          <Text style={styles.text}>5- <Text style={styles.textHeavy}>Não é necessário</Text> adicionar <Text style={styles.textHeavy}>sal na comida</Text> da criança <Text style={styles.textHeavy}>até 1 ano de idade</Text> e <Text style={styles.textHeavy}>açúcar até os 2 anos de idade</Text>;</Text>
-          <Text style={styles.text}>6- É <Text style={styles.textHeavy}>PROIBIDO</Text> o consumo de <Text style={styles.textHeavy}>mel</Text> até os dois anos de idade;</Text>
-          <Text style={styles.text}>7- Oferecer <Text style={styles.textHeavy}>legumes, frutas e verduras diariamente</Text>;</Text>
-          <Text style={styles.text}>8- Oferecer água à criança <Text style={styles.textHeavy}>várias vezes ao dia</Text>;</Text>
-          <Text style={styles.text}>
-            9- <Text style={styles.textHeavy}>Não oferecer sucos</Text>, mesmo que naturais aos <Text style={styles.textHeavy}>menores de 1 ano</Text>. Além disso, os sucos devem <Text style={styles.textHeavy}>limitar a quantidade</Text>
-            máxima de <Text style={styles.textHeavy}>120 mL/dia</Text>, para crianças de <Text style={styles.textHeavy}>1 a 3 anos</Text> e de <Text style={styles.textHeavy}>175mL/dia</Text>,
-            para crianças de <Text style={styles.textHeavy}>4 a 6 anos</Text> e 250ml a partir dos <Text style={styles.textHeavy}>7 anos</Text>.
-          </Text>
-          <Text style={styles.text}>
-            10- <Text style={styles.textHeavy}>Evitar embutidos</Text> (presunto, mortadela, salsicha, linguiça, peito de peru, salame, nuggets, hambúrgueres),
-            <Text style={styles.textHeavy}>bebidas açucaradas</Text> (refrigerante, suco em pó, achocolatados prontos, bebida lácteas com sabor) e <Text style={styles.textHeavy}>ultraprocessados</Text>
-            (salgadinho, bolachas com e sem recheio, salgadinhos, chocolate, doces, etc);
-          </Text>
-          <Text style={styles.text}>11- Não permitir <Text style={styles.textHeavy}>distrações como telas</Text> durante as refeições;</Text>
-          <Text style={styles.text}>12- Dar atenção aos <Text style={styles.textHeavy}>sinais de fome e saciedade</Text> da criança e <Text style={styles.textHeavy}>conversar com ela durante a refeição</Text>;</Text>
-          <Text style={styles.text}>13- Os <Text style={styles.textHeavy}>bons hábitos alimentares da família</Text> são fundamentais para que a criança se alimente bem!</Text>
-          <Text style={styles.text}>
-            14- <Text style={styles.textHeavy}>Permita que a criança explore os alimentos</Text>: tocar, apertar e cheirar faz parte da experiência de comer!
-            Além disso, incentive sempre a experimentar novos sabores e texturas.
-          </Text>
-          <Text style={styles.text}>15- Proteja as crianças da publicidade de alimentos.</Text>
+        
+          <Pressable onPress={() => handleUm()}>
+            <View style={styles.cardImpar}>
+              <Text style={styles.title}>15 passos para uma alimentação saudável de crianças com síndrome de Down</Text>
+            </View>
+          </Pressable>
+          <Collapsible collapsed={collapsedUm}>
+          <View style={styles.contTexto}>
+            <Text style={styles.text}>1- <Text style={styles.textHeavy}>Aleitamento materno exclusivo</Text> até os <Text style={styles.textHeavy}>6 meses de idade</Text>;</Text>
+            <Text style={styles.text}>2- Oferecer o <Text style={styles.textHeavy}>leite materno como complemento até 2 anos de idade ou mais</Text>;</Text>
+            <Text style={styles.text}>3- A <Text style={styles.textHeavy}>introdução dos alimentos</Text> deve começar somente quando o pediatra orientar e quando a <Text style={styles.textHeavy}>criança mostrar que já está pronta</Text>.</Text>
+            <Text style={styles.text}>4- A <Text style={styles.textHeavy}>alimentação da família</Text> também deve ser introduzida respeitando o <Text style={styles.textHeavy}>desenvolvimento da criança</Text>;</Text>
+            <Text style={styles.text}>5- <Text style={styles.textHeavy}>Não é necessário</Text> adicionar <Text style={styles.textHeavy}>sal na comida</Text> da criança <Text style={styles.textHeavy}>até 1 ano de idade</Text> e <Text style={styles.textHeavy}>açúcar até os 2 anos de idade</Text>;</Text>
+            <Text style={styles.text}>6- É <Text style={styles.textHeavy}>PROIBIDO</Text> o consumo de <Text style={styles.textHeavy}>mel</Text> até os dois anos de idade;</Text>
+            <Text style={styles.text}>7- Oferecer <Text style={styles.textHeavy}>legumes, frutas e verduras diariamente</Text>;</Text>
+            <Text style={styles.text}>8- Oferecer água à criança <Text style={styles.textHeavy}>várias vezes ao dia</Text>;</Text>
+            <Text style={styles.text}>
+              9- <Text style={styles.textHeavy}>Não oferecer sucos</Text>, mesmo que naturais aos <Text style={styles.textHeavy}>menores de 1 ano</Text>. Além disso, os sucos devem <Text style={styles.textHeavy}>limitar a quantidade</Text>
+              máxima de <Text style={styles.textHeavy}>120 mL/dia</Text>, para crianças de <Text style={styles.textHeavy}>1 a 3 anos</Text> e de <Text style={styles.textHeavy}>175mL/dia</Text>,
+              para crianças de <Text style={styles.textHeavy}>4 a 6 anos</Text> e 250ml a partir dos <Text style={styles.textHeavy}>7 anos</Text>.
+            </Text>
+            <Text style={styles.text}>
+              10- <Text style={styles.textHeavy}>Evitar embutidos</Text> (presunto, mortadela, salsicha, linguiça, peito de peru, salame, nuggets, hambúrgueres),
+              <Text style={styles.textHeavy}>bebidas açucaradas</Text> (refrigerante, suco em pó, achocolatados prontos, bebida lácteas com sabor) e <Text style={styles.textHeavy}>ultraprocessados</Text>
+              (salgadinho, bolachas com e sem recheio, salgadinhos, chocolate, doces, etc);
+            </Text>
+            <Text style={styles.text}>11- Não permitir <Text style={styles.textHeavy}>distrações como telas</Text> durante as refeições;</Text>
+            <Text style={styles.text}>12- Dar atenção aos <Text style={styles.textHeavy}>sinais de fome e saciedade</Text> da criança e <Text style={styles.textHeavy}>conversar com ela durante a refeição</Text>;</Text>
+            <Text style={styles.text}>13- Os <Text style={styles.textHeavy}>bons hábitos alimentares da família</Text> são fundamentais para que a criança se alimente bem!</Text>
+            <Text style={styles.text}>
+              14- <Text style={styles.textHeavy}>Permita que a criança explore os alimentos</Text>: tocar, apertar e cheirar faz parte da experiência de comer!
+              Além disso, incentive sempre a experimentar novos sabores e texturas.
+            </Text>
+            <Text style={styles.text}>15- Proteja as crianças da publicidade de alimentos.</Text>
         </View>
-        <View style={styles.contTexto}>
+        </Collapsible>
+
+        <Pressable onPress={() => handleDois()}>
           <View style={styles.cardPar}>
             <Text style={styles.title}>15 passos para uma alimentação saudável de adolescentes com síndrome de Down</Text>
           </View>
+        </Pressable>
+        <Collapsible collapsed={collapsedDois}>
+        <View style={styles.contTexto}>
           <Text style={styles.text}>1- Coma <Text style={styles.textHeavy}>frutas, legumes e verduras diariamente</Text>;</Text>
           <Text style={styles.text}>2- Tome <Text style={styles.textHeavy}>água</Text> várias vezes ao dia;</Text>
           <Text style={styles.text}>
@@ -77,6 +113,7 @@ export default function telaDireitos() {
           <Text style={styles.text}>14- <Text style={styles.textHeavy}>Durma bem</Text>;</Text>
           <Text style={styles.text}>15- Leia o <Text style={styles.textHeavy}>rótulo dos alimentos</Text> sempre!</Text>
         </View>
+        </Collapsible>
         <View style={styles.contTexto}>
           <View style={styles.cardImpar}>
             <Text style={styles.title}>Classificação dos alimentos quanto ao grau de processamento</Text>
