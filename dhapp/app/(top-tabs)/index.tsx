@@ -2,7 +2,6 @@ import * as React from "react";
 import { Linking, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Collapsible from 'react-native-collapsible';
 import { Icon } from 'react-native-paper';
-import Animated from 'react-native-reanimated';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function telaDesenvolvimento() {
@@ -13,8 +12,6 @@ export default function telaDesenvolvimento() {
   const [chevOne, setChevOne] = React.useState('chevron-right');
   const [chevTwo, setChevTwo] = React.useState('chevron-right');
   const [chevThree, setChevThree] = React.useState('chevron-right');
-
-  const AnimatedChevronOne = Animated.createAnimatedComponent(Icon);
 
   const handleUmAno = () => {
     setCollapsedUmAno(!collapsedUmAno)
@@ -60,45 +57,45 @@ export default function telaDesenvolvimento() {
 
         <Pressable onPress={() => handleUmAno()}>
           <View style={styles.titleCollapsible}>
-            <Icon source={chevOne} size={18}></Icon>
+            <Icon source={chevOne} size={18} color="#0066CC"></Icon>
             <Text style={styles.subTitulo}>Até 1 ano</Text>
           </View>
         </Pressable>
         <Collapsible collapsed={collapsedUmAno}>
           <View style={styles.contTextoCollap}>
-            <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Sorriso social:</Text> entre 1,5 e 5 meses.</Text>
-            <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Sentar sozinho:</Text> pode acontecer a partir de 6 meses, mas pode levar até 2 anos e meio.</Text>
-            <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Engatinhar ou se deslocar:</Text> geralmente entre 8 meses e quase 2 anos.</Text>
-            <Text style={styles.textCarro}><Text style={styles.textHeavyCar}>Comer com os dedos:</Text> pode iniciar entre 10 meses e 2 anos.</Text>
+            <Text style={styles.textCarro}><Text style={styles.textHeavy}>· Sorriso social:</Text> entre 1,5 e 5 meses.</Text>
+            <Text style={styles.textCarro}><Text style={styles.textHeavy}>· Sentar sozinho:</Text> pode acontecer a partir de 6 meses, mas pode levar até 2 anos e meio.</Text>
+            <Text style={styles.textCarro}><Text style={styles.textHeavy}>· Engatinhar ou se deslocar:</Text> geralmente entre 8 meses e quase 2 anos.</Text>
+            <Text style={styles.textCarro}><Text style={styles.textHeavy}>· Comer com os dedos:</Text> pode iniciar entre 10 meses e 2 anos.</Text>
           </View>
         </Collapsible>
 
         <Pressable onPress={() => handleDoisAnos()}>
           <View style={styles.titleCollapsible}>
-          <Icon source={chevTwo} size={18}></Icon>
+          <Icon source={chevTwo} size={18} color="#0066CC"></Icon>
             <Text style={[styles.subTitulo, { textAlign: 'left' }]}>De 1 a 3 anos</Text>
           </View>
         </Pressable>
         <Collapsible collapsed={collapsedDoisAnos}>
           <View style={styles.contTextoCollap}>
-            <Text style={styles.textHeavy}>Andar sem ajuda.</Text>
-            <Text style={styles.textHeavy}>Beber no copo.</Text>
-            <Text style={styles.textHeavy}>Usar colher.</Text>
-            <Text style={styles.textHeavy}>Primeiras palavras.</Text>
+            <Text style={styles.textHeavy}>· Andar sem ajuda.</Text>
+            <Text style={styles.textHeavy}>· Beber no copo.</Text>
+            <Text style={styles.textHeavy}>· Usar colher.</Text>
+            <Text style={styles.textHeavy}>· Primeiras palavras.</Text>
           </View>
         </Collapsible>
 
         <Pressable onPress={() => handleTresAnos()}>
           <View style={styles.titleCollapsible}>
-            <Icon source={chevThree} size={18}></Icon>
+            <Icon source={chevThree} size={18} color="#0066CC"></Icon>
             <Text style={[styles.subTitulo, { textAlign: 'left' }]}>A partir de 3 anos</Text>
           </View>
         </Pressable>
         <Collapsible collapsed={collapsedTresAnos}>
           <View style={styles.contTextoCollap}>
-            <Text style={styles.text}><Text style={styles.textHeavy}>Frases de duas palavras:</Text> podem aparecer a partir dos 2 anos, mas podem levar até 7 anos e meio.</Text>
-            <Text style={styles.text}><Text style={styles.textHeavy}>Controle de esfíncteres (xixi e cocô):</Text> pode ocorrer em qualquer momento entre 2 e 7 anos.</Text>
-            <Text style={styles.text}><Text style={styles.textHeavy}>Vestir-se com ajuda e começar a tentar sozinho:</Text> entre 3 anos e meio e 8 anos e meio.</Text>
+            <Text style={styles.text}><Text style={styles.textHeavy}>· Frases de duas palavras:</Text> podem aparecer a partir dos 2 anos, mas podem levar até 7 anos e meio.</Text>
+            <Text style={styles.text}><Text style={styles.textHeavy}>· Controle de esfíncteres (xixi e cocô):</Text> pode ocorrer em qualquer momento entre 2 e 7 anos.</Text>
+            <Text style={styles.text}><Text style={styles.textHeavy}>· Vestir-se com ajuda e começar a tentar sozinho:</Text> entre 3 anos e meio e 8 anos e meio.</Text>
           </View>
         </Collapsible>
 
@@ -118,9 +115,9 @@ export default function telaDesenvolvimento() {
           <Text style={styles.text}><Text style={styles.textHeavy}>·</Text> Valorize sempre as conquistas do seu filho.</Text>
         </View>
 
-        <View style={{ marginTop: 10, paddingHorizontal: 15 }}>
-          <Text style={styles.textPequenoTitulo}>Referências:</Text>
-          <Text style={styles.textPequeno}>National Down Syndrome Society (NDSS) e parceiros como
+        <View style={styles.contTexto}>
+          <Text style={styles.titleH2}>Referências:</Text>
+          <Text style={styles.text}>National Down Syndrome Society (NDSS) e parceiros como
             <TouchableOpacity onPress={() => Linking.openURL('https://saut.org.sa/page-developmental-milestones%26lang%3DEnglish')}>
               <Text style={styles.textLinkRef}>
                 Saut – The Voice of Down Syndrome Society
@@ -143,7 +140,7 @@ export default function telaDesenvolvimento() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFF',
+    backgroundColor: '#FFFFFF',
   },
   contTexto: {
     marginBottom: 5,
@@ -167,9 +164,9 @@ const styles = StyleSheet.create({
   titleCollapsible: {
     //backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
     flexDirection: 'row',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     marginBottom: 5,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   scrollView: {
     flexGrow: 1,
@@ -178,20 +175,22 @@ const styles = StyleSheet.create({
   },
   subTitulo: {
     fontSize: 18,
-    fontFamily: 'Roboto-600',
+    fontFamily: 'Roboto-500',
     color: '#231F20',
   },
   title: {
     fontSize: 20,
-    fontFamily: 'Raleway-700',
-    color: '#231F20',
-    textAlign: 'center'
-  },
-  titleCar: {
-    fontSize: 20,
     fontFamily: 'Roboto-600',
-    color: 'black',
-    textAlign: 'left'
+    color: '#231F20',
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'grey',
+  },
+  titleH2: {
+    fontSize: 18,
+    fontFamily: 'Roboto-600',
+    color: '#231F20',
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'grey',
   },
   text: {
     fontSize: 16,
@@ -211,11 +210,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#231F20',
     fontFamily: 'Roboto-500',
-  },
-  textHeavyCar: {
-    fontSize: 16,
-    color: 'black',
-    fontFamily: 'Roboto-600',
   },
   textPequeno: {
     fontSize: 14,

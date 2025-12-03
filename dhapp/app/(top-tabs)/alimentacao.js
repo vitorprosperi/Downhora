@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Collapsible from 'react-native-collapsible';
+import { Icon } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -31,7 +32,6 @@ export default function telaDireitos() {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.cardTitle}>
           <Text style={styles.title}>Avaliação nutricional de crianças e adolescentes com síndrome de Down</Text>
@@ -51,12 +51,13 @@ export default function telaDireitos() {
         </View>
         
           <Pressable onPress={() => handleUm()}>
-            <View style={styles.cardImpar}>
-              <Text style={styles.title}>15 passos para uma alimentação saudável de crianças com síndrome de Down</Text>
+            <View style={styles.titleCollapsible}>
+              <Icon source={chevOne} size={18} color="#0066CC"></Icon>
+              <Text style={styles.subTitulo}>15 passos para uma alimentação saudável de crianças com síndrome de Down</Text>
             </View>
           </Pressable>
           <Collapsible collapsed={collapsedUm}>
-          <View style={styles.contTexto}>
+          <View style={styles.contTextoCollap}>
             <Text style={styles.text}>1- <Text style={styles.textHeavy}>Aleitamento materno exclusivo</Text> até os <Text style={styles.textHeavy}>6 meses de idade</Text>;</Text>
             <Text style={styles.text}>2- Oferecer o <Text style={styles.textHeavy}>leite materno como complemento até 2 anos de idade ou mais</Text>;</Text>
             <Text style={styles.text}>3- A <Text style={styles.textHeavy}>introdução dos alimentos</Text> deve começar somente quando o pediatra orientar e quando a <Text style={styles.textHeavy}>criança mostrar que já está pronta</Text>.</Text>
@@ -87,12 +88,13 @@ export default function telaDireitos() {
         </Collapsible>
 
         <Pressable onPress={() => handleDois()}>
-          <View style={styles.cardPar}>
-            <Text style={styles.title}>15 passos para uma alimentação saudável de adolescentes com síndrome de Down</Text>
+          <View style={styles.titleCollapsible}>
+            <Icon source={chevTwo} size={18} color="#0066CC"></Icon>
+            <Text style={[styles.subTitulo]}>15 passos para uma alimentação saudável de adolescentes com síndrome de Down</Text>
           </View>
         </Pressable>
         <Collapsible collapsed={collapsedDois}>
-        <View style={styles.contTexto}>
+        <View style={styles.contTextoCollap}>
           <Text style={styles.text}>1- Coma <Text style={styles.textHeavy}>frutas, legumes e verduras diariamente</Text>;</Text>
           <Text style={styles.text}>2- Tome <Text style={styles.textHeavy}>água</Text> várias vezes ao dia;</Text>
           <Text style={styles.text}>
@@ -102,7 +104,7 @@ export default function telaDireitos() {
           </Text>
           <Text style={styles.text}>4- <Text style={styles.textHeavy}>Não pule refeições</Text>! É importante comer várias vezes ao dia (café da manhã, almoço, jantar e lanches entre as refeições principais);</Text>
           <Text style={styles.text}>5- Tome <Text style={styles.textHeavy}>café da manhã</Text>, pois essa é uma das refeições mais importantes do dia!</Text>
-          <Text style={styles.text}>6- <Text style={styles.textHeavy}>Evite</Text> o consumo de <Text style={styles.textHeavy}>comidas com baixo valor nutricional.</Text>;</Text>
+          <Text style={styles.text}>6- <Text style={styles.textHeavy}>Evite</Text> o consumo de <Text style={styles.textHeavy}>comidas com baixo valor nutricional</Text>;</Text>
           <Text style={styles.text}>7- Limite a ingestão de suco, mesmo que natural, à 240ml por dia;</Text>
           <Text style={styles.text}>8- Evite frituras (prefira os alimentos cozidos, assados, grelhados);</Text>
           <Text style={styles.text}>9- Consuma fontes de <Text style={styles.textHeavy}>cálcio</Text> (leite, derivados, vegetais verdes escuro), pois esse mineral é fundamental na formação dos <Text style={styles.textHeavy}>ossos e dentes</Text>;</Text>
@@ -116,7 +118,7 @@ export default function telaDireitos() {
         </Collapsible>
         <View style={styles.contTexto}>
           <View style={styles.cardImpar}>
-            <Text style={styles.title}>Classificação dos alimentos quanto ao grau de processamento</Text>
+            <Text style={styles.titleH2}>Classificação dos alimentos quanto ao grau de processamento</Text>
           </View>
           <Text style={styles.text}><Text style={[styles.textHeavy, { fontFamily: 'Roboto-500-italic' }]}>In natura:</Text> alimentos obtidos diretamente de plantas ou animais (ex.: folhas, frutos, ovos, leite)</Text>
           <Text style={styles.text}>
@@ -139,7 +141,7 @@ export default function telaDireitos() {
           <Text style={styles.text}><Text style={[styles.textHeavy, { color: 'red' }]}>Vermelho</Text> – <Text style={styles.textHeavy}>alimentos ultraprocessados</Text>: devem ser <Text style={styles.textHeavy}>evitados sempre que possível</Text>.</Text>
           <Text style={styles.text}>Essa analogia ajuda a entender de forma simples <Text style={styles.textHeavy}>quais alimentos podem ser consumidos mais, com moderação ou evitados</Text>.</Text>
         </View>
-        <View>
+        <View style={styles.contTexto}>
           <Text style={styles.subTitulo}>Como ler o rótulo dos alimentos?</Text>
           <Text style={styles.text}>
             A lista de ingredientes é organizada <Text style={styles.textHeavy}>da maior para a menor quantidade</Text>. O primeiro ingrediente é o que tem mais, e o último,
@@ -156,11 +158,15 @@ export default function telaDireitos() {
 }
 
 const styles = StyleSheet.create({
-  cardImpar: {
-    backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
+  titleCollapsible: {
+    //backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
+    flexDirection: 'row',
+    marginBottom: 5,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 5,
+    paddingHorizontal: 8,
+  },
+  cardImpar: {
+    alignItems: 'center',
   },
   cardPar: {
     backgroundColor: 'hsla(42 93.6% 49% / 0.3)',
@@ -172,29 +178,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 5,
+    paddingHorizontal: 15,
   },
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFF',
+    backgroundColor: '#FFFFFF',
   },
   contTexto: {
-    marginBottom: 15,
+    marginBottom: 5,
+    paddingHorizontal: 15,
+  },
+  contTextoCollap: {
+    marginBottom: 5,
+    marginTop: -5,
+    paddingHorizontal: 15,
   },
   scrollView: {
     flexGrow: 1,
-    width: '95%',
-    alignSelf: 'center',
+    width: '100%',
+    paddingHorizontal: 0,
   },
   subTitulo: {
-    fontSize: 17,
-    fontFamily: 'Raleway-700',
+    fontSize: 18,
+    fontFamily: 'Roboto-500',
+    color: '#231F20',
   },
   title: {
-    fontSize: 19,
-    fontFamily: 'Raleway-700',
+    fontSize: 20,
+    fontFamily: 'Roboto-600',
     color: '#231F20',
-    textAlign: 'center',
-    marginBottom: 4,
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'grey',
+  },
+  titleH2: {
+    fontSize: 18,
+    fontFamily: 'Roboto-600',
+    color: '#231F20',
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'grey',
   },
   text: {
     fontSize: 16,
