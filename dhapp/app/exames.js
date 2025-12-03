@@ -24,7 +24,7 @@ export default function Exames() {
   // flag para evitar concorrência de sincronização
   let sincronizacaoEmAndamento = false;
 
-  // 🔹 Carrega exames do Supabase e sincroniza com SQLite
+  // Carrega exames do Supabase e sincroniza com SQLite
   const carregarSupabase = async (db) => {
     if (sincronizacaoEmAndamento) {
       console.log("Sincronização já em andamento, ignorando chamada duplicada.");
@@ -87,7 +87,7 @@ export default function Exames() {
   //  Decide entre Supabase e SQLite dependendo da conexão
   const carregarExames = async () => {
     try {
-      const db = await getDB(); // ✅ banco único e estável
+      const db = await getDB(); // banco único e estável
       const state = await NetInfo.fetch();
       const isOnline = state.isConnected;
 
@@ -137,7 +137,8 @@ export default function Exames() {
               if (!fetchError && exameData?.imagem_url) {
                 try {
                   const url = exameData.imagem_url;
-                  const path = url.split("/imagens/")[1]; // ex: "exames/123.jpg"
+                  // Alterado para buscar o caminho após "/public/imagens/"
+                  const path = url.split("imagens/")[1]; // ex: "exames/1764598471075.jpeg"
 
                   if (path) {
                     const { error: deleteImgError } = await supabase.storage
@@ -147,6 +148,9 @@ export default function Exames() {
                     if (deleteImgError)
                       console.error("Erro ao excluir imagem no Storage:", deleteImgError);
                     else console.log("Imagem excluída do Storage:", path);
+
+                    console.log("URL completa:", url);
+                    console.log("Path extraído:", path);
                   }
                 } catch (err) {
                   console.error("Erro ao processar URL da imagem:", err);
