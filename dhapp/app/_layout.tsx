@@ -1,3 +1,4 @@
+import { NotificationProvider } from '@/context/NotificationContext';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -33,23 +34,26 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
+
       <UsuarioProvider>
-        <AppInitializer>
-          <PacienteProvider>
-            <Stack
-              screenOptions={{
-                headerStyle: { backgroundColor: '#FFFFFF' },
-                headerTintColor: '#231F20',
-                headerTitleStyle: { fontFamily: 'Raleway-700' },
-                title: '',
-                headerShadowVisible: false,
-              }}
-            >
-              <Stack.Screen name="index" options={{ title: '' }} />
-              <Stack.Screen name="(top-tabs)" options={{ title: 'Informações' }} />
-            </Stack>
-          </PacienteProvider>
-        </AppInitializer>
+        <NotificationProvider>
+          <AppInitializer>
+            <PacienteProvider>
+              <Stack
+                screenOptions={{
+                  headerStyle: { backgroundColor: '#FFFFFF' },
+                  headerTintColor: '#231F20',
+                  headerTitleStyle: { fontFamily: 'Raleway-700' },
+                  title: '',
+                  headerShadowVisible: false,
+                }}
+              >
+                <Stack.Screen name="index" options={{ title: '' }} />
+                <Stack.Screen name="(top-tabs)" options={{ title: 'Informações' }} />
+              </Stack>
+            </PacienteProvider>
+          </AppInitializer>
+        </NotificationProvider>
       </UsuarioProvider>
     </GestureHandlerRootView>
   );

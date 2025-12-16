@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.renefmelo.dhapp"
+      "package": "com.renefmelo.dhapp",
+      "googleServicesFiles": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -53,6 +54,7 @@
       "eas": {
         "projectId": "d197a128-044e-471a-9231-f156b33e0a1c"
       }
-    }
+    },
+    "owner": "renefmelo"
   }
 }
