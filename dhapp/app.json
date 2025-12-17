@@ -43,7 +43,8 @@
       "expo-font",
       "expo-web-browser",
       "expo-secure-store",
-      "./plugins/withCustomNavigationBarColor"
+      "./plugins/withCustomNavigationBarColor",
+      "./plugins/calendarStyle.js"
     ],
     "experiments": {
       "typedRoutes": true
