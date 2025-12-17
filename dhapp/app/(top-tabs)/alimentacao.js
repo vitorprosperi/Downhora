@@ -206,6 +206,7 @@ export default function telaDireitos() {
             </View>
           </View>
         </Collapsible>
+
         <View style={styles.contTexto}>
           <View style={styles.cardImpar}>
             <Text style={styles.titleH2}>Classificação dos alimentos quanto ao grau de processamento</Text>
@@ -263,6 +264,7 @@ const styles = StyleSheet.create({
   },
   cardImpar: {
     alignItems: 'center',
+    paddingVertical: 5,
   },
   cardPar: {
     backgroundColor: 'hsla(42 93.6% 49% / 0.3)',
@@ -281,7 +283,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   contTexto: {
-    marginBottom: 5,
+    marginBottom: 10,
     paddingHorizontal: 15,
   },
   contTextoCollap: {

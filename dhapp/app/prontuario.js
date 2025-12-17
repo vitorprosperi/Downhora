@@ -333,6 +333,7 @@ const styles = StyleSheet.create({
   },
   text: { 
     fontSize: 16, 
+    lineHeight: 24,
     color: '#231F20', 
     fontFamily: 'Roboto', 
     textTransform: 'capitalize',
@@ -340,6 +341,7 @@ const styles = StyleSheet.create({
     },
   label: { 
     fontSize: 16, 
+    lineHeight: 24,
     color: 'hsl(345, 6%, 43%)', 
     fontFamily: 'Roboto-500' 
   },

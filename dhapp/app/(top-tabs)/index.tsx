@@ -188,11 +188,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   contTexto: {
-    marginBottom: 5,
+    marginBottom: 10,
     paddingHorizontal: 15,
   },
   contTextoCollap: {
-    marginBottom: 5,
+    marginBottom: 10,
     marginTop: -5,
     paddingHorizontal: 15,
   },

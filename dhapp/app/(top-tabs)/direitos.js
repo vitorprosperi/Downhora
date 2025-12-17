@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     color: '#231F20',
     borderBottomWidth: 0.5,
     borderBottomColor: 'grey',
+    paddingVertical: 5,
   },
   text: {
     fontSize: 16,
