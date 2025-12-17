@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
         width: '100%',
         fontSize: 16,
         height: 32,
+        lineHeight: 24,
         fontFamily: 'Roboto',
     },
     label: {

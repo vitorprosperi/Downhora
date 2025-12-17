@@ -93,11 +93,13 @@ const estilos = StyleSheet.create({
   },
   subtitulo: {
     fontSize: 18,
+    lineHeight: 27,
     color: "#555",
     marginBottom: 10,
   },
   data: {
     fontSize: 16,
+    lineHeight: 24,
     color: "#777",
     marginBottom: 20,
   },
@@ -108,6 +110,7 @@ const estilos = StyleSheet.create({
   },
   obs: {
     fontSize: 16,
+    lineHeight: 24,
     marginBottom: 30,
   },
   imageContainer: {

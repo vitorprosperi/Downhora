@@ -234,7 +234,7 @@ export default function Login() {
 const styles = StyleSheet.create({
   containerForm: {
     justifyContent: 'flex-start',
-    gap: 9,
+    gap: 12,
     width: '100%',
     flex: 1,
   },
@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
+    lineHeight: 24,
     fontFamily: 'Roboto',
   },
   loginEstilo: {
@@ -264,6 +265,7 @@ const styles = StyleSheet.create({
   textForm: {
     color: '#231F20',
     fontSize: 16,
+    lineHeight: 24,
     fontFamily: 'Roboto',
   },
   imageContainer: {

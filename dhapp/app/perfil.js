@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
   },
   informacao: {
     fontSize: 16,
+    lineHeight: 24,
     fontFamily: 'Roboto',
     marginTop: -2,
     color: "#231F20",

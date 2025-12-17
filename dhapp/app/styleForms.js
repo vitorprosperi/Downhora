@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
+    lineHeight: 24,
     fontFamily: 'Roboto',
   },
   containerTeclado: {
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
   textForm: {
     color: '#231F20',
     fontSize: 16,
+    lineHeight: 24,
     fontFamily: 'Roboto'
   },
   titulo: {
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
   subTitulo: {
     color: '#231F20',
     fontSize: 16,
+    lineHeight: 24,
     fontFamily: 'Roboto-500',
   },
   textoPequeno: {

@@ -368,16 +368,19 @@ const cstyle = StyleSheet.create({
   textoSecundario: {
     color: "hsla(345, 6%, 33%, 1)",
     fontSize: 18,
+    lineHeight: 27,
     fontFamily: 'Roboto-500',
   },
   textoEscolha: {
     color: "#231F20",
     fontSize: 18,
+    lineHeight: 27,
     fontFamily: 'Roboto'
   },
   textoEscolhaPressed: {
     color: "#231F20",
     fontSize: 18,
+    lineHeight: 27,
     fontFamily: 'Roboto'
   },
   botaoExcluir: {
@@ -392,6 +395,7 @@ const cstyle = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 14,
+    lineHeight: 21,
   },
   tela: {
     flex: 1,
