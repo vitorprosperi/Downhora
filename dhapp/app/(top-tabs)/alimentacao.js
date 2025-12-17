@@ -251,6 +251,7 @@ const styles = StyleSheet.create({
   bPoint: {
     flexDirection: 'row',
     paddingRight: 15,
+    marginBottom: 3,
   },
   titleCollapsible: {
     //backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
@@ -296,6 +297,7 @@ const styles = StyleSheet.create({
   },
   subTitulo: {
     fontSize: 18,
+    lineHeight: 27,
     fontFamily: 'Roboto-500',
     color: '#231F20',
   },
@@ -308,6 +310,7 @@ const styles = StyleSheet.create({
   },
   titleH2: {
     fontSize: 18,
+    lineHeight: 27,
     fontFamily: 'Roboto-600',
     color: '#231F20',
     borderBottomWidth: 0.5,
@@ -315,11 +318,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    lineHeight: 24,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
   textHeavy: {
     fontSize: 16,
+    lineHeight: 24,
     color: '#231F20',
     fontFamily: 'Roboto-500',
   },

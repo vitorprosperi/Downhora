@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
   bPoint: {
     flexDirection: 'row',
     paddingRight: 15,
+    marginBottom: 3,
   },
   container: {
     flex: 1,
@@ -219,6 +220,7 @@ const styles = StyleSheet.create({
   },
   subTitulo: {
     fontSize: 18,
+    lineHeight: 27,
     fontFamily: 'Roboto-500',
     color: '#231F20',
   },
@@ -231,6 +233,7 @@ const styles = StyleSheet.create({
   },
   titleH2: {
     fontSize: 18,
+    lineHeight: 27,
     fontFamily: 'Roboto-600',
     color: '#231F20',
     borderBottomWidth: 0.5,
@@ -238,11 +241,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    lineHeight: 24,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
   textCarro: {
     fontSize: 16,
+    lineHeight: 24,
     color: 'back',
     fontFamily: 'Roboto',
   },
@@ -252,11 +257,13 @@ const styles = StyleSheet.create({
   },
   textHeavy: {
     fontSize: 16,
+    lineHeight: 24,
     color: '#231F20',
     fontFamily: 'Roboto-500',
   },
   textLinkRef: {
     fontSize: 16,
+    lineHeight: 24,
     color: '#0066CC',
     fontFamily: 'Roboto',
   },
