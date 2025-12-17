@@ -43,8 +43,9 @@ supabaseserver.js
 android/
 ios/
 
-# google credentials
 google-services.json
+# google credentials
+
 # Expo
 .expo
 dist/
