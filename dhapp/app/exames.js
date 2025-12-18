@@ -16,6 +16,7 @@ import { supabase } from "../supabaseserver";
 
 export default function Exames() {
   const [exames, setExames] = useState([]);
+  const [historicoMedico, setHistoricoMedico] = useState([]);
   const { userId } = useUsuario();
   const router = useRouter();
 
@@ -34,14 +35,26 @@ export default function Exames() {
     sincronizacaoEmAndamento = true;
 
     try {
-      const { data: examesData, error } = await supabase
+      const[ 
+      { data: examesData, error: examesError }, 
+      { data: historicoData, error: historicoError }, 
+      ]= await Promise.all([
+      supabase
         .from("exames")
         .select("*")
-        .eq("usuario_id", userId);
+        .eq("usuario_id", userId),
 
-      if (error) throw error;
+        supabase
+        .from("historico_medico")
+        .select("*")
+        .eq("usuario_id", userId),
+    ]);
+
+      if (examesError) throw examesError;
+      if (historicoError) throw historicoError;
 
       setExames(examesData || []);
+      setHistoricoMedico(historicoData || []);
       //console.log("Exames carregados do Supabase:", examesData);
 
       // Usa transação para garantir consistência
@@ -240,6 +253,10 @@ export default function Exames() {
 
   return (
     <View style={cstyle.tela}>
+      <Text>
+        Cariótipo: {historicoMedico[0]?.data_cariotipo || "Não informado"}{"\n"}
+        Exame Cariótipo: {historicoMedico[0]?.exame_cariotipo || "Não informado"}
+      </Text>
       <Stack.Screen
         options={{
           title: 'Exames',
