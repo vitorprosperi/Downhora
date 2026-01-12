@@ -45,6 +45,3 @@ ios/
 .expo
 dist/
 web-build/
-
-!supabaseserver.js
-!google-services.json

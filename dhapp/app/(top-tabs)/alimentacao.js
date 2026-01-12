@@ -305,6 +305,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    lineHeight: 27,
     fontFamily: 'Roboto-600',
     color: '#231F20',
     borderBottomWidth: 0.5,
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
   },
   titleH2: {
     fontSize: 18,
-    lineHeight: 27,
+    lineHeight: 24,
     fontFamily: 'Roboto-600',
     color: '#231F20',
     borderBottomWidth: 0.5,
@@ -320,13 +321,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 22,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
   textHeavy: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 22,
     color: '#231F20',
     fontFamily: 'Roboto-500',
   },

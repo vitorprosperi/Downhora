@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   },
   subTitulo: {
     fontSize: 18,
-    lineHeight: 24,
+    lineHeight: 20,
     fontFamily: 'Roboto-500',
     color: '#231F20',
   },
@@ -228,13 +228,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 22,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
   textHeavy: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 22,
     color: '#231F20',
     fontFamily: 'Roboto-500',
   },

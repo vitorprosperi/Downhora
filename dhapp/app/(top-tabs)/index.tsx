@@ -241,13 +241,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 22,
     color: '#231F20',
     fontFamily: 'Roboto',
   },
   textCarro: {
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 20,
     color: 'back',
     fontFamily: 'Roboto',
   },

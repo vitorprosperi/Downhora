@@ -39,14 +39,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     borderWidth: 1,
     borderColor: '#231F20',
-    borderRadius: 2,
     width: '100%',
     fontSize: 16,
     height: 32,
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
-    lineHeight: 24,
     fontFamily: 'Roboto',
   },
   containerTeclado: {
@@ -55,8 +53,8 @@ const styles = StyleSheet.create({
   },
   textForm: {
     color: '#231F20',
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 15,
+    lineHeight: 20,
     fontFamily: 'Roboto'
   },
   titulo: {

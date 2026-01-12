@@ -7,7 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
-import { Alert, Platform, Pressable, Text, View } from "react-native";
+import { Alert, Modal, Platform, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Masks } from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,6 +35,12 @@ export default function CadastroPac() {
     { label: 'Feminino', value: 'Feminino' },
     { label: 'Outro', value: 'Outro' },
   ];
+
+  const [isModalVisible, setModalVisible] = useState(true);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   // Função para formatar a data em br
   const formatarParaBR = (date) => {
@@ -139,10 +145,27 @@ export default function CadastroPac() {
         }}
       />
       <KeyboardAwareScrollView contentContainerStyle={[styles.corEscura]} extraHeight={280}>
+        <Modal 
+        visible={isModalVisible}
+        backdropColor={"hsla(1 1 0/ 0.1)"}
+        statusBarTranslucent={true}
+        navigationBarTranslucent={true}
+        >
+          <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <View style={{height: 'fit-content', backgroundColor: 'white', alignItems:'center', padding: 15, width: '90%', borderRadius: 5}}>
+            <Text style={{fontFamily: 'Roboto', fontSize: 18, marginBottom: 5}}>Atenção</Text>
+            <Text style={{fontFamily: "Roboto", lineHeight: 20, marginBottom: 10}}>Esse cadastro se refere a pessoa com síndrome de Down, os dados dos responsáveis devem 
+              ser preenchidos apenas nos campos especificados.
+            </Text>
+            <View style={{width: '50%'}}>
+            <ButtonP label="Continuar" onPress={toggleModal}></ButtonP>
+            </View>
+          </View>
+          </View>
+        </Modal>
         <View style={styles.container}>
           <View style={styles.containerForm}>
             <Text style={styles.subTitulo}>Dados pessoais (Passo 1 de 4)</Text>
-
             <View>
               <Text style={styles.textForm}>Nome completo</Text>
               <MyInput
