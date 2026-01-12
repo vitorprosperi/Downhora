@@ -263,7 +263,7 @@ export default function ExameCad() {
               <DateTimePicker
                 value={dataISO ? new Date(dataISO) : new Date()}
                 mode="date"
-                display={Platform.OS === 'ios' ? 'compact' : 'calendar'}
+                display={Platform.OS === 'ios' ? 'default' : 'calendar'}
                 onChange={onChangeDate}
               />
             )}
