@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import updateLocale from 'dayjs/plugin/updateLocale';
-import { Stack, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { Stack, useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { Icon, IconButton } from "react-native-paper";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,20 +35,20 @@ export default function Exames() {
     sincronizacaoEmAndamento = true;
 
     try {
-      const[ 
-      { data: examesData, error: examesError }, 
-      { data: historicoData, error: historicoError }, 
-      ]= await Promise.all([
-      supabase
-        .from("exames")
-        .select("*")
-        .eq("usuario_id", userId),
+      const [
+        { data: examesData, error: examesError },
+        { data: historicoData, error: historicoError },
+      ] = await Promise.all([
+        supabase
+          .from("exames")
+          .select("*")
+          .eq("usuario_id", userId),
 
         supabase
-        .from("historico_medico")
-        .select("*")
-        .eq("usuario_id", userId),
-    ]);
+          .from("historico_medico")
+          .select("*")
+          .eq("usuario_id", userId),
+      ]);
 
       if (examesError) throw examesError;
       if (historicoError) throw historicoError;
@@ -116,9 +116,11 @@ export default function Exames() {
     }
   };
 
-  useEffect(() => {
-    carregarExames();
-  }, [userId]);
+  useFocusEffect(
+    useCallback(() => {
+      carregarExames();
+    }, [userId])
+  );
 
   const abrirDetalhes = (exame) => {
     router.push({
@@ -243,13 +245,14 @@ export default function Exames() {
 
     if (sortOrder === 'asc') {
       return dadosFiltrados.sort((a, b) => (
-      new Date(b.data_exame) - new Date(a.data_exame)
-    ));
-    } else if (sortOrder === 'desc'){
+        new Date(b.data_exame) - new Date(a.data_exame)
+      ));
+    } else if (sortOrder === 'desc') {
       return dadosFiltrados.sort((a, b) => (
-      new Date(a.data_exame) - new Date(b.data_exame)
-    ));
-  }}
+        new Date(a.data_exame) - new Date(b.data_exame)
+      ));
+    }
+  }
 
   return (
     <View style={cstyle.tela}>
@@ -265,28 +268,28 @@ export default function Exames() {
       />
       <View style={[cstyle.container, { paddingBottom: insets.bottom }]}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 5 }}>
-              <View style={{flexDirection: "row", alignItems:'center'}}>
-              <IconButton
-                icon={sortIcon}
-                iconColor="#2261C1"
-                size={30}
-                onPress={() => toggleOrder()}
-              />
-              <FilterDropdown
-                onChange={item => {
-                  setFilter(item.value);
-                }}
-              />
-              </View>
-              <IconButton 
-              icon={"plus"} 
-              mode="flat" 
+          <View style={{ flexDirection: "row", alignItems: 'center' }}>
+            <IconButton
+              icon={sortIcon}
               iconColor="#2261C1"
-              size={30} 
-              onPress={exameCad} 
-              />
-            </View>
-          
+              size={30}
+              onPress={() => toggleOrder()}
+            />
+            <FilterDropdown
+              onChange={item => {
+                setFilter(item.value);
+              }}
+            />
+          </View>
+          <IconButton
+            icon={"plus"}
+            mode="flat"
+            iconColor="#2261C1"
+            size={30}
+            onPress={exameCad}
+          />
+        </View>
+
         <FlatList
           data={dataSorted(exames)}
           contentContainerStyle={cstyle.lista}
@@ -419,8 +422,8 @@ const cstyle = StyleSheet.create({
     backgroundColor: '#FAFAFF'
   },
   lista: {
-   borderTopColor: '#2261c1',
-   borderTopWidth: 0.5,
+    borderTopColor: '#2261c1',
+    borderTopWidth: 0.5,
   },
   rowTop: {
     flexDirection: 'row',

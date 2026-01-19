@@ -10,7 +10,7 @@ import updateLocale from 'dayjs/plugin/updateLocale';
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Platform, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Platform, Pressable, Text, View, Modal, ScrollView } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDB } from "../database";
 import { supabase } from '../supabaseserver';
@@ -29,6 +29,7 @@ export default function ExameCad() {
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [tempDate, setTempDate] = useState(new Date());
 
   const tiposExames = [
     { label: 'Cariótipo', value: 'Cariótipo' },
@@ -55,7 +56,19 @@ export default function ExameCad() {
   };
 
   // Abrir calendário
-  const abrirCalendario = () => setShowDatePicker(true);
+  const abrirCalendario = () => {
+    setTempDate(dataISO ? new Date(dataISO) : new Date());
+    setShowDatePicker(true);
+  };
+
+  const confirmarDataIOS = () => {
+    const display = formatarParaBR(tempDate);
+    const iso = formatarParaISO(tempDate);
+
+    setDataDisplay(display);
+    setDataISO(iso);
+    setShowDatePicker(false);
+  };
 
   // Quando o usuário escolhe uma data
   const onChangeDate = (event, selectedDate) => {
@@ -184,15 +197,15 @@ export default function ExameCad() {
     }
   };
 
-    dayjs.extend(updateLocale)
-    dayjs.updateLocale('pt-br', {
-      formats: {
-        ll: 'DD [de] MMM[.] YYYY'
-      }
-    })
-  
-    dayjs.extend(localizedFormat);
-    dayjs.locale('pt-br');
+  dayjs.extend(updateLocale)
+  dayjs.updateLocale('pt-br', {
+    formats: {
+      ll: 'DD [de] MMM[.] YYYY'
+    }
+  })
+
+  dayjs.extend(localizedFormat);
+  dayjs.locale('pt-br');
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -207,17 +220,17 @@ export default function ExameCad() {
           <Text style={styles.subTitulo}>Informações do exame</Text>
           <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>
 
-<View>
-          <Text style={styles.textForm}>Tipo de exame*</Text>
-          <MyDropdown
-            data={tiposExames}
-            labelField="label"
-            valueField="value"
-            placeholder="Selecione o tipo de exame"
-            placeholderStyle={{ color: 'grey' }}
-            value={exame}
-            onChange={item => setExame(item.value)}
-          />
+          <View>
+            <Text style={styles.textForm}>Tipo de exame*</Text>
+            <MyDropdown
+              data={tiposExames}
+              labelField="label"
+              valueField="value"
+              placeholder="Selecione o tipo de exame"
+              placeholderStyle={{ color: 'grey' }}
+              value={exame}
+              onChange={item => setExame(item.value)}
+            />
           </View>
 
           {exame === 'Outro' && (
@@ -252,20 +265,74 @@ export default function ExameCad() {
           <View>
             <Text style={styles.textForm}>Data do exame*</Text>
             <Pressable onPress={abrirCalendario}>
-              <View>
-                <MyInput editable={false} style={[styles.input, { color: dataDisplay ? '#231F20' : 'grey' }]}>
-                  {dataDisplay || 'Selecione a data'}
-                </MyInput>
+              <View pointerEvents="none">
+                <MyInput
+                  editable={false}
+                  style={[styles.input, { color: dataDisplay ? '#231F20' : 'grey' }]}
+                  value={dataDisplay || 'Selecione a data'}
+                />
               </View>
             </Pressable>
 
-            {showDatePicker && (
+            {/* ANDROID */}
+            {showDatePicker && Platform.OS === 'android' && (
               <DateTimePicker
                 value={dataISO ? new Date(dataISO) : new Date()}
                 mode="date"
-                display={Platform.OS === 'ios' ? 'default' : 'calendar'}
+                display="calendar"
                 onChange={onChangeDate}
               />
+            )}
+
+            {/* iOS */}
+            {Platform.OS === 'ios' && showDatePicker && (
+              <Modal
+                transparent
+                animationType="slide"
+                visible={showDatePicker}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-end',
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: '#fff',
+                      borderTopLeftRadius: 15,
+                      borderTopRightRadius: 15,
+                      height: 350,
+                    }}
+                  >
+                    <ScrollView
+                      contentContainerStyle={{
+                        padding: 20,
+                      }}
+                    >
+                      <DateTimePicker
+                        value={tempDate}
+                        mode="date"
+                        display="spinner"
+                        locale="pt-BR"
+                        themeVariant="light"
+                        style={{ backgroundColor: '#fff' }}
+                        onChange={(event, date) => {
+                          if (date) setTempDate(date);
+                        }}
+                      />
+
+                      <View style={{ marginTop: 20 }}>
+                        <ButtonP
+                          label="Confirmar"
+                          onPress={confirmarDataIOS}
+                        />
+                      </View>
+                    </ScrollView>
+                  </View>
+                </View>
+              </Modal>
             )}
           </View>
 

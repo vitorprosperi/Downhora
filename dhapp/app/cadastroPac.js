@@ -25,6 +25,7 @@ export default function CadastroPac() {
   const [genero, setGenero] = useState(null);
   const [dataNascimentoDisplay, setDataNascimentoDisplay] = useState('');
   const [showNascimentoPicker, setShowNascimentoPicker] = useState(false);
+  const [tempDate, setTempDate] = useState(new Date());
   const [cpf, setCpf] = useState('');
   const [telResp, setTelResp] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
@@ -44,7 +45,7 @@ export default function CadastroPac() {
 
   // Função para formatar a data em br
   const formatarParaBR = (date) => {
-    return new Date(date).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+    return new Date(date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   };
 
   // Função para formatar a data em ISO
@@ -54,18 +55,23 @@ export default function CadastroPac() {
 
   // Ao selecionar a data
   const handleDataNascimentoChange = (event, selectedDate) => {
-    if (Platform.OS !== 'ios') setShowNascimentoPicker(false);
-    if (selectedDate) {
-      console.log(new Date(selectedDate).toString())
-      setDataValor(selectedDate);
-      const formattedDisplay = formatarParaBR(selectedDate);
-      const formattedISO = formatarParaISO(selectedDate);
+    if (Platform.OS === 'android') {
+      setShowNascimentoPicker(false);
 
-      setDataNascimentoDisplay(formattedDisplay)
-      setPacientedados(prev => ({
-        ...prev,
-        data_nascimento: formattedISO // formato usado no Supabase/SQLite
-      }));
+      if (selectedDate) {
+        setDataValor(selectedDate);
+
+        setDataNascimentoDisplay(formatarParaBR(selectedDate));
+        setPacientedados(prev => ({
+          ...prev,
+          data_nascimento: formatarParaISO(selectedDate),
+        }));
+      }
+    } else {
+      // iOS apenas atualiza temporariamente
+      if (selectedDate) {
+        setTempDate(selectedDate);
+      }
     }
   };
 
@@ -145,22 +151,22 @@ export default function CadastroPac() {
         }}
       />
       <KeyboardAwareScrollView contentContainerStyle={[styles.corEscura]} extraHeight={280}>
-        <Modal 
-        visible={isModalVisible}
-        backdropColor={"hsla(1 1 0/ 0.1)"}
-        statusBarTranslucent={true}
-        navigationBarTranslucent={true}
+        <Modal
+          visible={isModalVisible}
+          backdropColor={"hsla(1 1 0/ 0.1)"}
+          statusBarTranslucent={true}
+          navigationBarTranslucent={true}
         >
-          <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-          <View style={{height: 'fit-content', backgroundColor: 'white', alignItems:'center', padding: 15, width: '90%', borderRadius: 5}}>
-            <Text style={{fontFamily: 'Roboto', fontSize: 18, marginBottom: 5}}>Atenção</Text>
-            <Text style={{fontFamily: "Roboto", lineHeight: 20, marginBottom: 10}}>Esse cadastro se refere a pessoa com síndrome de Down, os dados dos responsáveis devem 
-              ser preenchidos apenas nos campos especificados.
-            </Text>
-            <View style={{width: '50%'}}>
-            <ButtonP label="Continuar" onPress={toggleModal}></ButtonP>
+          <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+            <View style={{ height: 'fit-content', backgroundColor: 'white', alignItems: 'center', padding: 15, width: '90%', borderRadius: 5 }}>
+              <Text style={{ fontFamily: 'Roboto', fontSize: 18, marginBottom: 5 }}>Atenção</Text>
+              <Text style={{ fontFamily: "Roboto", lineHeight: 20, marginBottom: 10 }}>Esse cadastro se refere a pessoa com síndrome de Down, os dados dos responsáveis devem
+                ser preenchidos apenas nos campos especificados.
+              </Text>
+              <View style={{ width: '50%' }}>
+                <ButtonP label="Continuar" onPress={toggleModal}></ButtonP>
+              </View>
             </View>
-          </View>
           </View>
         </Modal>
         <View style={styles.container}>
@@ -205,24 +211,70 @@ export default function CadastroPac() {
             <View>
               <Text style={styles.textForm}>Data de nascimento</Text>
               <Pressable onPress={() => setShowNascimentoPicker(true)}>
-                <View>
-                  <MyInput editable={false} style={[styles.input, { color: dataNascimentoDisplay ? '#231F20' : 'grey' }]}>
+                <View pointerEvents="none">
+                  <MyInput
+                    editable={false}
+                    style={[styles.input, { color: dataNascimentoDisplay ? '#231F20' : 'grey' }]}
+                  >
                     {dataNascimentoDisplay || 'Selecione a data'}
                   </MyInput>
                 </View>
               </Pressable>
 
-              {showNascimentoPicker && (
+              {showNascimentoPicker && Platform.OS === 'android' && (
                 <DateTimePicker
-                  value={dataNascimentoDisplay
-                    ? new Date(dataValor)
-                    : new Date()}
+                  value={dataValor || new Date()}
                   mode="date"
-                  display={Platform.OS === 'ios' ? 'compact' : 'default'}
-                  design='material'
-                  timeZoneName='UTC'
+                  display="default"
                   onChange={handleDataNascimentoChange}
                 />
+              )}
+
+              {Platform.OS === 'ios' && (
+                <Modal
+                  transparent
+                  visible={showNascimentoPicker}
+                  animationType="slide"
+                >
+                  <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' }}>
+                    <View
+                      style={{
+                        backgroundColor: '#fff',
+                        paddingTop: 20,
+                        paddingBottom: 20,
+                        paddingHorizontal: 15,
+                        borderTopLeftRadius: 16,
+                        borderTopRightRadius: 16,
+                        minHeight: 350,
+                      }}
+                    >
+                      <DateTimePicker
+                        value={tempDate}
+                        mode="date"
+                        display="spinner"
+                        locale="pt-BR"
+                        themeVariant="light"
+                        style={{ backgroundColor: '#fff' }}
+                        onChange={(event, date) => {
+                          if (date) setTempDate(date);
+                        }}
+                      />
+
+                      <ButtonP
+                        label="Confirmar"
+                        onPress={() => {
+                          setShowNascimentoPicker(false);
+                          setDataValor(tempDate);
+                          setDataNascimentoDisplay(formatarParaBR(tempDate));
+                          setPacientedados(prev => ({
+                            ...prev,
+                            data_nascimento: formatarParaISO(tempDate),
+                          }));
+                        }}
+                      />
+                    </View>
+                  </View>
+                </Modal>
               )}
             </View>
 
