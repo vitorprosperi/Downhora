@@ -256,10 +256,6 @@ export default function Exames() {
 
   return (
     <View style={cstyle.tela}>
-      <Text>
-        Cariótipo: {historicoMedico[0]?.data_cariotipo || "Não informado"}{"\n"}
-        Exame Cariótipo: {historicoMedico[0]?.exame_cariotipo || "Não informado"}
-      </Text>
       <Stack.Screen
         options={{
           title: 'Exames',
