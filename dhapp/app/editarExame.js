@@ -2,6 +2,7 @@ import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
 import { useUsuario } from '@/context/context';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from "@react-native-community/netinfo";
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -9,7 +10,8 @@ import updateLocale from 'dayjs/plugin/updateLocale';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDB } from "../database";
 import { supabase } from '../supabaseserver';
 
@@ -34,6 +36,16 @@ export default function EditarExame() {
 
     const [medico, setMedico] = useState(dados.medico_responsavel || "");
     const [obs, setObs] = useState(dados.obs || "");
+
+    const [dataISO, setDataISO] = useState(dados.data_exame || '');
+    const [dataDisplay, setDataDisplay] = useState(
+        dados.data_exame ? dayjs(dados.data_exame).format('DD/MM/YYYY') : ''
+    );
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [tempDate, setTempDate] = useState(
+        dados.data_exame ? new Date(dados.data_exame) : new Date()
+    );
+
     const [imagemAtual, setImagemAtual] = useState(dados.imagem_url || null);
     const [imagemNova, setImagemNova] = useState(null);
     const [uploading, setUploading] = useState(false);
@@ -43,6 +55,35 @@ export default function EditarExame() {
         { label: 'Pezinho', value: 'Pezinho' },
         { label: 'Outro', value: 'Outro' },
     ];
+
+    const formatarParaBR = (date) => {
+        const d = new Date(date);
+        return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    };
+
+    const formatarParaISO = (date) => {
+        const d = new Date(date);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+
+    const abrirCalendario = () => {
+        setTempDate(dataISO ? new Date(dataISO) : new Date());
+        setShowDatePicker(true);
+    };
+
+    const confirmarDataIOS = () => {
+        setDataDisplay(formatarParaBR(tempDate));
+        setDataISO(formatarParaISO(tempDate));
+        setShowDatePicker(false);
+    };
+
+    const onChangeDate = (event, selectedDate) => {
+        if (Platform.OS !== 'ios') setShowDatePicker(false);
+        if (selectedDate) {
+            setDataDisplay(formatarParaBR(selectedDate));
+            setDataISO(formatarParaISO(selectedDate));
+        }
+    };
 
     const escolherImagem = async () => {
         const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -83,9 +124,7 @@ export default function EditarExame() {
 
                 const { error } = await supabase.storage
                     .from("imagens")
-                    .upload(filePath, byteArray, {
-                        contentType: "image/jpeg",
-                    });
+                    .upload(filePath, byteArray, { contentType: "image/jpeg" });
 
                 if (error) throw error;
 
@@ -100,6 +139,7 @@ export default function EditarExame() {
 
             const exameAtualizado = {
                 tipo_exame: tipoFinal,
+                data_exame: dataISO,
                 medico_responsavel: medico,
                 obs,
                 imagem_url: imagemUrlFinal,
@@ -114,9 +154,9 @@ export default function EditarExame() {
 
             await db.runAsync(
                 `UPDATE exames
-         SET tipo_exame = ?, medico_responsavel = ?, obs = ?
+         SET tipo_exame = ?, data_exame = ?, medico_responsavel = ?, obs = ?
          WHERE id = ?`,
-                [tipoFinal, medico, obs, imagemUrlFinal, dados.id]
+                [tipoFinal, dataISO, medico, obs, imagemUrlFinal, dados.id]
             );
 
             Alert.alert("Sucesso", "Exame atualizado com sucesso!");
@@ -139,88 +179,129 @@ export default function EditarExame() {
     dayjs.locale('pt-br');
 
     return (
-        <ScrollView contentContainerStyle={estilos.container}>
+        <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
             <Stack.Screen options={{ title: 'Editar exame' }} />
-            <View style={estilos.dadosView}>
-                <Text>Tipo de exame</Text>
-                <MyDropdown
-                    data={tiposExames}
-                    labelField="label"
-                    valueField="value"
-                    value={exame}
-                    onChange={item => setExame(item.value)}
-                />
 
-                {exame === 'Outro' && (
-                    <MyInput
-                        placeholder="Digite o nome do exame"
-                        value={outroExame}
-                        onChangeText={setOutroExame}
+            <ScrollView contentContainerStyle={estilos.container}>
+                <View style={estilos.card}>
+                    <Text style={estilos.label}>Tipo de exame</Text>
+                    <MyDropdown
+                        data={tiposExames}
+                        labelField="label"
+                        valueField="value"
+                        value={exame}
+                        onChange={item => setExame(item.value)}
                     />
-                )}
 
-                <Text>Profissional responsável</Text>
-                <MyInput value={medico} onChangeText={setMedico} />
+                    {exame === 'Outro' && (
+                        <MyInput
+                            placeholder="Digite o nome do exame"
+                            value={outroExame}
+                            onChangeText={setOutroExame}
+                        />
+                    )}
 
-                <Text>Observações</Text>
-                <MyInput
-                    value={obs}
-                    onChangeText={setObs}
-                    multiline
-                    style={{ height: 80 }}
-                />
-            </View>
+                    <Text style={estilos.label}>Data do exame</Text>
+                    <Pressable onPress={abrirCalendario}>
+                        <View pointerEvents="none">
+                            <MyInput
+                                editable={false}
+                                value={dataDisplay || 'Selecione a data'}
+                                style={{ color: dataDisplay ? '#231F20' : 'grey' }}
+                            />
+                        </View>
+                    </Pressable>
 
-            <View style={estilos.imageContainer}>
-                <Pressable onPress={escolherImagem}>
+                    {showDatePicker && Platform.OS === 'android' && (
+                        <DateTimePicker
+                            value={dataISO ? new Date(dataISO) : new Date()}
+                            mode="date"
+                            display="calendar"
+                            onChange={onChangeDate}
+                        />
+                    )}
+
+                    {Platform.OS === 'ios' && showDatePicker && (
+                        <Modal transparent animationType="slide">
+                            <View style={estilos.modalOverlay}>
+                                <View style={estilos.modal}>
+                                    <DateTimePicker
+                                        value={tempDate}
+                                        mode="date"
+                                        display="spinner"
+                                        locale="pt-BR"
+                                        onChange={(e, d) => d && setTempDate(d)}
+                                    />
+                                    <ButtonP label="Confirmar" onPress={confirmarDataIOS} />
+                                </View>
+                            </View>
+                        </Modal>
+                    )}
+
+                    <Text style={estilos.label}>Profissional responsável</Text>
+                    <MyInput value={medico} onChangeText={setMedico} />
+
+                    <Text style={estilos.label}>Observações</Text>
+                    <MyInput value={obs} onChangeText={setObs} multiline />
+                </View>
+
+                <Pressable onPress={escolherImagem} style={estilos.imageContainer}>
                     <Image
-                        source={{
-                            uri: imagemNova?.uri || imagemAtual || 'https://via.placeholder.com/400'
-                        }}
+                        source={{ uri: imagemNova?.uri || imagemAtual || 'https://via.placeholder.com/400' }}
                         style={estilos.imagem}
-                        resizeMode="contain"
                     />
-                    <Text style={estilos.toqueTexto}>
-                        📸 Toque para alterar a imagem
-                    </Text>
+                    <Text style={estilos.toqueTexto}>📸 Toque para alterar a imagem</Text>
                 </Pressable>
-            </View>
 
-            <View style={{ padding: 20 }}>
                 <ButtonP
                     label={uploading ? "Salvando..." : "Salvar alterações"}
                     onPress={salvarEdicao}
                     disabled={uploading}
                 />
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const estilos = StyleSheet.create({
     container: {
-        flexGrow: 1,
-        backgroundColor: "#FAFAFF",
+        padding: 20,
+        alignItems: 'center',
     },
-    dadosView: {
-        backgroundColor: 'white',
-        paddingHorizontal: 10,
-        paddingTop: 10,
+    card: {
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 16,
+        gap: 10,
+    },
+    label: {
+        fontWeight: '600',
+        marginTop: 8,
     },
     imageContainer: {
-        paddingTop: 10,
-        paddingBottom: 5,
-        backgroundColor: "#FFF",
+        marginVertical: 20,
+        width: '100%',
+        alignItems: 'center',
     },
     imagem: {
         width: '100%',
-        height: 450,
-        backgroundColor: "#FFF",
+        height: 250,
+        borderRadius: 12,
     },
     toqueTexto: {
-        textAlign: "center",
-        color: "#3478f6",
         marginTop: 8,
-        fontSize: 14,
+        color: '#3478f6',
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+    },
+    modal: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
     },
 });
