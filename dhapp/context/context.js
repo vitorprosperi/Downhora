@@ -3,7 +3,15 @@ import { createContext, useContext, useState } from "react";
 const PacienteContext = createContext();
 
 export const PacienteProvider = ({ children }) => {
-    const [pacientedados, setPacientedados] = useState({});
+    const [pacientedados, setPacientedados] = useState({
+    aceitou_privacidade: false,
+    aceitou_termos: false,
+    data_aceite_privacidade: null,
+    data_aceite_termos: null,
+    versao_privacidade: null,
+    versao_termos: null,
+  });
+
 
     return (
         <PacienteContext.Provider value={{ pacientedados, setPacientedados}}>
