@@ -57,3 +57,7 @@ export function perfil () {
 export function editarPerfil () {
     router.push('/editarPerfil');
 }
+
+export function administrador () {
+    router.push('/administrador')
+}
