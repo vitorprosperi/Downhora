@@ -59,7 +59,10 @@ export default function CadastroPacQuatro() {
           email_responsavel: pacientedados.email_responsavel,
           aceitou_privacidade: pacientedados.aceitou_privacidade,
           data_privacidade: pacientedados.data_aceite_privacidade,
-          versao_privacidade: pacientedados.versao_privacidade
+          versao_privacidade: pacientedados.versao_privacidade,
+          aceitou_termos: pacientedados.aceitou_termos,
+          data_termo: pacientedados.data_aceite_termos,
+          versao_termo: pacientedados.versao_termos,
         }]);
 
       if (errorUsuario) {
