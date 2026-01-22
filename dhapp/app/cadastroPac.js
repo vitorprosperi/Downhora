@@ -7,7 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
-import { Alert, Modal, Platform, Pressable, Text, View } from "react-native";
+import { Alert, Modal, Platform, Pressable, Text, View, ScrollView } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Masks } from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,6 +30,13 @@ export default function CadastroPac() {
   const [telResp, setTelResp] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [dataValor, setDataValor] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(true);
+  const [isModalTermoVisible, setModalTermoVisible] = useState(true);
+  const [isModalPrivacidadeVisible, setModalPrivacidadeVisible] = useState(true);
+  const [aceitouPrivacidade, setAceitouPrivacidade] = useState(false);
+  const [erroAceitePrivacidade, setErroAceitePrivacidade] = useState(false);
+  const [aceitouTermos, setAceitouTermos] = useState(false);
+  const [erroAceiteTermos, setErroAceiteTermos] = useState(false);
 
   const itensGenero = [
     { label: 'Masculino', value: 'Masculino' },
@@ -37,10 +44,16 @@ export default function CadastroPac() {
     { label: 'Outro', value: 'Outro' },
   ];
 
-  const [isModalVisible, setModalVisible] = useState(true);
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
+  };
+
+  const toggleModalTermo = () => {
+    setModalTermoVisible(!isModalTermoVisible);
+  };
+
+  const toggleModalPrivacidade = () => {
+    setModalPrivacidadeVisible(!isModalPrivacidadeVisible);
   };
 
   // Função para formatar a data em br
@@ -169,6 +182,403 @@ export default function CadastroPac() {
             </View>
           </View>
         </Modal>
+
+        <Modal
+  visible={isModalTermoVisible}
+  transparent
+  animationType="fade"
+  statusBarTranslucent
+  navigationBarTranslucent
+>
+  <View
+    style={{
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.4)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <View
+      style={{
+        backgroundColor: 'white',
+        width: '90%',
+        maxHeight: '80%',
+        borderRadius: 8,
+        padding: 16,
+      }}
+    >
+      <Text style={{ fontFamily: 'Roboto', fontSize: 18, marginBottom: 6 }}>
+        Termos de Uso
+      </Text>
+
+      <Text style={{ fontFamily: 'Roboto', fontSize: 15, marginBottom: 12 }}>
+        Antes de continuar, leia e aceite os documentos abaixo.
+      </Text>
+
+      <ScrollView
+        style={{ flexGrow: 0 }}
+        contentContainerStyle={{ paddingBottom: 10 }}
+        showsVerticalScrollIndicator
+      >
+        <Text
+          style={{
+            fontFamily: 'Roboto',
+            lineHeight: 22,
+            fontSize: 14,
+          }}
+        >
+{`1. Aceitação dos Termos
+
+Ao utilizar este aplicativo, o usuário declara que leu, compreendeu e concorda com estes Termos de Uso. Caso não concorde, deve interromper imediatamente o uso do aplicativo.
+
+2. Sobre o Aplicativo
+
+Este aplicativo tem como finalidade oferecer serviços e funcionalidades relacionadas a (falar oq o app faz)
+
+O aplicativo pode ser atualizado, modificado ou descontinuado a qualquer momento, sem aviso prévio.
+
+3. Cadastro e Responsabilidade do Usuário
+
+O usuário é responsável por:
+
+Fornecer informações verdadeiras e atualizadas
+
+Manter a confidencialidade de seus dados de acesso
+
+Utilizar o aplicativo de forma lícita e ética
+
+O uso do aplicativo para fins ilegais, fraudulentos ou que violem direitos de terceiros é estritamente proibido.
+
+4. Uso Adequado
+
+É vedado ao usuário:
+
+Tentar acessar áreas restritas ou sistemas internos
+
+Explorar falhas ou vulnerabilidades do aplicativo
+
+Copiar, modificar ou distribuir o conteúdo sem autorização
+
+5. Dados Pessoais e Privacidade
+
+O tratamento de dados pessoais do usuário é realizado conforme descrito na Política de Privacidade, a qual faz parte integrante destes Termos de Uso.
+
+6. Limitação de Responsabilidade
+
+O aplicativo é fornecido “como está”. Não garantimos que:
+
+O serviço estará disponível de forma ininterrupta
+
+O aplicativo estará livre de erros ou falhas técnicas
+
+Na máxima extensão permitida por lei, o aplicativo não se responsabiliza por danos diretos ou indiretos decorrentes do uso ou da impossibilidade de uso do serviço.
+
+7. Propriedade Intelectual
+
+Todo o conteúdo do aplicativo, incluindo textos, marcas, layouts e códigos, é protegido por direitos autorais e não pode ser utilizado sem autorização prévia.
+
+8. Alterações nos Termos
+
+Estes Termos de Uso podem ser atualizados a qualquer momento. O uso contínuo do aplicativo após alterações indica a concordância com os novos termos.
+
+9. Contato
+
+Em caso de dúvidas sobre estes Termos de Uso, o usuário pode entrar em contato pelo e-mail: DownHora@gmail.com
+`}
+        </Text>
+      </ScrollView>
+
+      <Pressable
+  onPress={() => {
+    setAceitouTermos(!aceitouTermos);
+    setErroAceiteTermos(false);
+  }}
+  style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  }}
+>
+  <View
+    style={{
+      width: 20,
+      height: 20,
+      borderWidth: 1,
+      borderColor: '#333',
+      marginRight: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: aceitouTermos ? '#333' : 'transparent',
+    }}
+  >
+    {aceitouTermos && (
+      <Text style={{ color: 'white', fontSize: 14 }}>✓</Text>
+    )}
+  </View>
+
+  <Text style={{ fontSize: 14 }}>
+    Li e aceito a Política de Privacidade
+  </Text>
+</Pressable>
+
+{erroAceiteTermos && (
+  <Text style={{ color: 'red', marginTop: 6, fontSize: 13 }}>
+    É necessário aceitar os Termos de Uso para continuar.
+  </Text>
+)}
+
+      <View style={{ marginTop: 12 }}>
+        <ButtonP label="Continuar" onPress={() => {
+    if (!aceitouTermos) {
+      setErroAceiteTermos(true);
+      return;
+    }
+
+    setPacientedados(prev => ({
+      ...prev,
+      aceitou_termos: true,
+    }));
+
+    toggleModalTermo();
+  }} />
+      </View>
+    </View>
+  </View>
+</Modal>
+
+<Modal
+  visible={isModalPrivacidadeVisible}
+  transparent
+  animationType="fade"
+  statusBarTranslucent
+  navigationBarTranslucent
+>
+  <View
+    style={{
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.4)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <View
+      style={{
+        backgroundColor: 'white',
+        width: '90%',
+        maxHeight: '80%',
+        borderRadius: 8,
+        padding: 16,
+      }}
+    >
+      <Text style={{ fontFamily: 'Roboto', fontSize: 18, marginBottom: 6 }}>
+        Política de Privacidade
+      </Text>
+
+      <Text style={{ fontFamily: 'Roboto', fontSize: 15, marginBottom: 12 }}>
+        Antes de continuar, leia e aceite os documentos abaixo.
+      </Text>
+
+      <ScrollView
+        style={{ flexGrow: 0 }}
+        contentContainerStyle={{ paddingBottom: 10 }}
+        showsVerticalScrollIndicator
+      >
+        <Text
+          style={{
+            fontFamily: 'Roboto',
+            lineHeight: 22,
+            fontSize: 14,
+          }}
+        >
+{`POLÍTICA DE PRIVACIDADE
+
+Última atualização: 15 de janeiro de 2026
+
+Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e protegemos os dados pessoais dos usuários do aplicativo Downhora Botucatu, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD).
+
+Ao utilizar o aplicativo, você concorda com as práticas descritas nesta Política.
+
+DADOS COLETADOS
+
+O aplicativo coleta apenas os dados necessários para o seu funcionamento adequado, podendo incluir:
+
+Dados cadastrais:
+
+Nome
+
+Data de nascimento
+
+CPF
+
+Informações de contato (como telefone ou e-mail, quando aplicável)
+
+Dados de saúde:
+
+Informações médicas inseridas pelo próprio usuário
+
+Exames, históricos médicos e dados relacionados à saúde
+
+Dados técnicos:
+
+Identificadores de autenticação
+
+Informações necessárias para login e segurança da conta
+
+Não coletamos cookies, dados de navegação web ou informações de rastreamento comportamental.
+
+FINALIDADE DO USO DOS DADOS
+
+Os dados coletados são utilizados exclusivamente para:
+
+Identificação e autenticação do usuário
+
+Funcionamento das funcionalidades do aplicativo
+
+Armazenamento e organização de informações de saúde
+
+Garantia de segurança, integridade e continuidade do serviço
+
+Cumprimento de obrigações legais, quando aplicável
+
+Não utilizamos os dados para fins publicitários ou de marketing.
+
+BASE LEGAL PARA O TRATAMENTO DOS DADOS
+
+O tratamento dos dados pessoais ocorre com base:
+
+No consentimento do titular dos dados
+
+Na execução dos serviços oferecidos pelo aplicativo
+
+Na proteção da saúde, conforme previsto na LGPD
+
+No cumprimento de obrigações legais
+
+O consentimento é solicitado de forma clara no momento do cadastro.
+
+COMPARTILHAMENTO DE DADOS
+
+Os dados não são vendidos, alugados ou compartilhados com terceiros, exceto:
+
+Quando necessário para o funcionamento técnico do aplicativo
+
+Com provedores de infraestrutura e armazenamento de dados, como o Supabase
+
+Quando exigido por obrigação legal ou ordem judicial
+
+Todos os fornecedores utilizados seguem padrões adequados de segurança e proteção de dados.
+
+ARMAZENAMENTO E SEGURANÇA DOS DADOS
+
+Os dados são armazenados em ambiente seguro, utilizando medidas técnicas e organizacionais para protegê-los contra acessos não autorizados, perdas ou vazamentos.
+
+Empregamos práticas de segurança como:
+
+Autenticação segura
+
+Controle de acesso
+
+Criptografia quando aplicável
+
+DIREITOS DO TITULAR DOS DADOS
+
+Nos termos da LGPD, o usuário pode, a qualquer momento:
+
+Confirmar a existência de tratamento de seus dados
+
+Acessar seus dados pessoais
+
+Solicitar correção de dados incompletos ou incorretos
+
+Solicitar a exclusão dos dados, quando permitido por lei
+
+Revogar o consentimento concedido
+
+As solicitações podem ser feitas pelos canais de contato informados abaixo.
+
+RETENÇÃO E EXCLUSÃO DOS DADOS
+
+Os dados pessoais são mantidos apenas pelo tempo necessário para cumprir as finalidades descritas nesta Política ou conforme exigido por lei.
+
+Quando solicitado pelo usuário, os dados poderão ser excluídos ou anonimizados, respeitando obrigações legais de retenção.
+
+ALTERAÇÕES NESTA POLÍTICA
+
+Esta Política de Privacidade pode ser atualizada periodicamente.
+Sempre que houver alterações relevantes, a data de atualização será modificada e o usuário será informado quando necessário.
+
+CONTATO
+
+Em caso de dúvidas, solicitações ou exercício de direitos relacionados à proteção de dados, o usuário pode entrar em contato pelo e-mail:
+
+DownHora@gmail.com
+
+FIM DA POLÍTICA DE PRIVACIDADE
+`}
+        </Text>
+      </ScrollView>
+
+      {/* Checkbox */}
+<Pressable
+  onPress={() => {
+    setAceitouPrivacidade(!aceitouPrivacidade);
+    setErroAceitePrivacidade(false);
+  }}
+  style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  }}
+>
+  <View
+    style={{
+      width: 20,
+      height: 20,
+      borderWidth: 1,
+      borderColor: '#333',
+      marginRight: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: aceitouPrivacidade ? '#333' : 'transparent',
+    }}
+  >
+    {aceitouPrivacidade && (
+      <Text style={{ color: 'white', fontSize: 14 }}>✓</Text>
+    )}
+  </View>
+
+  <Text style={{ fontSize: 14 }}>
+    Li e aceito a Política de Privacidade
+  </Text>
+</Pressable>
+
+{erroAceitePrivacidade && (
+  <Text style={{ color: 'red', marginTop: 6, fontSize: 13 }}>
+    É necessário aceitar a Política de Privacidade para continuar.
+  </Text>
+)}
+
+      <View style={{ marginTop: 12 }}>
+        <ButtonP label="Continuar" onPress={() => {
+    if (!aceitouPrivacidade) {
+      setErroAceitePrivacidade(true);
+      return;
+    }
+
+    setPacientedados(prev => ({
+      ...prev,
+      aceitou_privacidade: true,
+      data_aceite_privacidade: new Date().toISOString(),
+      versao_privacidade: '1.0',
+    }));
+
+    toggleModalPrivacidade();
+  }} />
+      </View>
+    </View>
+  </View>
+</Modal>
+        
         <View style={styles.container}>
           <View style={styles.containerForm}>
             <Text style={styles.subTitulo}>Dados pessoais (Passo 1 de 4)</Text>
