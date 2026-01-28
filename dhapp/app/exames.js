@@ -5,7 +5,7 @@ import 'dayjs/locale/pt-br';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { Icon, IconButton } from "react-native-paper";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,45 +16,36 @@ import { supabase } from "../supabaseserver";
 
 export default function Exames() {
   const [exames, setExames] = useState([]);
-  const [historicoMedico, setHistoricoMedico] = useState([]);
   const { userId } = useUsuario();
   const router = useRouter();
 
   const insets = useSafeAreaInsets();
 
   // flag para evitar concorrência de sincronização
-  let sincronizacaoEmAndamento = false;
+  const sincronizacaoEmAndamento = useRef(false);
 
   // Carrega exames do Supabase e sincroniza com SQLite
   const carregarSupabase = async (db) => {
-    if (sincronizacaoEmAndamento) {
+    if (sincronizacaoEmAndamento.current) {
       console.log("Sincronização já em andamento, ignorando chamada duplicada.");
       return;
     }
 
-    sincronizacaoEmAndamento = true;
+    sincronizacaoEmAndamento.current = true;
 
     try {
       const[ 
       { data: examesData, error: examesError }, 
-      { data: historicoData, error: historicoError }, 
       ]= await Promise.all([
       supabase
         .from("exames")
         .select("*")
         .eq("usuario_id", userId),
-
-        supabase
-        .from("historico_medico")
-        .select("*")
-        .eq("usuario_id", userId),
     ]);
 
       if (examesError) throw examesError;
-      if (historicoError) throw historicoError;
 
-      setExames(examesData || []);
-      setHistoricoMedico(historicoData || []);
+      
       //console.log("Exames carregados do Supabase:", examesData);
 
       // Usa transação para garantir consistência
@@ -64,8 +55,8 @@ export default function Exames() {
         for (const ex of examesData) {
           await db.runAsync(
             `INSERT OR REPLACE INTO exames 
-             (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
-             VALUES (?, ?, ?, ?, ?, ?)`,
+             (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [
               ex.id,
               ex.usuario_id,
@@ -73,16 +64,19 @@ export default function Exames() {
               ex.data_exame,
               ex.medico_responsavel,
               ex.obs,
+              ex.imagem_url,
             ]
           );
         }
       });
 
+      await carregarSQLite(db);
+
       console.log("Exames sincronizados com SQLite.");
     } catch (error) {
       console.error("Erro ao buscar dados no Supabase:", error.message);
     } finally {
-      sincronizacaoEmAndamento = false;
+      sincronizacaoEmAndamento.current = false;
     }
   };
 
@@ -100,21 +94,22 @@ export default function Exames() {
   //  Decide entre Supabase e SQLite dependendo da conexão
   const carregarExames = async () => {
     try {
-      const db = await getDB(); // banco único e estável
-      const state = await NetInfo.fetch();
-      const isOnline = state.isConnected;
+        const db = await getDB(); // banco único e estável
+        await carregarSQLite(db); // Carrega exames do SQLite
 
-      if (isOnline) {
-        console.log("Modo online detectado. Carregando do Supabase...");
-        await carregarSupabase(db);
-      } else {
-        console.log("Modo offline detectado. Carregando do SQLite...");
-        await carregarSQLite(db);
-      }
+        const state = await NetInfo.fetch();
+        const isOnline = state.isConnected;
+
+        if (isOnline) {
+            console.log("Modo online detectado. Sincronizando com Supabase...");
+            await carregarSupabase(db); // Sincroniza com Supabase
+        } else {
+            console.log("Modo offline detectado. Mostrando exames do SQLite.");
+        }
     } catch (err) {
-      console.error("Erro ao inicializar banco ou carregar exames:", err);
+        console.error("Erro ao inicializar banco ou carregar exames:", err);
     }
-  };
+};
 
   useEffect(() => {
     carregarExames();

@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const DB_VERSION = 21;
+const DB_VERSION = 23;
 let dbInstance = null;
 let dbPromise = null; // garante inicialização única
 
@@ -101,6 +101,7 @@ export async function getDB() {
           data_exame TEXT NOT NULL,
           medico_responsavel TEXT,
           obs TEXT,
+          imagem_url TEXT,
           FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         );
       `);

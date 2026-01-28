@@ -147,9 +147,9 @@ export default function ExameCad() {
 
         await db.withTransactionAsync(async () => {
           await db.runAsync(
-            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
-             VALUES (?, ?, ?, ?, ?)`,
-            [userId, tipoSelecionado, dataISO, medico, obs]
+            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [userId, tipoSelecionado, dataISO, medico, obs, imagemUrlFinal]
           );
         });
 
@@ -158,9 +158,9 @@ export default function ExameCad() {
         // OFFLINE
         await db.withTransactionAsync(async () => {
           await db.runAsync(
-            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs)
-             VALUES (?, ?, ?, ?, ?)`,
-            [userId, tipoSelecionado, dataISO, medico, obs]
+            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [userId, tipoSelecionado, dataISO, medico, obs, imagemUrlFinal]
           );
 
           await db.runAsync(
