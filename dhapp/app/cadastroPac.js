@@ -337,6 +337,8 @@ Em caso de dúvidas sobre estes Termos de Uso, o usuário pode entrar em contato
     setPacientedados(prev => ({
       ...prev,
       aceitou_termos: true,
+      data_aceite_termos: new Date().toISOString(),
+      versao_termos: '1.0',
     }));
 
     toggleModalTermo();
