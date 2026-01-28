@@ -45,7 +45,7 @@ export default function Administrador() {
             const isOnline = state.isConnected;
 
             if (isOnline) {
-                console.log("Modo online. Carregando do Supabase");
+               // console.log("Modo online. Carregando do Supabase");
                 await carregarSupabase()
             } else {
                 console.log("Modo offline.")
@@ -59,16 +59,18 @@ export default function Administrador() {
     carregarExames();
 
     return (
-        <View>
+        <View style={{backgroundColor: '#FAFAFF', flex: 1}}>
             <Searchbar
             placeholder="Pesquisar usuário"
             onChangeText={setSearchQuery}
             value={searchQuery}
+            style={{marginVertical: 10}}
             />
 
             <FlatList
             data={resultados}
-            renderItem={({item}) => <ListItemUsuario data={item}/>}
+            renderItem={({item}) => 
+            <ListItemUsuario data={item}/>}
             />
 
         </View>
