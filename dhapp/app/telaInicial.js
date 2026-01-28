@@ -90,12 +90,18 @@ export default function TelaInicial() {
           <View style={btstyle.logoutContainer}>
             <Pressable
               style={({ pressed }) => (pressed ? btstyle.logoutHighlight : btstyle.logoutButton)}
-              onPress={administrador}
+              onPress={() => logout()}
             >
               <Icon source="logout" color="#2261c1" size={28} />
               <Text style={btstyle.logoutText}>Sair</Text>
             </Pressable>
+            <Pressable
+              onPress={administrador}>
+              <Text>segredo</Text>
+            </Pressable>
           </View>
+
+
 
           <View style={btstyle.contOla}>
             <Text style={btstyle.textOla}>Olá </Text>
@@ -107,39 +113,39 @@ export default function TelaInicial() {
           <View style={btstyle.botoesContainer}>
 
 
+            <Pressable
+              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+              onPress={perfil}
+            >
+              <Icon source="account" color="#2261c1" size={55} />
+              <Text style={btstyle.text}>Perfil</Text>
+            </Pressable>
+
+            <TouchableOpacity>
               <Pressable
                 style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                onPress={perfil}
+                onPress={prontuario}
               >
-                <Icon source="account" color="#2261c1" size={55} />
-                <Text style={btstyle.text}>Perfil</Text>
+                <Icon source="content-paste" color="#2261c1" size={55} />
+                <Text style={btstyle.text}>Prontuário</Text>
               </Pressable>
+            </TouchableOpacity>
 
-              <TouchableOpacity>
-                <Pressable
-                  style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                  onPress={prontuario}
-                >
-                  <Icon source="content-paste" color="#2261c1" size={55} />
-                  <Text style={btstyle.text}>Prontuário</Text>
-                </Pressable>
-              </TouchableOpacity>
+            <Pressable
+              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+              onPress={exames}
+            >
+              <Icon source="calendar-multiselect" color="#2261c1" size={55} />
+              <Text style={btstyle.text}>Exames</Text>
+            </Pressable>
 
-              <Pressable
-                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                onPress={exames}
-              >
-                <Icon source="calendar-multiselect" color="#2261c1" size={55} />
-                <Text style={btstyle.text}>Exames</Text>
-              </Pressable>
-
-              <Pressable
-                style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
-                onPress={vacina}
-              >
-                <Icon source="needle" color="#2261c1" size={55} />
-                <Text style={btstyle.text}>Vacinação</Text>
-              </Pressable>
+            <Pressable
+              style={({ pressed }) => (pressed ? btstyle.highlight : btstyle.button)}
+              onPress={vacina}
+            >
+              <Icon source="needle" color="#2261c1" size={55} />
+              <Text style={btstyle.text}>Vacinação</Text>
+            </Pressable>
 
 
             <Pressable
@@ -196,6 +202,7 @@ const btstyle = StyleSheet.create({
     marginTop: 10,
   },
   logoutContainer: {
+    flexDirection: 'row-reverse',
     width: '100%',
     alignItems: 'flex-end',
     paddingRight: 20,
