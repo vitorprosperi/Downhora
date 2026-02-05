@@ -10,7 +10,7 @@ import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native
 import { Icon, IconButton } from "react-native-paper";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FilterDropdown } from "../components/FilterDropdown";
-import { getDB } from "../database"; // usa o helper seguro
+import { getDB } from "../database";
 import { exameCad } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
 
@@ -18,13 +18,25 @@ export default function Exames() {
   const [exames, setExames] = useState([]);
   const { userId } = useUsuario();
   const router = useRouter();
-
   const insets = useSafeAreaInsets();
 
   // flag para evitar concorrência de sincronização
   const sincronizacaoEmAndamento = useRef(false);
 
-  // Carrega exames do Supabase e sincroniza com SQLite
+  // Carrega exames do SQLite (modo offline / fonte local)
+  const carregarSQLite = async (db) => {
+    try {
+      const result = await db.getAllAsync(
+        "SELECT * FROM exames WHERE usuario_id = ?",
+        [userId]
+      );
+      setExames(result || []);
+    } catch (error) {
+      console.error("Erro ao carregar exames do SQLite:", error);
+    }
+  };
+
+  // Carrega exames do Supabase e faz MERGE no SQLite
   const carregarSupabase = async (db) => {
     if (sincronizacaoEmAndamento.current) {
       console.log("Sincronização já em andamento, ignorando chamada duplicada.");
@@ -34,27 +46,18 @@ export default function Exames() {
     sincronizacaoEmAndamento.current = true;
 
     try {
-      const[ 
-      { data: examesData, error: examesError }, 
-      ]= await Promise.all([
-      supabase
+      const { data: examesData, error: examesError } = await supabase
         .from("exames")
-        .select("*")
-        .eq("usuario_id", userId),
-    ]);
+        .select("id,usuario_id,tipo_exame,data_exame,medico_responsavel,obs,imagem_url")
+        .eq("usuario_id", userId);
 
       if (examesError) throw examesError;
 
-      
-      //console.log("Exames carregados do Supabase:", examesData);
-
-      // Usa transação para garantir consistência
       await db.withTransactionAsync(async () => {
-        await db.runAsync("DELETE FROM exames WHERE usuario_id = ?", [userId]);
-
-        for (const ex of examesData) {
+        // não apaga mais o SQLite
+        for (const ex of (examesData || [])) {
           await db.runAsync(
-            `INSERT OR REPLACE INTO exames 
+            `INSERT OR REPLACE INTO exames
              (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
              VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [
@@ -62,54 +65,44 @@ export default function Exames() {
               ex.usuario_id,
               ex.tipo_exame,
               ex.data_exame,
-              ex.medico_responsavel,
-              ex.obs,
-              ex.imagem_url,
+              ex.medico_responsavel ?? null,
+              ex.obs ?? null,
+              ex.imagem_url ?? null,
             ]
           );
         }
       });
 
       await carregarSQLite(db);
-
-      console.log("Exames sincronizados com SQLite.");
+      console.log("Exames sincronizados com SQLite");
     } catch (error) {
-      console.error("Erro ao buscar dados no Supabase:", error.message);
+      console.error("Erro ao buscar dados no Supabase:", error?.message ?? error);
     } finally {
       sincronizacaoEmAndamento.current = false;
     }
   };
 
-  //  Carrega exames do SQLite (modo offline)
-  const carregarSQLite = async (db) => {
-    try {
-      const result = await db.getAllAsync("SELECT * FROM exames WHERE usuario_id = ?", [userId]);
-      setExames(result || []);
-      // console.log("Exames carregados do SQLite:", result);
-    } catch (error) {
-      console.error("Erro ao carregar exames do SQLite:", error);
-    }
-  };
-
-  //  Decide entre Supabase e SQLite dependendo da conexão
+  // Decide entre Supabase e SQLite dependendo da conexão
   const carregarExames = async () => {
     try {
-        const db = await getDB(); // banco único e estável
-        await carregarSQLite(db); // Carrega exames do SQLite
+      if (!userId) return;
 
-        const state = await NetInfo.fetch();
-        const isOnline = state.isConnected;
+      const db = await getDB();
+      await carregarSQLite(db); // mostra rápido o local primeiro
 
-        if (isOnline) {
-            console.log("Modo online detectado. Sincronizando com Supabase...");
-            await carregarSupabase(db); // Sincroniza com Supabase
-        } else {
-            console.log("Modo offline detectado. Mostrando exames do SQLite.");
-        }
+      const state = await NetInfo.fetch();
+      const isOnline = state.isConnected;
+
+      if (isOnline) {
+        console.log("Modo online detectado. Atualizando com Supabase");
+        await carregarSupabase(db);
+      } else {
+        console.log("Modo offline detectado. Mostrando exames do SQLite.");
+      }
     } catch (err) {
-        console.error("Erro ao inicializar banco ou carregar exames:", err);
+      console.error("Erro ao inicializar banco ou carregar exames:", err);
     }
-};
+  };
 
   useEffect(() => {
     carregarExames();
@@ -122,7 +115,7 @@ export default function Exames() {
     });
   };
 
-  //  Excluir exame (online + offline)
+  // Excluir exame (online + offline)
   const deletarExame = async (id) => {
     try {
       Alert.alert("Excluir exame", "Tem certeza que deseja excluir este exame?", [
@@ -145,8 +138,7 @@ export default function Exames() {
               if (!fetchError && exameData?.imagem_url) {
                 try {
                   const url = exameData.imagem_url;
-                  // Alterado para buscar o caminho após "/public/imagens/"
-                  const path = url.split("imagens/")[1]; // ex: "exames/1764598471075.jpeg"
+                  const path = url.split("imagens/")[1];
 
                   if (path) {
                     const { error: deleteImgError } = await supabase.storage
@@ -156,9 +148,6 @@ export default function Exames() {
                     if (deleteImgError)
                       console.error("Erro ao excluir imagem no Storage:", deleteImgError);
                     else console.log("Imagem excluída do Storage:", path);
-
-                    console.log("URL completa:", url);
-                    console.log("Path extraído:", path);
                   }
                 } catch (err) {
                   console.error("Erro ao processar URL da imagem:", err);
@@ -175,6 +164,7 @@ export default function Exames() {
               console.log("Exame deletado no Supabase:", id);
             } else {
               console.log("Sem conexão — exclusão apenas local:", id);
+              // (opcional) colocar na fila_sinc como "delete" para apagar depois online
             }
 
             // Exclui localmente no SQLite
@@ -192,59 +182,51 @@ export default function Exames() {
     }
   };
 
-
-
-
-  dayjs.extend(updateLocale)
+  // Dayjs
+  dayjs.extend(updateLocale);
   dayjs.updateLocale('pt-br', {
-    formats: {
-      ll: 'DD [de] MMM[.] YYYY'
-    }
-  })
-
+    formats: { ll: 'DD [de] MMM[.] YYYY' }
+  });
   dayjs.extend(localizedFormat);
   dayjs.locale('pt-br');
 
-  const [filter, setFilter] = useState("padrao")
-  const [sortOrder, setSortOrder] = useState("asc")
+  const [filter, setFilter] = useState("padrao");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const dataFiltered = (dados) => {
-    dados.sort((a, b) => (
-      new Date(b.data_exame) - new Date(a.data_exame)
-    ))
+    const copia = [...(dados || [])];
 
-    if (filter == 'padrao') {
-      return dados
-    } else if (filter == 'datasPassadas') {
-      return dados.filter((d) => (
-        new Date(d.data_exame) < dayjs()
-      ))
-    } else if (filter == 'datasFuturas') {
-      return dados.filter((d) => (
-        new Date(d.data_exame) > dayjs()
-      ))
+    // ordena por padrão (data)
+    copia.sort((a, b) => new Date(b.data_exame) - new Date(a.data_exame));
+
+    if (filter === 'padrao') return copia;
+
+    if (filter === 'datasPassadas') {
+      return copia.filter((d) => new Date(d.data_exame) < dayjs());
     }
-  }
+
+    if (filter === 'datasFuturas') {
+      return copia.filter((d) => new Date(d.data_exame) > dayjs());
+    }
+
+    return copia;
+  };
 
   const toggleOrder = () => {
-    const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    setSortOrder(newSortOrder)
-  }
+    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+  };
 
   const sortIcon = sortOrder === 'asc' ? 'arrow-up' : 'arrow-down';
 
   const dataSorted = (dados) => {
-    const dadosFiltrados = dataFiltered(dados)
+    const dadosFiltrados = dataFiltered(dados);
 
     if (sortOrder === 'asc') {
-      return dadosFiltrados.sort((a, b) => (
-      new Date(b.data_exame) - new Date(a.data_exame)
-    ));
-    } else if (sortOrder === 'desc'){
-      return dadosFiltrados.sort((a, b) => (
-      new Date(a.data_exame) - new Date(b.data_exame)
-    ));
-  }}
+      return [...dadosFiltrados].sort((a, b) => new Date(b.data_exame) - new Date(a.data_exame));
+    }
+
+    return [...dadosFiltrados].sort((a, b) => new Date(a.data_exame) - new Date(b.data_exame));
+  };
 
   return (
     <View style={cstyle.tela}>
@@ -254,84 +236,76 @@ export default function Exames() {
           headerShadowVisible: true,
         }}
       />
+
       <View style={[cstyle.container, { paddingBottom: insets.bottom }]}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 5, paddingBottom: 5 }}>
-              <View style={{flexDirection: "row", alignItems:'center'}}>
-              <IconButton
-                icon={sortIcon}
-                iconColor="#2261C1"
-                size={30}
-                onPress={() => toggleOrder()}
-              />
-              <FilterDropdown
-                onChange={item => {
-                  setFilter(item.value);
-                }}
-              />
-              </View>
-              <IconButton 
-              icon={"plus"} 
-              mode="flat" 
+          <View style={{ flexDirection: "row", alignItems: 'center' }}>
+            <IconButton
+              icon={sortIcon}
               iconColor="#2261C1"
-              size={30} 
-              onPress={exameCad} 
-              />
-            </View>
-          
+              size={30}
+              onPress={toggleOrder}
+            />
+            <FilterDropdown
+              onChange={item => setFilter(item.value)}
+            />
+          </View>
+
+          <IconButton
+            icon={"plus"}
+            mode="flat"
+            iconColor="#2261C1"
+            size={30}
+            onPress={exameCad}
+          />
+        </View>
+
         <FlatList
           data={dataSorted(exames)}
           contentContainerStyle={cstyle.lista}
-          keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-          renderItem={({ item }) => {
-
-            return (
-              <Pressable
-                style={({ pressed }) => (pressed ? cstyle.cardHighlight : cstyle.card)}
-                onPress={() => abrirDetalhes(item)}
-              >
-                <View style={cstyle.rowGroup}>
-                  <View style={cstyle.rowTop}>
-                    {item.medico_responsavel ? (
-                      <Text style={cstyle.textoSecundario}>
-                        {item.medico_responsavel}
-                      </Text>
-                    ) : (
-                      <Text style={cstyle.textoSecundario}>
-                        Profissional não informado
-                      </Text>
-                    )}
-                    <Pressable style={{ marginRight: "-10" }} onPress={() => deletarExame(item.id)}>
-                      <Icon source={"close-circle-outline"} size={20}></Icon>
-                    </Pressable>
-                  </View>
-                  <View style={cstyle.midBar}>
-                    <Text style={[cstyle.textoPrincipal]}>{item.tipo_exame}</Text>
-                  </View>
-                </View>
-                <View style={[cstyle.rowBottom]}>
-                  <View style={cstyle.iconsView}>
-                    {item.obs ? (
-                      <Icon color="#2261C1" source="text-box-outline" size={20} />
-                    ) : (
-                      null
-                    )
-                    }
-                    {item.imagem_url ? (
-                      <Icon color="#2261C1" source="image-outline" size={20} />
-                    ) : (
-                      null
-                    )}
-                  </View>
-                  <View style={cstyle.iconsView}>
-                    <Icon source={"calendar-range"} size={20} />
+          keyExtractor={(item) => item.id} // ✅ id obrigatório
+          renderItem={({ item }) => (
+            <Pressable
+              style={({ pressed }) => (pressed ? cstyle.cardHighlight : cstyle.card)}
+              onPress={() => abrirDetalhes(item)}
+            >
+              <View style={cstyle.rowGroup}>
+                <View style={cstyle.rowTop}>
+                  {item.medico_responsavel ? (
                     <Text style={cstyle.textoSecundario}>
-                      {dayjs(item.data_exame).format("ll")}
+                      {item.medico_responsavel}
                     </Text>
-                  </View>
+                  ) : (
+                    <Text style={cstyle.textoSecundario}>
+                      Profissional não informado
+                    </Text>
+                  )}
+
+                  <Pressable style={{ marginRight: "-10" }} onPress={() => deletarExame(item.id)}>
+                    <Icon source={"close-circle-outline"} size={20}></Icon>
+                  </Pressable>
                 </View>
-              </Pressable>
-            );
-          }}
+
+                <View style={cstyle.midBar}>
+                  <Text style={[cstyle.textoPrincipal]}>{item.tipo_exame}</Text>
+                </View>
+              </View>
+
+              <View style={[cstyle.rowBottom]}>
+                <View style={cstyle.iconsView}>
+                  {item.obs ? <Icon color="#2261C1" source="text-box-outline" size={20} /> : null}
+                  {item.imagem_url ? <Icon color="#2261C1" source="image-outline" size={20} /> : null}
+                </View>
+
+                <View style={cstyle.iconsView}>
+                  <Icon source={"calendar-range"} size={20} />
+                  <Text style={cstyle.textoSecundario}>
+                    {dayjs(item.data_exame).format("ll")}
+                  </Text>
+                </View>
+              </View>
+            </Pressable>
+          )}
         />
       </View>
     </View>
@@ -379,39 +353,13 @@ const cstyle = StyleSheet.create({
     lineHeight: 27,
     fontFamily: 'Roboto-500',
   },
-  textoEscolha: {
-    color: "#231F20",
-    fontSize: 18,
-    lineHeight: 27,
-    fontFamily: 'Roboto'
-  },
-  textoEscolhaPressed: {
-    color: "#231F20",
-    fontSize: 18,
-    lineHeight: 27,
-    fontFamily: 'Roboto'
-  },
-  botaoExcluir: {
-    backgroundColor: "#d9534f",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginTop: 10,
-    alignSelf: "flex-end",
-  },
-  textoExcluir: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 14,
-    lineHeight: 21,
-  },
   tela: {
     flex: 1,
     backgroundColor: '#FAFAFF'
   },
   lista: {
-   borderTopColor: '#2261c1',
-   borderTopWidth: 0.5,
+    borderTopColor: '#2261c1',
+    borderTopWidth: 0.5,
   },
   rowTop: {
     flexDirection: 'row',
@@ -425,8 +373,4 @@ const cstyle = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  modalPress: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  }
 });

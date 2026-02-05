@@ -1,6 +1,10 @@
 import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
+
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+
 import { useUsuario } from '@/context/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from "@react-native-community/netinfo";
@@ -12,6 +16,7 @@ import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Platform, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { getDB } from "../database";
 import { supabase } from '../supabaseserver';
 import styles from "./styleForms";
@@ -36,7 +41,6 @@ export default function ExameCad() {
     { label: 'Outro', value: 'Outro' },
   ];
 
-  // Função para formatar para exibição BR
   const formatarParaBR = (date) => {
     const d = new Date(date);
     const dia = d.getDate().toString().padStart(2, '0');
@@ -45,7 +49,6 @@ export default function ExameCad() {
     return `${dia}/${mes}/${ano}`;
   };
 
-  // Função para formatar para ISO 
   const formatarParaISO = (date) => {
     const d = new Date(date);
     const dia = d.getDate().toString().padStart(2, '0');
@@ -54,21 +57,16 @@ export default function ExameCad() {
     return `${ano}-${mes}-${dia}`;
   };
 
-  // Abrir calendário
   const abrirCalendario = () => setShowDatePicker(true);
 
-  // Quando o usuário escolhe uma data
   const onChangeDate = (event, selectedDate) => {
     if (Platform.OS !== 'ios') setShowDatePicker(false);
     if (selectedDate) {
-      const display = formatarParaBR(selectedDate);
-      const iso = formatarParaISO(selectedDate);
-      setDataDisplay(display);
-      setDataISO(iso);
+      setDataDisplay(formatarParaBR(selectedDate));
+      setDataISO(formatarParaISO(selectedDate));
     }
   };
 
-  // Selecionar imagem
   const escolherImagem = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -88,12 +86,11 @@ export default function ExameCad() {
       setImagemSelecionada(result.assets[0]);
       Alert.alert("Imagem selecionada", "A imagem foi selecionada com sucesso!");
     } catch (error) {
-      console.error("Erro ao selecionar imagem:", error.message);
+      console.error("Erro ao selecionar imagem:", error?.message ?? error);
       Alert.alert("Erro", "Não foi possível selecionar a imagem.");
     }
   };
 
-  // Salvar exame
   const salvarExame = async () => {
     if (!userId) {
       Alert.alert("Erro", "ID do paciente não encontrado.");
@@ -106,20 +103,31 @@ export default function ExameCad() {
     }
 
     const tipoSelecionado = exame === 'Outro' ? outroExame : exame;
+    if (!tipoSelecionado || tipoSelecionado.trim().length === 0) {
+      Alert.alert("Atenção", "Selecione o tipo de exame.");
+      return;
+    }
+
+    // ID gerado no clique (um por exame)
+    const id = uuidv4();
+
     let imagemUrlFinal = null;
 
     try {
       setUploading(true);
+
       const db = await getDB();
       const { isConnected } = await NetInfo.fetch();
 
-      // Upload da imagem apenas se online
-      if (imagemSelecionada && imagemSelecionada.base64 && isConnected) {
+      // Upload de imagem só online (como você já fazia)
+      if (imagemSelecionada?.base64 && isConnected) {
         const base64Image = imagemSelecionada.base64;
-        const fileExt = imagemSelecionada.uri.split(".").pop() || "jpg";
+        const fileExt = imagemSelecionada.uri?.split(".").pop() || "jpg";
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `exames/${fileName}`;
-        const imageBuffer = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
+
+        // OBS: se atob der erro no seu RN/Expo, me avisa que te passo um helper
+        const imageBuffer = Uint8Array.from(atob(base64Image), (c) => c.charCodeAt(0));
 
         const { error: uploadError } = await supabase.storage
           .from("imagens")
@@ -132,44 +140,63 @@ export default function ExameCad() {
       }
 
       const novoExame = {
+        id,
         usuario_id: userId,
         tipo_exame: tipoSelecionado,
         data_exame: dataISO,
-        medico_responsavel: medico,
-        obs,
+        medico_responsavel: medico || null,
+        obs: obs || null,
         imagem_url: imagemUrlFinal,
       };
 
-      if (isConnected) {
-        // ONLINE
-        const { error } = await supabase.from('exames').insert([novoExame]);
-        if (error) console.error("Erro Supabase:", error);
+      // 1) Sempre salva no SQLite (offline-first)
+      await db.withTransactionAsync(async () => {
+        await db.runAsync(
+          `INSERT OR REPLACE INTO exames
+           (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
+           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [
+            novoExame.id,
+            novoExame.usuario_id,
+            novoExame.tipo_exame,
+            novoExame.data_exame,
+            novoExame.medico_responsavel,
+            novoExame.obs,
+            novoExame.imagem_url,
+          ]
+        );
 
-        await db.withTransactionAsync(async () => {
-          await db.runAsync(
-            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [userId, tipoSelecionado, dataISO, medico, obs, imagemUrlFinal]
-          );
-        });
-
-        Alert.alert("Sucesso", "Exame salvo com sucesso!");
-      } else {
-        // OFFLINE
-        await db.withTransactionAsync(async () => {
-          await db.runAsync(
-            `INSERT INTO exames (usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [userId, tipoSelecionado, dataISO, medico, obs, imagemUrlFinal]
-          );
-
+        // 2) Se offline, coloca na fila
+        if (!isConnected) {
           await db.runAsync(
             `INSERT INTO fila_sinc (acao, nome_tabela, payload)
              VALUES (?, ?, ?)`,
-            ["insert", "exames", JSON.stringify(novoExame)]
+            ["upsert", "exames", JSON.stringify(novoExame)]
           );
-        });
+        }
+      });
 
+      // 3) Se online, salva no Supabase (mesmo id)
+      if (isConnected) {
+        const { error } = await supabase
+          .from('exames')
+          .upsert(novoExame, { onConflict: 'id' });
+
+        if (error) {
+          console.error("Erro Supabase:", error.message);
+          Alert.alert("Atenção", "Salvou no celular, mas falhou ao salvar online. Vamos sincronizar depois.");
+
+          // Opcional: se falhou online, coloca na fila também
+          const db2 = await getDB();
+          await db2.runAsync(
+            `INSERT INTO fila_sinc (acao, nome_tabela, payload)
+             VALUES (?, ?, ?)`,
+            ["upsert", "exames", JSON.stringify(novoExame)]
+          );
+        } else {
+          Alert.alert("Sucesso", "Exame salvo com sucesso!");
+        }
+      } else {
         Alert.alert("Offline", "Exame salvo localmente e será sincronizado depois.");
       }
 
@@ -177,22 +204,17 @@ export default function ExameCad() {
       router.replace('/exames');
 
     } catch (err) {
-      console.error("Erro inesperado ao salvar exame:", err);
+      console.error("Erro inesperado ao salvar exame:", err?.message ?? err);
       Alert.alert("Erro", "Não foi possível salvar o exame.");
     } finally {
       setUploading(false);
     }
   };
 
-    dayjs.extend(updateLocale)
-    dayjs.updateLocale('pt-br', {
-      formats: {
-        ll: 'DD [de] MMM[.] YYYY'
-      }
-    })
-  
-    dayjs.extend(localizedFormat);
-    dayjs.locale('pt-br');
+  dayjs.extend(updateLocale);
+  dayjs.updateLocale('pt-br', { formats: { ll: 'DD [de] MMM[.] YYYY' } });
+  dayjs.extend(localizedFormat);
+  dayjs.locale('pt-br');
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -202,22 +224,23 @@ export default function ExameCad() {
           headerShadowVisible: true,
         }}
       />
+
       <View style={styles.container}>
         <View style={styles.containerForm}>
           <Text style={styles.subTitulo}>Informações do exame</Text>
           <Text style={styles.textoPequeno}>Campos com * são obrigatórios</Text>
 
-<View>
-          <Text style={styles.textForm}>Tipo de exame*</Text>
-          <MyDropdown
-            data={tiposExames}
-            labelField="label"
-            valueField="value"
-            placeholder="Selecione o tipo de exame"
-            placeholderStyle={{ color: 'grey' }}
-            value={exame}
-            onChange={item => setExame(item.value)}
-          />
+          <View>
+            <Text style={styles.textForm}>Tipo de exame*</Text>
+            <MyDropdown
+              data={tiposExames}
+              labelField="label"
+              valueField="value"
+              placeholder="Selecione o tipo de exame"
+              placeholderStyle={{ color: 'grey' }}
+              value={exame}
+              onChange={item => setExame(item.value)}
+            />
           </View>
 
           {exame === 'Outro' && (
@@ -293,7 +316,7 @@ export default function ExameCad() {
         </View>
 
         <View style={{ marginBottom: 20, width: 200 }}>
-          <ButtonP label="Finalizar" onPress={salvarExame} />
+          <ButtonP label={uploading ? "Salvando..." : "Finalizar"} onPress={salvarExame} />
         </View>
       </View>
     </SafeAreaView>
