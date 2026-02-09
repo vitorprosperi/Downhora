@@ -8,6 +8,69 @@ import { getDB } from '../database';
 
 let isSyncing = false;
 
+// Função de sincronização da fila fora do componente
+export const sincronizarFila = async (db) => {
+  if (isSyncing) {
+    console.log('Sincronização já em andamento, ignorando chamada duplicada.');
+    return;
+  }
+
+  isSyncing = true;
+
+  try {
+    const result = await db.getAllAsync('SELECT * FROM fila_sinc ORDER BY criado_em ASC');
+
+    if (!result || result.length === 0) {
+      console.log('Nenhum item pendente na fila.');
+      return;
+    }
+
+    console.log(`Iniciando sincronização de ${result.length} item(s)...`);
+
+    for (const item of result) {
+      let payload;
+
+      // payload inválido não pode travar a fila
+      try {
+        payload = JSON.parse(item.payload);
+      } catch (e) {
+        console.error(`Payload inválido na fila (fila id ${item.id}). Removendo para não travar.`);
+        await db.runAsync('DELETE FROM fila_sinc WHERE id = ?', [item.id]);
+        continue;
+      }
+
+      // Aceita itens antigos e novos
+      const acaoEhUpsert = item.acao === 'upsert' || item.acao === 'insert';
+
+      if (item.nome_tabela === 'exames' && acaoEhUpsert) {
+        if (!payload?.id) {
+          console.error(`Item da fila sem payload.id (fila id ${item.id}). Removendo.`);
+          await db.runAsync('DELETE FROM fila_sinc WHERE id = ?', [item.id]);
+          continue;
+        }
+
+        const { error } = await supabase
+          .from('exames')
+          .upsert(payload, { onConflict: 'id' });
+
+        if (!error) {
+          await db.runAsync('DELETE FROM fila_sinc WHERE id = ?', [item.id]);
+          console.log(`Exame sincronizado (fila id ${item.id}, exame id ${payload.id})`);
+        } else {
+          console.error(`Erro ao enviar exame (fila id ${item.id}):`, error.message);
+          // não remove da fila — tenta de novo depois
+        }
+      }
+    }
+
+    console.log('Sincronização da fila concluída!');
+  } catch (error) {
+    console.error('Erro ao buscar fila_sinc:', error);
+  } finally {
+    isSyncing = false;
+  }
+};
+
 export default function AppInitializer({ children }) {
   const { setUserId, userId } = useUsuario();
   const [authReady, setAuthReady] = useState(false);
@@ -53,69 +116,6 @@ export default function AppInitializer({ children }) {
 
     restaurarSessao();
   }, []);
-
-  // 2) Função de sincronização da fila
-  const sincronizarFila = async (db) => {
-    if (isSyncing) {
-      console.log('Sincronização já em andamento, ignorando chamada duplicada.');
-      return;
-    }
-
-    isSyncing = true;
-
-    try {
-      const result = await db.getAllAsync('SELECT * FROM fila_sinc ORDER BY criado_em ASC');
-
-      if (!result || result.length === 0) {
-        console.log('Nenhum item pendente na fila.');
-        return;
-      }
-
-      console.log(`Iniciando sincronização de ${result.length} item(s)...`);
-
-      for (const item of result) {
-        let payload;
-
-        // payload inválido não pode travar a fila
-        try {
-          payload = JSON.parse(item.payload);
-        } catch (e) {
-          console.error(`Payload inválido na fila (fila id ${item.id}). Removendo para não travar.`);
-          await db.runAsync('DELETE FROM fila_sinc WHERE id = ?', [item.id]);
-          continue;
-        }
-
-        // Aceita itens antigos e novos
-        const acaoEhUpsert = item.acao === 'upsert' || item.acao === 'insert';
-
-        if (item.nome_tabela === 'exames' && acaoEhUpsert) {
-          if (!payload?.id) {
-            console.error(`Item da fila sem payload.id (fila id ${item.id}). Removendo.`);
-            await db.runAsync('DELETE FROM fila_sinc WHERE id = ?', [item.id]);
-            continue;
-          }
-
-          const { error } = await supabase
-            .from('exames')
-            .upsert(payload, { onConflict: 'id' });
-
-          if (!error) {
-            await db.runAsync('DELETE FROM fila_sinc WHERE id = ?', [item.id]);
-            console.log(`Exame sincronizado (fila id ${item.id}, exame id ${payload.id})`);
-          } else {
-            console.error(`Erro ao enviar exame (fila id ${item.id}):`, error.message);
-            // não remove da fila — tenta de novo depois
-          }
-        }
-      }
-
-      console.log('Sincronização da fila concluída!');
-    } catch (error) {
-      console.error('Erro ao buscar fila_sinc:', error);
-    } finally {
-      isSyncing = false;
-    }
-  };
 
   // 3) Sync inicial quando app abre online
   useEffect(() => {
