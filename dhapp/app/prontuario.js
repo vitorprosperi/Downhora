@@ -115,14 +115,14 @@ export default function Prontuario() {
   useEffect(() => {
     const buscarDados = async () => {
       const db = await getDB(); 
-      const netState = await NetInfo.fetch();
 
+      console.log("Recuperando dados do SQLite...");
+      await carregarSQLite(db); // sempre carrega do SQLite
+
+      const netState = await NetInfo.fetch();
       if (netState.isConnected && userId) {
-        console.log("Recuperando dados do Supabase...");
-        await carregarSupabase(db);
-      } else {
-        console.log("Recuperando dados do SQLite...");
-        await carregarSQLite(db);
+        console.log("Recuperando dados do Supabase para sincronização...");
+        await carregarSupabase(db); // sincroniza com o Supabase, mas não apaga dados locais
       }
     };
 
