@@ -5,6 +5,7 @@ import { useUsuario } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
 import { Checkbox } from 'expo-checkbox';
 import { Image } from 'expo-image';
+import {sincronizarFila} from '../Initializer/appinitializer';
 import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useRef, useState } from "react";
@@ -12,6 +13,7 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ActivityIndicator } from 'react-native-paper';
 import { getDB } from '../database';
+import { SupabaseSinc } from '../supabaseSinc/supabaseSinc';
 import { supabase } from "../supabaseserver";
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
@@ -67,7 +69,7 @@ export default function Login() {
 
         const user = data.user;
 
-        //Verifica SE o perfil existe
+        // Verifica se o perfil existe
         const { data: perfil } = await supabase
           .from("usuarios")
           .select("*")
@@ -108,9 +110,14 @@ export default function Login() {
         Alert.alert("Sucesso", "Login realizado com sucesso!");
         router.dismissAll();
         router.replace("/telaInicial");
+
+        // **Aqui** chamamos a sincronização após o login bem-sucedido
+        console.log("Sincronizando dados após login...");
+        const db2 = await getDB();
+        await sincronizarFila(db2); // push pendentes
+        await SupabaseSinc(db2, user.id); // pull / merge
       }
 
-      
       // MODO OFFLINE 
       else {
         // Busca sessão no SQLite

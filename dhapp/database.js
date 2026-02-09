@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const DB_VERSION = 21;
+const DB_VERSION = 24;
 let dbInstance = null;
 let dbPromise = null; // garante inicialização única
 
@@ -95,12 +95,13 @@ export async function getDB() {
 
       await db.execAsync(`
         CREATE TABLE IF NOT EXISTS exames (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          id TEXT PRIMARY KEY,
           usuario_id TEXT NOT NULL,
           tipo_exame TEXT NOT NULL,
           data_exame TEXT NOT NULL,
           medico_responsavel TEXT,
           obs TEXT,
+          imagem_url TEXT,
           FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         );
       `);
