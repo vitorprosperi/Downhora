@@ -127,52 +127,39 @@ export default function Exames() {
             const db = await getDB();
             const state = await NetInfo.fetch();
 
-            if (state.isConnected) {
-              // tenta remover imagem no Supabase Storage
-              const { data: exameData, error: fetchError } = await supabase
-                .from("exames")
-                .select("imagem_url")
-                .eq("id", id)
-                .single();
-
-              if (!fetchError && exameData?.imagem_url) {
-                try {
-                  const url = exameData.imagem_url;
-                  const path = url.split("imagens/")[1];
-
-                  if (path) {
-                    const { error: deleteImgError } = await supabase.storage
-                      .from("imagens")
-                      .remove([path]);
-
-                    if (deleteImgError)
-                      console.error("Erro ao excluir imagem no Storage:", deleteImgError);
-                    else console.log("Imagem excluída do Storage:", path);
-                  }
-                } catch (err) {
-                  console.error("Erro ao processar URL da imagem:", err);
-                }
-              }
-
-              // exclui o exame no Supabase
-              const { error: deleteError } = await supabase
-                .from("exames")
-                .delete()
-                .eq("id", id);
-
-              if (deleteError) throw deleteError;
-              console.log("Exame deletado no Supabase:", id);
-            } else {
-              console.log("Sem conexão — exclusão apenas local:", id);
-              // (opcional) colocar na fila_sinc como "delete" para apagar depois online
-            }
-
-            // Exclui localmente no SQLite
+            // Primeiro, exclui o exame no SQLite
             await db.withTransactionAsync(async () => {
               await db.runAsync("DELETE FROM exames WHERE id = ?", [id]);
             });
 
             setExames((prev) => prev.filter((ex) => ex.id !== id));
+
+            // Verifica se está online para sincronizar com o Supabase
+            if (state.isConnected) {
+              try {
+                // Tenta remover o exame no Supabase
+                const { error: deleteError } = await supabase
+                  .from("exames")
+                  .delete()
+                  .eq("id", id);
+
+                if (deleteError) {
+                  console.error("Erro ao deletar no Supabase:", deleteError);
+                } else {
+                  console.log("Exame deletado no Supabase:", id);
+                }
+              } catch (err) {
+                console.error("Erro ao tentar deletar no Supabase:", err);
+              }
+            } else {
+              // Se offline, adiciona à fila de sincronização a exclusão do exame
+              await db.runAsync(
+                `INSERT INTO fila_sinc (acao, nome_tabela, payload)
+                 VALUES (?, ?, ?)`,
+                ["delete", "exames", JSON.stringify({ id })]
+              );
+              console.log("Exame adicionado à fila para exclusão no próximo sync.");
+            }
           },
         },
       ]);
@@ -263,7 +250,7 @@ export default function Exames() {
         <FlatList
           data={dataSorted(exames)}
           contentContainerStyle={cstyle.lista}
-          keyExtractor={(item) => item.id} // ✅ id obrigatório
+          keyExtractor={(item) => item.id} // id obrigatório
           renderItem={({ item }) => (
             <Pressable
               style={({ pressed }) => (pressed ? cstyle.cardHighlight : cstyle.card)}

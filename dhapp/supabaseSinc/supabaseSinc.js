@@ -5,18 +5,51 @@ export async function SupabaseSinc(db, userId) {
 
   console.log("[SYNC] Buscando exames no Supabase...");
 
-  const { data: examesData, error } = await supabase
+  // Sincroniza os exames, mas antes verifica a fila_sinc para excluir exames
+  const deletarDaFila = async () => {
+    const filaExclusao = await db.getAllAsync("SELECT * FROM fila_sinc WHERE acao = ?", ["delete"]);
+
+    if (filaExclusao.length > 0) {
+      for (const item of filaExclusao) {
+        try {
+          const { id } = JSON.parse(item.payload);
+          // Exclui o exame no Supabase
+          const { error: deleteError } = await supabase
+            .from("exames")
+            .delete()
+            .eq("id", id);
+
+          if (deleteError) {
+            console.error("[SYNC] Erro ao deletar exame no Supabase:", deleteError);
+          } else {
+            // Se a exclusão for bem-sucedida, remove da fila
+            await db.runAsync("DELETE FROM fila_sinc WHERE id = ?", [item.id]);
+            console.log("[SYNC] Exame excluído no Supabase:", id);
+          }
+        } catch (err) {
+          console.error("[SYNC] Erro ao processar exclusão na fila_sinc:", err);
+        }
+      }
+    }
+  };
+
+  // Chama a função para deletar exames da fila
+  await deletarDaFila();
+
+  // Carrega os exames do Supabase
+  const { data: examesData, error: examesError } = await supabase
     .from("exames")
     .select("id,usuario_id,tipo_exame,data_exame,medico_responsavel,obs,imagem_url")
     .eq("usuario_id", userId);
 
-  if (error) {
-    console.error("[SYNC] Erro ao buscar exames:", error.message);
+  if (examesError) {
+    console.error("[SYNC] Erro ao buscar exames:", examesError.message);
     return;
   }
 
+  // Sincroniza os exames no SQLite
   await db.withTransactionAsync(async () => {
-    for (const ex of (examesData || [])) {
+    for (const ex of examesData || []) {
       await db.runAsync(
         `INSERT OR REPLACE INTO exames
          (id, usuario_id, tipo_exame, data_exame, medico_responsavel, obs, imagem_url)
