@@ -110,6 +110,7 @@ export default function EditarExame() {
 
             let imagemUrlFinal = imagemAtual;
 
+            // Upload da imagem para o Supabase, se necessário
             if (imagemNova && isConnected) {
                 setUploading(true);
 
@@ -145,17 +146,29 @@ export default function EditarExame() {
                 imagem_url: imagemUrlFinal,
             };
 
+            // Atualiza o exame no Supabase se estiver online
             if (isConnected) {
-                await supabase
+                const { error } = await supabase
                     .from("exames")
                     .update(exameAtualizado)
                     .eq("id", dados.id);
+
+                if (error) throw error;
+            } else {
+                // Se offline, adiciona à fila para sincronização posterior
+                await db.runAsync(
+                    `INSERT INTO fila_sinc (acao, nome_tabela, payload)
+                     VALUES (?, ?, ?)`,
+                    ["upsert", "exames", JSON.stringify({ ...dados, ...exameAtualizado })]
+                );
+                console.log("Edição adicionada à fila para sincronização posterior.");
             }
 
+            // Atualiza o exame no SQLite
             await db.runAsync(
                 `UPDATE exames
-         SET tipo_exame = ?, data_exame = ?, medico_responsavel = ?, obs = ?
-         WHERE id = ?`,
+                 SET tipo_exame = ?, data_exame = ?, medico_responsavel = ?, obs = ?, imagem_url = ?
+                 WHERE id = ?`,
                 [tipoFinal, dataISO, medico, obs, imagemUrlFinal, dados.id]
             );
 
