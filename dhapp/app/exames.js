@@ -116,7 +116,7 @@ export default function Exames() {
   };
 
   // Excluir exame (online + offline)
-  const deletarExame = async (id) => {
+  const deletarExame = async (id, imagemUrl) => {
     try {
       Alert.alert("Excluir exame", "Tem certeza que deseja excluir este exame?", [
         { text: "Cancelar", style: "cancel" },
@@ -137,11 +137,25 @@ export default function Exames() {
             // Verifica se está online para sincronizar com o Supabase
             if (state.isConnected) {
               try {
+                // Exclui a imagem associada no Supabase Storage
+                if (imagemUrl) {
+                  const filePath = imagemUrl.split('/').pop(); // Extraí o nome do arquivo da URL
+                  const { error: deleteImageError } = await supabase.storage
+                    .from('imagens')
+                    .remove([`exames/${filePath}`]); // Exclui o arquivo no Storage
+
+                  if (deleteImageError) {
+                    console.error("Erro ao excluir imagem do Supabase Storage:", deleteImageError);
+                  } else {
+                    console.log("Imagem deletada no Supabase Storage");
+                  }
+                }
+
                 // Tenta remover o exame no Supabase
                 const { error: deleteError } = await supabase
                   .from("exames")
                   .delete()
-                  .eq("id", id);
+                  .eq("id", id); // Exclui o exame no Supabase
 
                 if (deleteError) {
                   console.error("Erro ao deletar no Supabase:", deleteError);
@@ -156,7 +170,8 @@ export default function Exames() {
               await db.runAsync(
                 `INSERT INTO fila_sinc (acao, nome_tabela, payload)
                  VALUES (?, ?, ?)`,
-                ["delete", "exames", JSON.stringify({ id })]
+
+                ["delete", "exames", JSON.stringify({ id })]  // Insere a ação na fila de sincronização
               );
               console.log("Exame adicionado à fila para exclusão no próximo sync.");
             }
@@ -268,7 +283,7 @@ export default function Exames() {
                     </Text>
                   )}
 
-                  <Pressable style={{ marginRight: "-10" }} onPress={() => deletarExame(item.id)}>
+                  <Pressable style={{ marginRight: "-10" }} onPress={() => deletarExame(item.id, item.imagem_url)}>
                     <Icon source={"close-circle-outline"} size={20}></Icon>
                   </Pressable>
                 </View>
