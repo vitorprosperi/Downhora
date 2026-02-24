@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
   textForm: {
     color: '#231F20',
     fontSize: 15,
-    lineHeight: 20,
     fontFamily: 'Roboto'
   },
   titulo: {

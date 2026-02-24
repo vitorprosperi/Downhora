@@ -301,7 +301,6 @@ const styles = StyleSheet.create({
   container: { alignItems: 'flex-start', alignSelf: 'center', width: '95%', paddingTop: 10 },
   contTitulo: {
     alignSelf: 'center',
-    backgroundColor: 'hsla(216 70% 44.5% / 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 5,
@@ -309,7 +308,6 @@ const styles = StyleSheet.create({
   },
   contTituloDois: {
     alignSelf: 'center',
-    backgroundColor: 'hsla(42 93.6% 49% / 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 5,
@@ -341,7 +339,6 @@ const styles = StyleSheet.create({
     },
   label: { 
     fontSize: 16, 
-    lineHeight: 24,
     color: 'hsl(345, 6%, 43%)', 
     fontFamily: 'Roboto-500' 
   },

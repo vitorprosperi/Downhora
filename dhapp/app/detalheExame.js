@@ -35,19 +35,19 @@ export default function DetalheExame() {
       />
       <View style={estilos.dadosView}>
         <View>
-          <Text>Exame</Text>
+          <Text style={estilos.label}>Exame</Text>
           <Text style={estilos.titulo}>{dados.tipo_exame}</Text>
         </View>
         <View>
-          <Text>Profissional responsável</Text>
+          <Text style={estilos.label}>Profissional responsável</Text>
           <Text style={estilos.titulo}>{dados.medico_responsavel}</Text>
         </View>
         <View>
-          <Text>Data do exame</Text>
+          <Text style={estilos.label}>Data do exame</Text>
           <Text style={estilos.titulo}>{dayjs(dados.data_exame).format('ll')}</Text>
         </View>
         <View>
-          <Text>Observações</Text>
+          <Text style={estilos.label}>Observações</Text>
           <Text style={estilos.titulo}>{dados.obs}</Text>
         </View>
       </View>
@@ -97,6 +97,11 @@ const estilos = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#FAFAFF",
+  },
+  label: { 
+    fontSize: 16, 
+    color: 'hsl(345, 6%, 43%)', 
+    fontFamily: 'Roboto-500' 
   },
   titulo: {
     fontSize: 20,
