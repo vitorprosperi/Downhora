@@ -14,6 +14,7 @@ import { Alert, Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDB } from "../database";
 import { supabase } from '../supabaseserver';
+import styles from "./styleForms";
 
 export default function EditarExame() {
     const { exame: exameParam } = useLocalSearchParams();
@@ -195,32 +196,35 @@ export default function EditarExame() {
         <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
             <Stack.Screen options={{ title: 'Editar exame' }} />
 
-            <ScrollView contentContainerStyle={estilos.container}>
-                <View style={estilos.card}>
-                    <Text style={estilos.label}>Tipo de exame</Text>
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.containerForm}>
+                    <Text style={styles.textForm}>Tipo de exame</Text>
                     <MyDropdown
                         data={tiposExames}
                         labelField="label"
                         valueField="value"
                         value={exame}
+                        placeholderStyle={{ color: 'grey' }}
                         onChange={item => setExame(item.value)}
                     />
 
                     {exame === 'Outro' && (
                         <MyInput
+                        style={styles.input}
+                        placeholderTextColor='grey'
                             placeholder="Digite o nome do exame"
                             value={outroExame}
                             onChangeText={setOutroExame}
                         />
                     )}
 
-                    <Text style={estilos.label}>Data do exame</Text>
+                    <Text style={styles.textForm}>Data do exame</Text>
                     <Pressable onPress={abrirCalendario}>
                         <View pointerEvents="none">
                             <MyInput
                                 editable={false}
                                 value={dataDisplay || 'Selecione a data'}
-                                style={{ color: dataDisplay ? '#231F20' : 'grey' }}
+                                style={styles.input}
                             />
                         </View>
                     </Pressable>
@@ -251,11 +255,11 @@ export default function EditarExame() {
                         </Modal>
                     )}
 
-                    <Text style={estilos.label}>Profissional responsável</Text>
-                    <MyInput value={medico} onChangeText={setMedico} />
+                    <Text style={styles.textForm}>Profissional responsável</Text>
+                    <MyInput style={styles.input} value={medico} onChangeText={setMedico} />
 
-                    <Text style={estilos.label}>Observações</Text>
-                    <MyInput value={obs} onChangeText={setObs} multiline />
+                    <Text style={styles.textForm}>Observações</Text>
+                    <MyInput style={styles.input} value={obs} onChangeText={setObs} multiline />
                 </View>
 
                 <Pressable onPress={escolherImagem} style={estilos.imageContainer}>

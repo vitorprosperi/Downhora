@@ -165,9 +165,10 @@ const styles = StyleSheet.create({
     marginTop: -2,
     color: "#231F20",
   },
-  label: {
-    fontFamily: 'Roboto',
-    color: 'hsl(20, 0%, 25%)',
+  label: { 
+    fontSize: 16, 
+    color: 'hsl(345, 6%, 43%)', 
+    fontFamily: 'Roboto-500' 
   },
   viewParent: {
     backgroundColor: '#FAFAFF',
