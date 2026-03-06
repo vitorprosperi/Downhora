@@ -1,10 +1,6 @@
 import { ButtonP } from '@/components/ButtonP';
 import { MyDropdown } from '@/components/MyDropdown';
 import { MyInput } from '@/components/MyInput';
-
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
-
 import { useUsuario } from '@/context/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NetInfo from "@react-native-community/netinfo";
@@ -12,14 +8,17 @@ import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import * as ImagePicker from "expo-image-picker";
+import * as Notifications from 'expo-notifications';
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Platform, Pressable, Text, View, Modal, ScrollView } from "react-native";
+import { ActivityIndicator, Alert, Modal, Platform, Pressable, ScrollView, Text, View } from "react-native";
+import 'react-native-get-random-values';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { v4 as uuidv4 } from 'uuid';
 import { getDB } from "../database";
 import { supabase } from '../supabaseserver';
 import styles from "./styleForms";
+
 
 export default function ExameCad() {
   const router = useRouter();
@@ -35,6 +34,8 @@ export default function ExameCad() {
   const [uploading, setUploading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [tempDate, setTempDate] = useState(new Date());
+
+  
 
   const tiposExames = [
     { label: 'Cariótipo', value: 'Cariótipo' },
@@ -221,9 +222,33 @@ export default function ExameCad() {
       console.error("Erro inesperado ao salvar exame:", err?.message ?? err);
       Alert.alert("Erro", "Não foi possível salvar o exame.");
     } finally {
+      onCreateTriggerNotification()
       setUploading(false);
     }
   };
+
+  function onCreateTriggerNotification() {
+    Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+
+  const date = new Date(dataISO);
+
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'vô saudades',
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date
+      },
+    });
+  }
 
   dayjs.extend(updateLocale);
   dayjs.updateLocale('pt-br', {
