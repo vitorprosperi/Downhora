@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { cadastropac } from '../routes/rotas';
 
 const LogoImage = require('@/assets/images/logodhredondotrans.png');
@@ -69,6 +69,9 @@ export default function App() {
           <>
             <ButtonP label="Login" theme="yellow" onPress={login} />
             <ButtonP label="Cadastro" onPress={cadastropac} />
+            <TouchableOpacity onPress={() => router.push('/recsenha')}>
+              <Text style={{ color: '#231F20', textAlign: 'center', marginTop: 8 }}>Esqueci minha senha</Text>
+            </TouchableOpacity>
           </>
         )}
       </View>

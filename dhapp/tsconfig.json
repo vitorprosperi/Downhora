@@ -13,5 +13,9 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
+<<<<<<< HEAD
 , "app/cadastroPac.jsx", "app/(top-tabs)/two.js", "app/cadastroPac.jsx", "components/FilterDropdown.js", "app/index.js", "components/ListItemUsuario.js", "app/exameCad.jsx"  ]
+=======
+, "app/cadastroPac.jsx", "app/(top-tabs)/two.js", "app/cadastroPac.jsx", "components/FilterDropdown.js", "app/index.js", "components/ListItemUsuario.js", "app/(top-tabs)/index.js"  ]
+>>>>>>> d875cf8589832d76761291551f624f3937948b4a
 }
