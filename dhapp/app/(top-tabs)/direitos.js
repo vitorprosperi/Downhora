@@ -13,7 +13,10 @@ export default function telaDireitos() {
           >
 
           </Image>
-          <Text style={styles.title}>Direitos garantidos da criança com síndrome de Down</Text>
+         <View style={styles.headerTextBlock}>
+            <Text style={styles.headerSub}>Direitos da criança e adolescente com</Text>
+            <Text style={styles.headerTitle}>Síndrome de Down</Text>
+          </View>
         </View>
         <View style={styles.contTexto}>
           <View style={styles.cardPar}>
@@ -269,7 +272,7 @@ export default function telaDireitos() {
           </View>
         </View>
         <View style={styles.contTexto}>
-          <Text style={styles.subTitulo}>Resumo</Text>
+          <Text style={styles.subTituloResumo}>Resumo</Text>
           <View style={styles.bPoint}>
             <Image
             style={styles.imageCheckmark}
@@ -316,13 +319,23 @@ export default function telaDireitos() {
             <Text style={styles.text}>Está protegido por lei contra qualquer tipo de <Text style={styles.textHeavy}>violência ou exclusão.</Text></Text>
           </View>
         </View>
-        <View style={styles.contTexto}>
-          <Text style={styles.titleH2}>Referências: </Text>
-          <Text style={styles.text}>Constituição Federal (1988),</Text>
-          <Text style={styles.text}>Estatuto da Criança e do Adolescente – ECA (1990),</Text>
-          <Text style={styles.text}>Convenção da ONU sobre os Direitos da Pessoa com Deficiência (Decreto nº 6.949/2009),</Text>
-          <Text style={styles.text}>Lei Brasileira de Inclusão – LBI (2015),</Text>
-          <Text style={styles.text}>Diretrizes de Atenção à Pessoa com Síndrome de Down (Ministério da Saúde, 2013).</Text>
+        <View style={styles.refsCard}>
+          <Text style={styles.refsTitle}>Referências</Text>
+          <Text style={styles.refsText}>Constituição Federal (1988)</Text>
+          <Text style={styles.refsText}>
+            Estatuto da Criança e do Adolescente – ECA (1990)
+          </Text>
+          <Text style={styles.refsText}>
+            Convenção da ONU sobre os Direitos da Pessoa com Deficiência
+            (Decreto nº 6.949/2009)
+          </Text>
+          <Text style={styles.refsText}>
+            Lei Brasileira de Inclusão – LBI (2015)
+          </Text>
+          <Text style={styles.refsText}>
+            Diretrizes de Atenção à Pessoa com Síndrome de Down (Ministério da
+            Saúde, 2013)
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -332,6 +345,21 @@ export default function telaDireitos() {
 
 //temporario
 const styles = StyleSheet.create({
+  headerTextBlock: {
+    flex: 1,
+  },
+  headerSub: {
+    fontSize: 16,
+    color: '#333355',
+    fontFamily: "Roboto",
+    lineHeight: 18,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontFamily: "Roboto-700",
+    color: 'hsl(135, 100%, 20%)',
+    lineHeight: 28,
+  },
   bPoint: {
     flexDirection: 'row',
     paddingRight: 15,
@@ -346,22 +374,35 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   cardTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 20,
-    gap: 5,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    shadowColor: "hsl(135, 90%, 30%)",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    gap: 10,
   },
   container: {
     flex: 1,
-    backgroundColor: 'hsl(135, 100%, 90%)'
+    backgroundColor: 'hsl(135, 100%, 90%)',
+    paddingTop: 16,
   },
   contTexto: {
     marginBottom: 10,
     backgroundColor: 'hsl(135, 90%, 100%)',
     padding: 17,
     borderRadius: 20,
+    shadowColor: "hsl(135, 90%, 30%)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
   },
   scrollView: {
     flexGrow: 1,
@@ -373,6 +414,15 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontFamily: 'Roboto-500',
     color: 'black',
+  },
+  subTituloResumo: {
+    fontSize: 16,
+    fontFamily: "Roboto-500",
+    marginBottom: 12,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    color: 'hsl(135, 100%, 20%)',
+    borderBottomColor: 'hsl(135, 100%, 90%)',
   },
   title: {
     fontSize: 20,
@@ -428,5 +478,37 @@ const styles = StyleSheet.create({
     height: 20,
     marginTop: 3,
     marginRight: 3,
-  }
+  },
+  refsCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: "hsl(135, 90%, 30%)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  refsTitle: {
+    fontSize: 14,
+    fontFamily: "Roboto-600",
+    color: 'black',
+    marginBottom: 6,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: 'hsl(135, 100%, 90%)',
+  },
+  refsText: {
+    fontSize: 13,
+    color: 'black',
+    fontFamily: "Roboto",
+    marginBottom: 2,
+  },
+  refsLink: {
+    fontSize: 13,
+    color: 'blue',
+    fontFamily: 'Roboto',
+    marginBottom: 2,
+    textDecorationLine: 'underline',
+  },
 });
