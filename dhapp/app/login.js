@@ -88,6 +88,8 @@ export default function Login() {
         if (sessionData?.session) {
           const { access_token, refresh_token } = sessionData.session;
 
+          console.log('Token de Acesso:', access_token);
+
           // Salvar sessão no SecureStore (se marcado)
           if (isChecked) {
             await SecureStore.setItemAsync(
@@ -107,7 +109,6 @@ export default function Login() {
         }
 
         setUserId(user.id);
-        Alert.alert("Sucesso", "Login realizado com sucesso!");
         router.dismissAll();
         router.replace("/telaInicial");
 
