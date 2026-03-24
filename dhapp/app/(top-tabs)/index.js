@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  Animated,
   Image,
   Linking,
   Pressable,
@@ -8,7 +9,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Animated,
 } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -110,10 +110,9 @@ export default function TelaDesenvolvimento() {
           <Image
             source={require("../../assets/images/Cabeca de bebe.png")}
             style={styles.headerImage}
-            resizeMode="contain"
           />
           <View style={styles.headerTextBlock}>
-            <Text style={styles.headerSub}>Desenvolvimento da Criança com</Text>
+            <Text style={styles.headerSub}>Desenvolvimento da criança com</Text>
             <Text style={styles.headerTitle}>Síndrome de Down</Text>
           </View>
         </View>
@@ -259,17 +258,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
+    gap: 10,
   },
   headerImage: {
-    width: 64,
-    height: 64,
-    marginRight: 14,
+    width: 50,
+    height: 50,
   },
   headerTextBlock: {
     flex: 1,
   },
   headerSub: {
-    fontSize: 13,
+    fontSize: 16,
     color: TEXT_MED,
     fontFamily: "Roboto",
     lineHeight: 18,
