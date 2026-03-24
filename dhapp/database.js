@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const DB_VERSION = 24;
+const DB_VERSION = 26;
 let dbInstance = null;
 let dbPromise = null; // garante inicialização única
 
@@ -110,7 +110,7 @@ export async function getDB() {
         CREATE TABLE IF NOT EXISTS sessoes (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           usuario_id TEXT NOT NULL,
-          cpf TEXT UNIQUE,
+          email_responsavel TEXT UNIQUE,
           access_token TEXT,
           refresh_token TEXT,
           FOREIGN KEY (usuario_id) REFERENCES usuarios(id)

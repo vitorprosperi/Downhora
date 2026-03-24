@@ -27,19 +27,30 @@ export default function CadastroPacQuatro() {
     })();
   }, []);
 
-  const registrarAuth = async (cpf, senha) => {
+  const registrarAuth = async (email_responsavel, senha) => {
     try {
-      const emailFake = `${cpf}@meuapp.com`;
+      const emailNormalizado = email_responsavel.trim().toLowerCase();
 
       const { data, error } = await supabase.auth.signUp({
-        email: emailFake,
+        email: emailNormalizado,
         password: senha,
-        options: { data: { cpf } }
+        options: {
+          data: {
+            cpf: pacientedados.cpf,
+            nome: pacientedados.nome,
+            email_responsavel: emailNormalizado,
+          }
+        }
       });
 
       if (error) {
         console.error("Erro no Auth:", error.message);
-        Alert.alert("Erro", "Não foi possível criar o usuário no Supabase Auth");
+        Alert.alert("Erro", error.message || "Não foi possível criar o usuário no Supabase Auth.");
+        return null;
+      }
+
+      if (!data?.user?.id) {
+        Alert.alert("Erro", "Não foi possível obter o ID do usuário criado.");
         return null;
       }
 
@@ -56,7 +67,7 @@ export default function CadastroPacQuatro() {
           nome_mae: pacientedados.nome_mae,
           nome_responsavel: pacientedados.nome_responsavel,
           telefone_responsavel: pacientedados.telefone_responsavel,
-          email_responsavel: pacientedados.email_responsavel,
+          email_responsavel: emailNormalizado,
           aceitou_privacidade: pacientedados.aceitou_privacidade,
           data_privacidade: pacientedados.data_aceite_privacidade,
           versao_privacidade: pacientedados.versao_privacidade,
@@ -142,11 +153,21 @@ export default function CadastroPacQuatro() {
 
     try {
       setCadastroCarregando(true);
-      const authUserId = await registrarAuth(pacientedados.cpf, pacientedados.senha);
+
+      const emailNormalizado = pacientedados.email_responsavel?.trim().toLowerCase();
+
+      if (!emailNormalizado) {
+        Alert.alert("Erro", "E-mail do responsável não informado.");
+        return;
+      }
+
+      const authUserId = await registrarAuth(
+        pacientedados.email_responsavel,
+        pacientedados.senha
+      );
 
       if (!authUserId) {
         console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
-        setCadastroCarregando(false);
         return;
       }
 
@@ -164,7 +185,7 @@ export default function CadastroPacQuatro() {
             pacientedados.nome_mae,
             pacientedados.nome_responsavel,
             pacientedados.telefone_responsavel,
-            pacientedados.email_responsavel
+            emailNormalizado
           ]
         );
 
@@ -239,7 +260,6 @@ export default function CadastroPacQuatro() {
 
   const ref_input1 = useRef();
   const ref_input2 = useRef();
-  
 
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
