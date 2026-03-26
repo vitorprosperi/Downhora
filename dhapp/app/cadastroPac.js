@@ -7,7 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { Stack } from 'expo-router';
 import { useRef, useState } from "react";
-import { Alert, Modal, Platform, Pressable, Text, View, ScrollView } from "react-native";
+import { Alert, Modal, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Masks } from 'react-native-mask-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -110,39 +110,62 @@ export default function CadastroPac() {
   );
 
   function Proximo() {
-    const obrigatorios = [
-      { nome: 'nome', label: 'Nome Completo' },
-      { nome: 'cpf', label: 'CPF' },
-      { nome: 'data_nascimento', label: 'Data de Nascimento' },
-      { nome: 'genero', label: 'Gênero' },
-      { nome: 'senha', label: 'Senha' },
-      { nome: 'nome_mae', label: 'Nome da mãe' },
-      { nome: 'nome_responsavel', label: 'Nome do responsável' },
-      { nome: 'telefone_responsavel', label: 'Telefone do responsável' },
-      { nome: 'email_responsavel', label: 'E-mail do responsável' },
-    ];
+  const obrigatorios = [
+    { nome: 'nome', label: 'Nome Completo' },
+    { nome: 'cpf', label: 'CPF' },
+    { nome: 'data_nascimento', label: 'Data de Nascimento' },
+    { nome: 'genero', label: 'Gênero' },
+    { nome: 'senha', label: 'Senha' },
+    { nome: 'nome_mae', label: 'Nome da mãe' },
+    { nome: 'nome_responsavel', label: 'Nome do responsável' },
+    { nome: 'telefone_responsavel', label: 'Telefone do responsável' },
+    { nome: 'email_responsavel', label: 'E-mail do responsável' },
+  ];
 
-    const vazio = obrigatorios.find(campo =>
-      !pacientedados[campo.nome] || pacientedados[campo.nome].toString().trim() === ''
-    );
+  const vazio = obrigatorios.find(campo =>
+    !pacientedados[campo.nome] || pacientedados[campo.nome].toString().trim() === ''
+  );
 
-    if (vazio) {
-      Alert.alert("Atenção", `O campo "${vazio.label}" é obrigatório.`);
-      return;
-    }
-
-    if (pacientedados.senha.length < 6) {
-      Alert.alert("Atenção", "A senha deve ter mais que 6 caracteres.");
-      return;
-    }
-
-    if (pacientedados.senha !== confirmarSenha) {
-      Alert.alert("Atenção", "As senhas não coincidem. Por favor, verifique e tente novamente.");
-      return;
-    }
-
-    cadastropacDois();
+  if (vazio) {
+    Alert.alert("Atenção", `O campo "${vazio.label}" é obrigatório.`);
+    return;
   }
+
+  if (!cpfValido) {
+    Alert.alert("Atenção", "CPF inválido. Por favor, verifique.");
+    return;
+  }
+
+  if (!validator.isStrongPassword(senhaForca, { minUppercase: 0, minSymbols: 0 })) {
+    Alert.alert("Atenção", "Senha fraca.");
+    return;
+  }
+
+  if (pacientedados.senha !== confirmarSenha) {
+    Alert.alert("Atenção", "As senhas não coincidem.");
+    return;
+  }
+
+  if (
+    !validator.isMobilePhone(pacientedados.telefone_responsavel, "pt-BR") ||
+    pacientedados.telefone_responsavel.length !== 11
+  ) {
+    Alert.alert("Atenção", "Telefone inválido.");
+    return;
+  }
+
+  if (!validator.isEmail(pacientedados.email_responsavel)) {
+    Alert.alert("Atenção", "E-mail inválido.");
+    return;
+  }
+
+  if (!aceitouTermos) {
+    Alert.alert("Atenção", "Você precisa aceitar os Termos de Uso.");
+    return;
+  }
+
+  cadastropacDois();
+}
 
   const ref_input2 = useRef();
   const ref_input3 = useRef();
@@ -227,64 +250,153 @@ export default function CadastroPac() {
             fontSize: 14,
           }}
         >
-{`1. Aceitação dos Termos
+{`TERMO DE CONSENTIMENTO E POLÍTICA DE PRIVACIDADE
 
-Ao utilizar este aplicativo, o usuário declara que leu, compreendeu e concorda com estes Termos de Uso. Caso não concorde, deve interromper imediatamente o uso do aplicativo.
+1. INTRODUÇÃO
 
-2. Sobre o Aplicativo
+Este Termo de Consentimento e Política de Privacidade tem como objetivo informar, de forma clara e transparente, como os dados pessoais e sensíveis são coletados, utilizados, armazenados e protegidos no aplicativo DownHora, em conformidade com a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados – LGPD).
 
-Este aplicativo tem como finalidade oferecer serviços e funcionalidades relacionadas a (falar oq o app faz)
+Ao utilizar o aplicativo, o RESPONSÁVEL LEGAL declara estar ciente e de acordo com os termos aqui descritos.
 
-O aplicativo pode ser atualizado, modificado ou descontinuado a qualquer momento, sem aviso prévio.
+---
 
-3. Cadastro e Responsabilidade do Usuário
+2. DADOS COLETADOS
 
-O usuário é responsável por:
+O aplicativo realiza a coleta dos seguintes dados pessoais do usuário (pessoa com síndrome de Down):
 
-Fornecer informações verdadeiras e atualizadas
+2.1 Dados pessoais:
 
-Manter a confidencialidade de seus dados de acesso
+* Nome completo
+* CPF
+* Data de nascimento
+* Gênero
+* Nome da mãe
 
-Utilizar o aplicativo de forma lícita e ética
+2.2 Dados do responsável legal:
 
-O uso do aplicativo para fins ilegais, fraudulentos ou que violem direitos de terceiros é estritamente proibido.
+* Nome completo
+* Telefone
+* E-mail
 
-4. Uso Adequado
+2.3 Dados sensíveis (saúde e desenvolvimento):
 
-É vedado ao usuário:
+  2.3.1 Histórico médico:
 
-Tentar acessar áreas restritas ou sistemas internos
+  * Doenças relacionadas
+  * Medicamentos em uso
+  * Alergias
+  * Tipo sanguíneo
+  
+  2.3.2 Consultas e exames realizados:
 
-Explorar falhas ou vulnerabilidades do aplicativo
+  * Exame de cariótipo
+  * Triagem auditiva
+  * Cardiologia
+  * Pezinho
+  * Oftalmologia
+  * Fonoaudiologia
+  * Odontologia
+  * Endocrinologia
+  * Fisioterapia
+  * Terapia ocupacional
+  * Psicopedagogia
 
-Copiar, modificar ou distribuir o conteúdo sem autorização
+2.4 Dados educacionais e de desenvolvimento:
 
-5. Dados Pessoais e Privacidade
+* Escolaridade
+* Unidade escolar
+* Nível de autonomia de comunicação
 
-O tratamento de dados pessoais do usuário é realizado conforme descrito na Política de Privacidade, a qual faz parte integrante destes Termos de Uso.
+---
 
-6. Limitação de Responsabilidade
+3. FINALIDADE DO USO DOS DADOS
 
-O aplicativo é fornecido “como está”. Não garantimos que:
+Os dados coletados são utilizados exclusivamente para:
 
-O serviço estará disponível de forma ininterrupta
+* Organização e acompanhamento da saúde do usuário
+* Registro de histórico médico e desenvolvimento
+* Auxílio no acompanhamento por responsáveis e profissionais
+* Melhorar a experiência e funcionalidades do aplicativo
+* Garantir a segurança e identificação do usuário
 
-O aplicativo estará livre de erros ou falhas técnicas
+---
 
-Na máxima extensão permitida por lei, o aplicativo não se responsabiliza por danos diretos ou indiretos decorrentes do uso ou da impossibilidade de uso do serviço.
+4. BASE LEGAL PARA TRATAMENTO
 
-7. Propriedade Intelectual
+O tratamento dos dados é realizado com base:
 
-Todo o conteúdo do aplicativo, incluindo textos, marcas, layouts e códigos, é protegido por direitos autorais e não pode ser utilizado sem autorização prévia.
+* No **consentimento do responsável legal**
+* Na proteção da vida e da saúde do titular
+* No cumprimento de obrigações legais e regulatórias
 
-8. Alterações nos Termos
+Dados sensíveis serão tratados com o máximo nível de proteção, conforme exigido pela LGPD.
 
-Estes Termos de Uso podem ser atualizados a qualquer momento. O uso contínuo do aplicativo após alterações indica a concordância com os novos termos.
+---
 
-9. Contato
+5. COMPARTILHAMENTO DE DADOS
 
-Em caso de dúvidas sobre estes Termos de Uso, o usuário pode entrar em contato pelo e-mail: DownHora@gmail.com
-`}
+Os dados **não serão vendidos**.
+
+Poderão ser compartilhados apenas quando necessário:
+
+* Com profissionais de saúde autorizados pelo responsável
+* Para cumprimento de obrigações legais
+* Com serviços tecnológicos essenciais (ex: armazenamento em nuvem), sempre com proteção adequada
+
+---
+
+6. ARMAZENAMENTO E SEGURANÇA
+
+Os dados são armazenados em ambiente seguro e protegidos por medidas técnicas e administrativas, incluindo:
+
+* Criptografia
+* Controle de acesso
+* Proteção contra acessos não autorizados
+
+---
+
+7. DIREITOS DO TITULAR
+
+Nos termos da LGPD, o responsável legal pode, a qualquer momento:
+
+* Confirmar a existência de tratamento de dados
+* Acessar os dados
+* Corrigir dados incompletos ou desatualizados
+* Solicitar a exclusão dos dados
+* Revogar o consentimento
+
+Solicitações podem ser feitas através do e-mail: downhorasuporte@gmail.com
+
+---
+
+8. CONSENTIMENTO
+
+Ao aceitar este termo, o RESPONSÁVEL LEGAL declara que:
+
+* Possui autoridade legal sobre o titular dos dados
+* Autoriza o tratamento dos dados pessoais e sensíveis descritos
+* Está ciente das finalidades e direitos previstos
+
+---
+
+9. REVOGAÇÃO
+
+O consentimento pode ser revogado a qualquer momento, mediante solicitação, o que poderá implicar na interrupção dos serviços oferecidos pelo aplicativo.
+
+---
+
+10. ALTERAÇÕES DESTE TERMO
+
+Este termo poderá ser atualizado a qualquer momento. O usuário será informado em caso de alterações relevantes.
+
+---
+
+11. CONTATO
+
+Em caso de dúvidas ou solicitações relacionadas à privacidade:
+
+E-mail: downhorasuporte@gmail.com
+Responsável pelo tratamento de dados: `}
         </Text>
       </ScrollView>
 
