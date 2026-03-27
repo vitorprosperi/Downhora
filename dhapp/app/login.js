@@ -1,11 +1,10 @@
 import { ButtonP } from '@/components/ButtonP';
 import { MyInput } from '@/components/MyInput';
-import { MyMaskInput } from '@/components/MyMaskInput';
 import { useUsuario } from '@/context/context';
 import NetInfo from '@react-native-community/netinfo';
 import { Checkbox } from 'expo-checkbox';
 import { Image } from 'expo-image';
-import {sincronizarFila} from '../Initializer/appinitializer';
+import { sincronizarFila } from '../Initializer/appinitializer';
 import { Stack, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useRef, useState } from "react";
@@ -20,29 +19,27 @@ const LogoImage = require('@/assets/images/logodhredondotrans.png');
 
 export default function Login() {
   const [isChecked, setChecked] = useState(false);
-  const [cpf, setCpf] = useState("");
-  const [cpfMasked, setCpfMasked] = useState('');
+  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
   const router = useRouter();
   const { setUserId } = useUsuario();
   const ref_senha = useRef();
   const [loginCarregando, setLoginCarregando] = useState(false);
 
   const login = async () => {
-    if (!cpf || !senha) {
+    if (!email || !senha) {
       Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
       return;
     }
 
+    const emailNormalizado = email.trim().toLowerCase();
+
     setLoginCarregando(true);
 
     try {
-      const emailFake = `${cpf}@meuapp.com`;
       const netInfo = await NetInfo.fetch();
       const isOnline = netInfo.isConnected;
 
-      // Garante inicialização segura do banco
       const db = await getDB().catch((err) => {
         console.error("Erro ao abrir o banco:", err);
         return null;
@@ -54,22 +51,20 @@ export default function Login() {
         return;
       }
 
-      // MODO ONLINE
       if (isOnline) {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: emailFake,
+          email: emailNormalizado,
           password: senha,
         });
 
         if (error) {
           setLoginCarregando(false);
-          Alert.alert("Erro", "CPF ou senha inválidos.");
+          Alert.alert("Erro", "E-mail ou senha inválidos.");
           return;
         }
 
         const user = data.user;
 
-        // Verifica se o perfil existe
         const { data: perfil } = await supabase
           .from("usuarios")
           .select("*")
@@ -78,19 +73,15 @@ export default function Login() {
 
         if (!perfil) {
           setLoginCarregando(false);
-          Alert.alert("Erro", "CPF ou senha inválidos.");
+          Alert.alert("Erro", "Usuário não encontrado.");
           return;
         }
 
-        // Obtém a sessão do Supabase
         const { data: sessionData } = await supabase.auth.getSession();
 
         if (sessionData?.session) {
           const { access_token, refresh_token } = sessionData.session;
 
-          console.log('Token de Acesso:', access_token);
-
-          // Salvar sessão no SecureStore (se marcado)
           if (isChecked) {
             await SecureStore.setItemAsync(
               'supabase_session',
@@ -98,12 +89,11 @@ export default function Login() {
             );
           }
 
-          // Salvar sessão no SQLite
           await db.withTransactionAsync(async () => {
             await db.runAsync(
-              `INSERT OR REPLACE INTO sessoes (usuario_id, cpf, access_token, refresh_token)
+              `INSERT OR REPLACE INTO sessoes (usuario_id, email_responsavel, access_token, refresh_token)
                VALUES (?, ?, ?, ?)`,
-              [user.id, cpf, access_token, refresh_token]
+              [user.id, emailNormalizado, access_token, refresh_token]
             );
           });
         }
@@ -112,19 +102,14 @@ export default function Login() {
         router.dismissAll();
         router.replace("/telaInicial");
 
-        // **Aqui** chamamos a sincronização após o login bem-sucedido
         console.log("Sincronizando dados após login...");
         const db2 = await getDB();
-        await sincronizarFila(db2); // push pendentes
-        await SupabaseSinc(db2, user.id); // pull / merge
-      }
-
-      // MODO OFFLINE 
-      else {
-        // Busca sessão no SQLite
+        await sincronizarFila(db2);
+        await SupabaseSinc(db2, user.id);
+      } else {
         const sessao = await db.getFirstAsync(
-          "SELECT usuario_id AS id, access_token, refresh_token FROM sessoes WHERE cpf = ?",
-          [cpf]
+          "SELECT usuario_id AS id, access_token, refresh_token FROM sessoes WHERE email_responsavel = ?",
+          [emailNormalizado]
         );
 
         if (!sessao?.id) {
@@ -136,7 +121,6 @@ export default function Login() {
           return;
         }
 
-        // Verifica se o usuário existe no SQLite
         const usuarioLocal = await db.getFirstAsync(
           "SELECT * FROM usuarios WHERE id = ?",
           [sessao.id]
@@ -157,9 +141,9 @@ export default function Login() {
     } catch (err) {
       console.error("Erro inesperado:", err);
       Alert.alert("Erro", "Não foi possível realizar o login.");
+    } finally {
+      setLoginCarregando(false);
     }
-
-    setLoginCarregando(false);
   };
 
   return (
@@ -183,22 +167,20 @@ export default function Login() {
 
           <View style={styles.containerForm}>
             <View>
-              <Text style={styles.textForm}>CPF</Text>
-              <MyMaskInput
+              <Text style={styles.textForm}>E-mail</Text>
+              <MyInput
                 style={styles.input}
-                mask={cpfMask}
-                value={cpfMasked}
-                maxLength={14}
-                placeholder="Digite o CPF cadastrado no aplicativo"
+                value={email}
+                placeholder="Digite seu e-mail cadastrado"
                 placeholderTextColor="grey"
-                keyboardType="numeric"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoComplete="email"
                 onSubmitEditing={() => ref_senha.current.focus()}
                 returnKeyType="next"
-                submitBehavior='submit'
-                onChangeText={(masked, unmasked) => {
-                  setCpfMasked(masked);
-                  setCpf(unmasked);
-                }}
+                submitBehavior="submit"
+                onChangeText={setEmail}
               />
             </View>
 
@@ -208,7 +190,7 @@ export default function Login() {
                 ref={ref_senha}
                 value={senha}
                 onChangeText={setSenha}
-                autoComplete='current-password'
+                autoComplete="current-password"
                 style={styles.input}
                 placeholder="Digite a senha"
                 placeholderTextColor={'grey'}
@@ -217,10 +199,10 @@ export default function Login() {
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Checkbox 
-                color={'#3A7ADC'} 
-                value={isChecked} 
-                onValueChange={() => setChecked(!isChecked)} 
+              <Checkbox
+                color={'#3A7ADC'}
+                value={isChecked}
+                onValueChange={() => setChecked(!isChecked)}
               />
               <Text style={styles.textForm}>Manter login</Text>
             </View>
