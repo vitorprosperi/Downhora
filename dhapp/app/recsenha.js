@@ -2,10 +2,12 @@ import { ButtonP } from "@/components/ButtonP";
 import { MyInput } from "@/components/MyInput";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, Image } from "react-native";
 import { supabase } from "../supabaseserver";
 import { ActivityIndicator } from "react-native-paper";
 import * as SecureStore from "expo-secure-store";
+
+const LogoImage = require("@/assets/images/logodhredondotrans.png");
 
 const CHAVE_COOLDOWN_RECUPERACAO = "cooldown_recuperacao_senha";
 const TEMPO_COOLDOWN_SEGUNDOS = 60;
@@ -37,7 +39,9 @@ export default function RecuperacaoSenha() {
 
   const carregarCooldownSalvo = async () => {
     try {
-      const expiracaoSalva = await SecureStore.getItemAsync(CHAVE_COOLDOWN_RECUPERACAO);
+      const expiracaoSalva = await SecureStore.getItemAsync(
+        CHAVE_COOLDOWN_RECUPERACAO
+      );
 
       if (!expiracaoSalva) return;
 
@@ -118,17 +122,24 @@ export default function RecuperacaoSenha() {
     <View style={styles.view}>
       <Stack.Screen
         options={{
-          title: "Esqueci minha senha",
-          headerShadowVisible: true,
+          headerShadowVisible: false,
         }}
       />
 
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.content}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={LogoImage}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+
         <Text style={styles.titulo}>Recuperar conta</Text>
 
         <View style={styles.containerForm}>
           <Text style={styles.textForm}>
-            Insira o e-mail associado a sua conta.
+            Insira o e-mail associado à sua conta.
           </Text>
 
           <MyInput
@@ -142,7 +153,7 @@ export default function RecuperacaoSenha() {
             style={styles.input}
           />
 
-          <View style={{ width: 200, alignSelf: "center", marginTop: 10 }}>
+          <View style={styles.buttonContainer}>
             <ButtonP
               onPress={enviarRecuperacaoSenha}
               disabled={emailCarregando || tempoRestante > 0}
@@ -164,22 +175,54 @@ export default function RecuperacaoSenha() {
 }
 
 const styles = StyleSheet.create({
-  containerForm: {
-    width: "100%",
-    marginTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  textForm: {
-    color: "#231F20",
-    fontSize: 16,
-    fontFamily: "Roboto",
-  },
   view: {
     flex: 1,
     backgroundColor: "#FAFAFF",
     width: "100%",
   },
+
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+
+  logoContainer: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+
+  logo: {
+    width: 200,
+    height: 200,
+  },
+
+  titulo: {
+    color: "#231F20",
+    fontSize: 24,
+    fontWeight: "700",
+    fontFamily: "Raleway-700",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+
+  containerForm: {
+    width: "100%",
+    maxWidth: 360,
+    marginTop: 8,
+  },
+
+  textForm: {
+    color: "#231F20",
+    fontSize: 16,
+    fontFamily: "Roboto",
+    textAlign: "center",
+    marginBottom: 16,
+  },
+
   input: {
     backgroundColor: "#FAFAFF",
     color: "#231F20",
@@ -190,18 +233,17 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     width: "100%",
     fontSize: 16,
-    height: 35,
+    height: 42,
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
     lineHeight: 24,
     fontFamily: "Roboto",
   },
-  titulo: {
-    color: "#231F20",
-    fontSize: 20,
-    fontWeight: "700",
-    fontFamily: "Raleway-700",
-    paddingLeft: 10,
+
+  buttonContainer: {
+    width: 220,
+    alignSelf: "center",
+    marginTop: 22,
   },
 });
