@@ -89,7 +89,7 @@ export default function App() {
         onPress={() => Linking.openURL("mailto:downhorarecovery@gmail.com")}
       >
         <Text style={styles.contactText}>
-          Contato: downhorarecovery@gmail.com
+          Contato: downhorasuporte@gmail.com
         </Text>
       </TouchableOpacity>
     </View>
