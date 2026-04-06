@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Icon } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getDB } from '../database';
-import { administrador, desenvolvimento, exames, perfil, prontuario, vacina } from "../routes/rotas";
+import { desenvolvimento, exames, perfil, prontuario, vacina } from "../routes/rotas";
 import { supabase } from "../supabaseserver";
 import styles from './styleForms';
 
@@ -94,10 +94,6 @@ export default function TelaInicial() {
             >
               <Icon source="logout" color="#2261c1" size={28} />
               <Text style={btstyle.logoutText}>Sair</Text>
-            </Pressable>
-            <Pressable
-              onPress={administrador}>
-              <Text>segredo</Text>
             </Pressable>
           </View>
 

@@ -133,7 +133,6 @@ export default function Login() {
         }
 
         setUserId(sessao.id);
-        Alert.alert("Modo Offline", "Bem-vindo de volta!");
         router.dismissAll();
         router.replace("/telaInicial");
       }

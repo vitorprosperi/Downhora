@@ -231,11 +231,6 @@ export default function ExameCad() {
         } else {
           Alert.alert("Sucesso", "Exame salvo com sucesso!");
         }
-      } else {
-        Alert.alert(
-          "Offline",
-          "Exame salvo localmente e será sincronizado depois.",
-        );
       }
 
       router.dismiss(1);
