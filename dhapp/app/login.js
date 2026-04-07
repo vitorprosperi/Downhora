@@ -1,21 +1,22 @@
-import { ButtonP } from '@/components/ButtonP';
-import { MyInput } from '@/components/MyInput';
-import { useUsuario } from '@/context/context';
-import NetInfo from '@react-native-community/netinfo';
-import { Checkbox } from 'expo-checkbox';
-import { Image } from 'expo-image';
-import { sincronizarFila } from '../Initializer/appinitializer';
-import { Stack, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
+import { ButtonP } from "@/components/ButtonP";
+import { MyInput } from "@/components/MyInput";
+import { PassInput } from "@/components/PassInput";
+import { useUsuario } from "@/context/context";
+import NetInfo from "@react-native-community/netinfo";
+import { Checkbox } from "expo-checkbox";
+import { Image } from "expo-image";
+import { Stack, useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { ActivityIndicator } from 'react-native-paper';
-import { getDB } from '../database';
-import { SupabaseSinc } from '../supabaseSinc/supabaseSinc';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ActivityIndicator } from "react-native-paper";
+import { sincronizarFila } from "../Initializer/appinitializer";
+import { getDB } from "../database";
+import { SupabaseSinc } from "../supabaseSinc/supabaseSinc";
 import { supabase } from "../supabaseserver";
 
-const LogoImage = require('@/assets/images/logodhredondotrans.png');
+const LogoImage = require("@/assets/images/logodhredondotrans.png");
 
 export default function Login() {
   const [isChecked, setChecked] = useState(false);
@@ -28,7 +29,7 @@ export default function Login() {
 
   const login = async () => {
     if (!email || !senha) {
-      Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
+      Alert.alert("Erro", "Preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -84,8 +85,8 @@ export default function Login() {
 
           if (isChecked) {
             await SecureStore.setItemAsync(
-              'supabase_session',
-              JSON.stringify(sessionData.session)
+              "supabase_session",
+              JSON.stringify(sessionData.session),
             );
           }
 
@@ -93,7 +94,7 @@ export default function Login() {
             await db.runAsync(
               `INSERT OR REPLACE INTO sessoes (usuario_id, email_responsavel, access_token, refresh_token)
                VALUES (?, ?, ?, ?)`,
-              [user.id, emailNormalizado, access_token, refresh_token]
+              [user.id, emailNormalizado, access_token, refresh_token],
             );
           });
         }
@@ -109,21 +110,21 @@ export default function Login() {
       } else {
         const sessao = await db.getFirstAsync(
           "SELECT usuario_id AS id, access_token, refresh_token FROM sessoes WHERE email_responsavel = ?",
-          [emailNormalizado]
+          [emailNormalizado],
         );
 
         if (!sessao?.id) {
           setLoginCarregando(false);
           Alert.alert(
             "Sem conexão",
-            "Nenhum login anterior encontrado. Faça login uma vez com internet."
+            "Nenhum login anterior encontrado. Faça login uma vez com internet.",
           );
           return;
         }
 
         const usuarioLocal = await db.getFirstAsync(
           "SELECT * FROM usuarios WHERE id = ?",
-          [sessao.id]
+          [sessao.id],
         );
 
         if (!usuarioLocal) {
@@ -137,7 +138,6 @@ export default function Login() {
         router.dismissAll();
         router.replace("/telaInicial");
       }
-
     } catch (err) {
       console.error("Erro inesperado:", err);
       Alert.alert("Erro", "Não foi possível realizar o login.");
@@ -147,18 +147,28 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.corEscura}
+      extraHeight={280}
+    >
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: '#FAFAFF' },
-          headerTintColor: '#231F20',
-          headerTitle: '',
+          headerStyle: { backgroundColor: "#FAFAFF" },
+          headerTintColor: "#231F20",
+          headerTitle: "",
           headerShadowVisible: false,
         }}
       />
 
       <View style={styles.loginEstilo}>
-        <View style={{ flex: 1, width: '80%', justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{
+            flex: 1,
+            width: "80%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <View style={styles.imageContainer}>
             <Image source={LogoImage} style={styles.image} />
           </View>
@@ -186,32 +196,37 @@ export default function Login() {
 
             <View>
               <Text style={styles.textForm}>Senha</Text>
-              <MyInput
+              <PassInput
                 ref={ref_senha}
                 value={senha}
                 onChangeText={setSenha}
                 autoComplete="current-password"
                 style={styles.input}
                 placeholder="Digite a senha"
-                placeholderTextColor={'grey'}
+                placeholderTextColor={"grey"}
                 secureTextEntry={true}
               />
             </View>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+            >
               <Checkbox
-                color={'#3A7ADC'}
+                color={"#3A7ADC"}
                 value={isChecked}
                 onValueChange={() => setChecked(!isChecked)}
               />
               <Text style={styles.textForm}>Manter login</Text>
             </View>
 
-            <View style={{ width: 200, alignSelf: 'center', marginTop: 10 }}>
+            <View style={{ width: 200, alignSelf: "center", marginTop: 10 }}>
               {loginCarregando ? (
-                <ButtonP onPress={login} label={<ActivityIndicator color='#FAFAFF' />} />
+                <ButtonP
+                  onPress={login}
+                  label={<ActivityIndicator color="#FAFAFF" />}
+                />
               ) : (
-                <ButtonP label='Entrar' onPress={login} />
+                <ButtonP label="Entrar" onPress={login} />
               )}
             </View>
           </View>
@@ -223,40 +238,40 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   containerForm: {
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
     gap: 10,
-    width: '100%',
+    width: "100%",
     flex: 1,
   },
   input: {
-    backgroundColor: '#FAFAFF',
-    color: '#231F20',
+    backgroundColor: "#FAFAFF",
+    color: "#231F20",
     paddingVertical: 0,
     paddingHorizontal: 0,
     borderWidth: 1,
-    borderColor: '#231F20',
+    borderColor: "#231F20",
     borderRadius: 2,
-    width: '100%',
+    width: "100%",
     fontSize: 16,
     height: 35,
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
     lineHeight: 24,
-    fontFamily: 'Roboto',
+    fontFamily: "Roboto",
   },
   loginEstilo: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FAFAFF',
-    width: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FAFAFF",
+    width: "100%",
   },
   textForm: {
-    color: '#231F20',
+    color: "#231F20",
     fontSize: 16,
     lineHeight: 20,
-    fontFamily: 'Roboto',
+    fontFamily: "Roboto",
   },
   imageContainer: {
     width: 350,
@@ -269,13 +284,13 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   titulo: {
-    color: '#231F20',
+    color: "#231F20",
     fontSize: 20,
     fontWeight: "700",
-    fontFamily: 'Raleway-700',
+    fontFamily: "Raleway-700",
   },
   corEscura: {
     flexGrow: 1,
-    backgroundColor: '#FAFAFF',
+    backgroundColor: "#FAFAFF",
   },
 });
