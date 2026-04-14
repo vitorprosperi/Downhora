@@ -809,7 +809,7 @@ FIM DA POLÍTICA DE PRIVACIDADE
 
             <View>
               <Text style={styles.textForm}>Confirmar senha</Text>
-              <MyInput
+              <PassInput
                 ref={ref_input6}
                 style={styles.input}
                 returnKeyType="next"

@@ -1,4 +1,6 @@
-import { Platform, StatusBar, Text, View } from "react-native";
+import { Image, Platform, StatusBar, Text, View } from "react-native";
+
+const trabalhador = require("@/assets/images/trabalhador.png");
 
 export default function HomeScreen() {
   return (
@@ -9,7 +11,8 @@ export default function HomeScreen() {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 10,
       }}
     >
-      <Text>hey how you doing</Text>
+      <Text>Página em manutenção</Text>
+      <Image source={trabalhador}></Image>
     </View>
   );
 }
