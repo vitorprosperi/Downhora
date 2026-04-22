@@ -17,7 +17,6 @@ export default function Prontuario() {
 
   const carregarSupabase = async (db) => {
     try {
-      // Pacientes
       const { data: pacienteData, error: pacienteError } = await supabase
         .from("usuarios")
         .select("*")
@@ -25,7 +24,6 @@ export default function Prontuario() {
       if (pacienteError) throw pacienteError;
       setPacientes(pacienteData || []);
 
-      // Histórico médico
       const { data: historicoData, error: historicoError } = await supabase
         .from("historico_medico")
         .select("*")
@@ -33,7 +31,6 @@ export default function Prontuario() {
       if (historicoError) throw historicoError;
       setHistoricos(historicoData || []);
 
-      // Complementares
       const { data: compData, error: compError } = await supabase
         .from("complementares")
         .select("*")
@@ -41,7 +38,6 @@ export default function Prontuario() {
       if (compError) throw compError;
       setComplementares(compData || []);
 
-      // Atualiza o cache local
       if (pacienteData?.length) {
         for (const p of pacienteData) {
           await db.runAsync(
@@ -49,8 +45,15 @@ export default function Prontuario() {
              (id, nome, data_nascimento, genero, cpf, nome_mae, nome_responsavel, telefone_responsavel, email_responsavel)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-              p.id, p.nome, p.data_nascimento, p.genero, p.cpf,
-              p.nome_mae, p.nome_responsavel, p.telefone_responsavel, p.email_responsavel
+              p.id,
+              p.nome,
+              p.data_nascimento,
+              p.genero,
+              p.cpf,
+              p.nome_mae,
+              p.nome_responsavel,
+              p.telefone_responsavel,
+              p.email_responsavel
             ]
           );
         }
@@ -69,11 +72,34 @@ export default function Prontuario() {
               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )`,
             [
-              h.id, h.usuario_id, h.exame_cariotipo, h.data_cariotipo, h.triagem_auditiva, h.data_triagem,
-              h.consulta_cardiologista, h.data_cardiologista, h.teste_pezinho, h.data_pezinho, h.consulta_oftalmo, h.data_oftalmo,
-              h.consulta_fono, h.data_fono, h.consulta_odonto, h.data_odonto, h.consulta_endocrinologia, h.data_endocrinologia,
-              h.consulta_fisio, h.data_fisio, h.consulta_terapia, h.data_terapia, h.consulta_psicopedagogo, h.data_psicopedagogo,
-              h.comorbidades, h.medicamentos, h.alergias, h.tipo_sanguineo
+              h.id,
+              h.usuario_id,
+              h.exame_cariotipo,
+              h.data_cariotipo,
+              h.triagem_auditiva,
+              h.data_triagem,
+              h.consulta_cardiologista,
+              h.data_cardiologista,
+              h.teste_pezinho,
+              h.data_pezinho,
+              h.consulta_oftalmo,
+              h.data_oftalmo,
+              h.consulta_fono,
+              h.data_fono,
+              h.consulta_odonto,
+              h.data_odonto,
+              h.consulta_endocrinologia,
+              h.data_endocrinologia,
+              h.consulta_fisio,
+              h.data_fisio,
+              h.consulta_terapia,
+              h.data_terapia,
+              h.consulta_psicopedagogo,
+              h.data_psicopedagogo,
+              h.comorbidades,
+              h.medicamentos,
+              h.alergias,
+              h.tipo_sanguineo
             ]
           );
         }
@@ -86,12 +112,17 @@ export default function Prontuario() {
               id, usuario_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao
             ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [
-              c.id, c.usuario_id, c.escolaridade, c.unidade_1, c.unidade_2, c.unidade_3, c.autonomia_comunicacao
+              c.id,
+              c.usuario_id,
+              c.escolaridade,
+              c.unidade_1,
+              c.unidade_2,
+              c.unidade_3,
+              c.autonomia_comunicacao
             ]
           );
         }
       }
-
     } catch (error) {
       console.error("Erro ao buscar dados no Supabase:", error);
     }
@@ -114,15 +145,15 @@ export default function Prontuario() {
 
   useEffect(() => {
     const buscarDados = async () => {
-      const db = await getDB(); 
+      const db = await getDB();
 
       console.log("Recuperando dados do SQLite...");
-      await carregarSQLite(db); // sempre carrega do SQLite
+      await carregarSQLite(db);
 
       const netState = await NetInfo.fetch();
       if (netState.isConnected && userId) {
         console.log("Recuperando dados do Supabase para sincronização...");
-        await carregarSupabase(db); // sincroniza com o Supabase, mas não apaga dados locais
+        await carregarSupabase(db);
       }
     };
 
@@ -135,29 +166,44 @@ export default function Prontuario() {
   const InfoPorPacienteId = (pacienteId) =>
     complementares.find((h) => h.usuario_id === pacienteId || h.pessoa_id === pacienteId);
 
+  const textoOuNaoInformado = (valor) => {
+    if (valor === null || valor === undefined || String(valor).trim() === "") {
+      return "Não informado";
+    }
+    return String(valor);
+  };
+
+  const dataOuNaoInformado = (valor) => {
+    if (!valor) return "Não informado";
+
+    const data = new Date(valor);
+    if (isNaN(data.getTime())) return "Não informado";
+
+    return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+  };
+
   const mostrarExame = (label, valor, dataCampo) => {
-    const dataFormatadaExame = new Date(dataCampo).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-    if (valor?.toLowerCase() === "sim") {
+    const valorFormatado = textoOuNaoInformado(valor);
+    const dataFormatadaExame = dataOuNaoInformado(dataCampo);
+
+    if (String(valor || "").toLowerCase() === "sim") {
       return (
         <View>
           <Text style={styles.label}>{label}</Text>
-          <Text style={styles.text}>{valor}</Text>
+          <Text style={styles.text}>{valorFormatado}</Text>
           <Text style={styles.label}>Data mais recente</Text>
           <Text style={styles.text}>{dataFormatadaExame}</Text>
         </View>
       );
     }
+
     return (
       <View>
         <Text style={styles.label}>{label}</Text>
-        <Text style={styles.text}>{valor || "Não informado"}</Text>
+        <Text style={styles.text}>{valorFormatado}</Text>
       </View>
     );
   };
-
-  // Configura o parse de data
-  const customParseFormat = require("dayjs/plugin/customParseFormat");
-  dayjs.extend(customParseFormat);
 
   return (
     <SafeAreaView style={styles.safeView} edges={['bottom']}>
@@ -167,6 +213,7 @@ export default function Prontuario() {
           headerShadowVisible: true,
         }}
       />
+
       <View>
         <FlatList
           data={pacientes}
@@ -174,14 +221,19 @@ export default function Prontuario() {
           renderItem={({ item }) => {
             const historico = HistoricoPorPacienteId(item.id);
             const infoComp = InfoPorPacienteId(item.id);
-            const data = new Date(item.data_nascimento).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-            const dataFormatada = dayjs(data, 'DDMMYYYY').format('YYYY-MM-DD');
-            const idade = dayjs().diff(dataFormatada, 'y');
+
+            const dataNascimento = dataOuNaoInformado(item.data_nascimento);
+            const idade = item.data_nascimento && dayjs(item.data_nascimento).isValid()
+              ? dayjs().diff(dayjs(item.data_nascimento), 'y')
+              : null;
 
             return (
               <View style={styles.container}>
                 <View style={styles.contNome}>
-                  <Text style={styles.nome}>{item.nome}, {idade} anos</Text>
+                  <Text style={styles.nome}>
+                    {textoOuNaoInformado(item.nome)}
+                    {idade !== null ? `, ${idade} anos` : ""}
+                  </Text>
                 </View>
 
                 <View style={styles.contTitulo}>
@@ -191,59 +243,80 @@ export default function Prontuario() {
                 <View style={styles.dadosContainer}>
                   <View>
                     <Text style={styles.label}>CPF</Text>
-                    <MaskedText mask="999.999.999-99" style={styles.text}>{item.cpf}</MaskedText>
+                    {item.cpf ? (
+                      <MaskedText mask="999.999.999-99" style={styles.text}>
+                        {item.cpf}
+                      </MaskedText>
+                    ) : (
+                      <Text style={styles.text}>Não informado</Text>
+                    )}
                   </View>
 
                   <View>
                     <Text style={styles.label}>Data de nascimento</Text>
-                    <Text style={styles.text}>{data}</Text>
+                    <Text style={styles.text}>{dataNascimento}</Text>
                   </View>
 
                   <View>
                     <Text style={styles.label}>Gênero</Text>
-                    <Text style={styles.text}>{item.genero}</Text>
+                    <Text style={styles.text}>{textoOuNaoInformado(item.genero)}</Text>
                   </View>
 
                   {infoComp && (
                     <>
                       <View>
                         <Text style={styles.label}>Escolaridade</Text>
-                        <Text style={styles.text}>{infoComp.escolaridade}</Text>
+                        <Text style={styles.text}>{textoOuNaoInformado(infoComp.escolaridade)}</Text>
                       </View>
+
                       <View>
                         <Text style={styles.label}>Unidade escolar 1</Text>
-                        <Text style={styles.text}>{infoComp.unidade_1}</Text>
+                        <Text style={styles.text}>{textoOuNaoInformado(infoComp.unidade_1)}</Text>
                       </View>
+
                       <View>
                         <Text style={styles.label}>Unidade escolar 2</Text>
-                        <Text style={styles.text}>{infoComp.unidade_2}</Text>
+                        <Text style={styles.text}>{textoOuNaoInformado(infoComp.unidade_2)}</Text>
                       </View>
+
                       <View>
                         <Text style={styles.label}>Unidade escolar 3</Text>
-                        <Text style={styles.text}>{infoComp.unidade_3}</Text>
+                        <Text style={styles.text}>{textoOuNaoInformado(infoComp.unidade_3)}</Text>
                       </View>
+
                       <View>
                         <Text style={styles.label}>Autonomia/Comunicação</Text>
-                        <Text style={styles.text}>{infoComp.autonomia_comunicacao}</Text>
+                        <Text style={styles.text}>{textoOuNaoInformado(infoComp.autonomia_comunicacao)}</Text>
                       </View>
                     </>
                   )}
 
                   <View>
                     <Text style={styles.label}>Nome da mãe</Text>
-                    <Text style={styles.text}>{item.nome_mae}</Text>
+                    <Text style={styles.text}>{textoOuNaoInformado(item.nome_mae)}</Text>
                   </View>
+
                   <View>
                     <Text style={styles.label}>Nome do responsável</Text>
-                    <Text style={styles.text}>{item.nome_responsavel}</Text>
+                    <Text style={styles.text}>{textoOuNaoInformado(item.nome_responsavel)}</Text>
                   </View>
+
                   <View>
                     <Text style={styles.label}>Telefone do responsável</Text>
-                    <MaskedText mask="(99) 99999-9999" style={styles.text}>{item.telefone_responsavel}</MaskedText>
+                    {item.telefone_responsavel ? (
+                      <MaskedText mask="(99) 99999-9999" style={styles.text}>
+                        {item.telefone_responsavel}
+                      </MaskedText>
+                    ) : (
+                      <Text style={styles.text}>Não informado</Text>
+                    )}
                   </View>
+
                   <View>
                     <Text style={styles.label}>Email do responsável</Text>
-                    <Text style={[styles.text, { textTransform: 'none' }]}>{item.email_responsavel}</Text>
+                    <Text style={[styles.text, { textTransform: 'none' }]}>
+                      {textoOuNaoInformado(item.email_responsavel)}
+                    </Text>
                   </View>
                 </View>
 
@@ -268,19 +341,26 @@ export default function Prontuario() {
 
                       <View>
                         <Text style={styles.label}>Comorbidades</Text>
-                        <Text style={[styles.text, { textTransform: 'none' }]}>{historico.comorbidades}</Text>
+                        <Text style={[styles.text, { textTransform: 'none' }]}>
+                          {textoOuNaoInformado(historico.comorbidades)}
+                        </Text>
                       </View>
+
                       <View>
                         <Text style={styles.label}>Medicamentos</Text>
-                        <Text style={styles.text}>{historico.medicamentos}</Text>
+                        <Text style={styles.text}>{textoOuNaoInformado(historico.medicamentos)}</Text>
                       </View>
+
                       <View>
                         <Text style={styles.label}>Alergias</Text>
-                        <Text style={[styles.text, { textTransform: 'none' }]}>{historico.alergias}</Text>
+                        <Text style={[styles.text, { textTransform: 'none' }]}>
+                          {textoOuNaoInformado(historico.alergias)}
+                        </Text>
                       </View>
+
                       <View>
                         <Text style={styles.label}>Tipo sanguíneo</Text>
-                        <Text style={styles.text}>{historico.tipo_sanguineo}</Text>
+                        <Text style={styles.text}>{textoOuNaoInformado(historico.tipo_sanguineo)}</Text>
                       </View>
                     </>
                   ) : (
@@ -313,33 +393,33 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     width: '100%',
   },
-  contNome: { 
-    alignSelf: 'center' 
+  contNome: {
+    alignSelf: 'center'
   },
-  dadosContainer: { 
-    gap: 8, marginBottom: 10 
+  dadosContainer: {
+    gap: 8, marginBottom: 10
   },
-  nome: { 
-    fontFamily: 'Roboto', 
-    color: '#231F20', 
-    fontSize: 20 
+  nome: {
+    fontFamily: 'Roboto',
+    color: '#231F20',
+    fontSize: 20
   },
-  titulo: { 
-    fontFamily: 'Roboto-700', 
-    color: '#231F20', 
-    fontSize: 19 
+  titulo: {
+    fontFamily: 'Roboto-700',
+    color: '#231F20',
+    fontSize: 19
   },
-  text: { 
-    fontSize: 16, 
+  text: {
+    fontSize: 16,
     lineHeight: 24,
-    color: '#231F20', 
-    fontFamily: 'Roboto', 
+    color: '#231F20',
+    fontFamily: 'Roboto',
     textTransform: 'capitalize',
-    marginTop: -2 
-    },
-  label: { 
-    fontSize: 16, 
-    color: 'hsl(345, 6%, 43%)', 
-    fontFamily: 'Roboto-500' 
+    marginTop: -2
+  },
+  label: {
+    fontSize: 16,
+    color: 'hsl(345, 6%, 43%)',
+    fontFamily: 'Roboto-500'
   },
 });
