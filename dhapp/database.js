@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const DB_VERSION = 26;
+const DB_VERSION = 27;
 let dbInstance = null;
 let dbPromise = null; // garante inicialização única
 
@@ -38,7 +38,7 @@ export async function getDB() {
           nome TEXT NOT NULL,
           data_nascimento TEXT,
           genero TEXT,
-          cpf TEXT UNIQUE,
+          cpf TEXT,
           nome_mae TEXT,
           nome_responsavel TEXT,
           telefone_responsavel TEXT,

@@ -86,7 +86,7 @@ export default function App() {
         )}
       </View>
       <TouchableOpacity
-        onPress={() => Linking.openURL("mailto:downhorarecovery@gmail.com")}
+        onPress={() => Linking.openURL("mailto:downhorasuporte@gmail.com")}
       >
         <Text style={styles.contactText}>
           Contato: downhorasuporte@gmail.com
