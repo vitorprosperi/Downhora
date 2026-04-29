@@ -42,7 +42,6 @@ export default function CadastroPacDois() {
     ];
 
     const ref_input2 = useRef();
-    const ref_input3 = useRef();
 
     return (
         <SafeAreaView edges={['bottom', 'left', 'right']} style={styles.corEscura}>
@@ -87,9 +86,8 @@ export default function CadastroPacDois() {
                                 style={styles.input}
                                 placeholder='Ex: Losartana'
                                 placeholderTextColor={'grey'}
-                                returnKeyType="next"
+                                returnKeyType="done"
                                 onChangeText={(text) => setPacientedados(prev => ({ ...prev, medicamento: text }))}
-                                onSubmitEditing={() => ref_input3.current.open()}
                             />
                         </View>
 
@@ -97,7 +95,6 @@ export default function CadastroPacDois() {
                         <View>
                             <Text style={styles.textForm}>Alergias</Text>
                             <MyDropdown
-                                ref={ref_input3}
                                 data={itensSimNao}
                                 labelField="label"
                                 valueField="value"

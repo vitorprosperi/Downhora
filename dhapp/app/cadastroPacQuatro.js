@@ -453,6 +453,7 @@ export default function CadastroPacQuatro() {
                 style={styles.input}
                 placeholder="Ex: Apoio"
                 placeholderTextColor={"grey"}
+                returnKeyType="done"
                 onChangeText={(text) =>
                   setPacientedados((prev) => ({ ...prev, uni3: text }))
                 }

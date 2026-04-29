@@ -22,7 +22,7 @@ import styles from "./styleForms";
 
 const validateCpf = require("validar-cpf");
 const normalizarCpf = (valor) => (valor || "").toString().replace(/\D/g, "");
-const DEBOUNCE_VALIDACAO_MS = 1000;
+const DEBOUNCE_VALIDACAO_MS = 900;
 
 const senhaEhForte = (senha) =>
   validator.isStrongPassword(senha || "", {
@@ -403,12 +403,11 @@ export default function CadastroPac() {
                 style={styles.input}
                 keyboardType="numeric"
                 mask={Masks.BRL_CPF}
-                returnKeyType="next"
+                returnKeyType="done"
                 maxLength={14}
                 value={cpf}
                 placeholder="Ex: 123.456.789-01"
                 placeholderTextColor={"grey"}
-                onSubmitEditing={() => ref_input5.current.focus()}
                 onChangeText={(masked, unmasked) => {
                   setCpf(masked);
                   setCpfUnmasked(unmasked);
