@@ -240,7 +240,6 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontFamily: "Roboto",
   },
-
   buttonContainer: {
     width: 220,
     alignSelf: "center",

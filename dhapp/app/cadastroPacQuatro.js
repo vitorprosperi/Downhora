@@ -78,6 +78,11 @@ export default function CadastroPacQuatro() {
 
       if (errorUsuario) {
         console.error("Erro ao sincronizar com Supabase (usuarios):", errorUsuario);
+        Alert.alert(
+          "Erro",
+          "Conta criada no Auth, mas falhou ao salvar em usuarios. Verifique policy/RLS de INSERT na tabela usuarios.",
+        );
+        return null;
       } else {
         console.log("Paciente salvo no Supabase (usuarios)");
       }
