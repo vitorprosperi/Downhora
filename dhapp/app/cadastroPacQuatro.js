@@ -27,7 +27,87 @@ export default function CadastroPacQuatro() {
     })();
   }, []);
 
+  const traduzirErroCadastro = (error) => {
+    const mensagemOriginal = String(error?.message || error || "");
+    const mensagem = mensagemOriginal.toLowerCase();
+
+    if (mensagem.includes("sem_internet")) {
+      return "Você está sem conexão com a internet. Conecte-se e tente novamente.";
+    }
+
+    if (
+      mensagem.includes("user already registered") ||
+      mensagem.includes("already registered") ||
+      mensagem.includes("already exists") ||
+      mensagem.includes("duplicate") ||
+      mensagem.includes("unique")
+    ) {
+      return "Este e-mail já está cadastrado.";
+    }
+
+    if (mensagem.includes("invalid email")) {
+      return "O e-mail informado é inválido.";
+    }
+
+    if (mensagem.includes("password")) {
+      return "A senha informada não atende aos requisitos mínimos.";
+    }
+
+    if (
+      mensagem.includes("network") ||
+      mensagem.includes("fetch") ||
+      mensagem.includes("internet") ||
+      mensagem.includes("failed to fetch") ||
+      mensagem.includes("network request failed")
+    ) {
+      return "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.";
+    }
+
+    if (
+      mensagem.includes("violates foreign key constraint") ||
+      mensagem.includes("foreign key")
+    ) {
+      return "Erro ao vincular os dados do paciente. Tente novamente.";
+    }
+
+    if (
+      mensagem.includes("null value") ||
+      mensagem.includes("not-null")
+    ) {
+      return "Existem campos obrigatórios não preenchidos. Revise os dados e tente novamente.";
+    }
+
+    return "Não foi possível finalizar o cadastro. Verifique os dados e tente novamente.";
+  };
+
+  const limparCadastroSupabase = async (authUserId) => {
+    if (!authUserId) return;
+
+    try {
+      await supabase
+        .from("complementares")
+        .delete()
+        .eq("usuario_id", authUserId);
+
+      await supabase
+        .from("historico_medico")
+        .delete()
+        .eq("usuario_id", authUserId);
+
+      await supabase
+        .from("usuarios")
+        .delete()
+        .eq("id", authUserId);
+
+      console.log("Limpeza parcial do Supabase concluída.");
+    } catch (error) {
+      console.error("Erro ao tentar limpar cadastro parcial no Supabase:", error);
+    }
+  };
+
   const registrarAuth = async (email_responsavel, senha) => {
+    let authUserId = null;
+
     try {
       const emailNormalizado = email_responsavel.trim().toLowerCase();
 
@@ -44,17 +124,14 @@ export default function CadastroPacQuatro() {
       });
 
       if (error) {
-        console.error("Erro no Auth:", error.message);
-        Alert.alert("Erro", error.message || "Não foi possível criar o usuário no Supabase Auth.");
-        return null;
+        throw error;
       }
 
       if (!data?.user?.id) {
-        Alert.alert("Erro", "Não foi possível obter o ID do usuário criado.");
-        return null;
+        throw new Error("Não foi possível obter o ID do usuário criado.");
       }
 
-      const authUserId = data.user.id;
+      authUserId = data.user.id;
 
       const { error: errorUsuario } = await supabase
         .from("usuarios")
@@ -77,9 +154,7 @@ export default function CadastroPacQuatro() {
         }]);
 
       if (errorUsuario) {
-        console.error("Erro ao sincronizar com Supabase (usuarios):", errorUsuario);
-      } else {
-        console.log("Paciente salvo no Supabase (usuarios)");
+        throw errorUsuario;
       }
 
       const { error: errorHistorico } = await supabase
@@ -115,9 +190,7 @@ export default function CadastroPacQuatro() {
         }]);
 
       if (errorHistorico) {
-        console.error("Erro ao sincronizar com Supabase (historico):", errorHistorico);
-      } else {
-        console.log("Histórico salvo no Supabase (historico)");
+        throw errorHistorico;
       }
 
       const { error: errorComplementar } = await supabase
@@ -132,20 +205,25 @@ export default function CadastroPacQuatro() {
         }]);
 
       if (errorComplementar) {
-        console.error("Erro ao sincronizar com Supabase (complementar):", errorComplementar);
-      } else {
-        console.log("Complementar salvo no Supabase (complementar)");
+        throw errorComplementar;
       }
 
       return authUserId;
 
-    } catch (err) {
-      console.error("Erro inesperado:", err);
-      return null;
+    } catch (error) {
+      console.error("Erro no cadastro do Supabase:", error);
+
+      if (authUserId) {
+        await limparCadastroSupabase(authUserId);
+      }
+
+      throw error;
     }
   };
 
   const salvarPaciente = async () => {
+    if (cadastroCarregando) return;
+
     if (!db) {
       Alert.alert("Aguarde", "O banco de dados ainda está sendo inicializado.");
       return;
@@ -157,19 +235,23 @@ export default function CadastroPacQuatro() {
       const emailNormalizado = pacientedados.email_responsavel?.trim().toLowerCase();
 
       if (!emailNormalizado) {
-        Alert.alert("Erro", "E-mail do responsável não informado.");
-        return;
+        throw new Error("E-mail do responsável não informado.");
+      }
+
+      if (!pacientedados.senha) {
+        throw new Error("Senha não informada.");
+      }
+
+      const netState = await NetInfo.fetch();
+
+      if (!netState.isConnected) {
+        throw new Error("SEM_INTERNET");
       }
 
       const authUserId = await registrarAuth(
         pacientedados.email_responsavel,
         pacientedados.senha
       );
-
-      if (!authUserId) {
-        console.log("Erro", "Não foi possível criar o usuário no Supabase Auth.");
-        return;
-      }
 
       await db.withTransactionAsync(async () => {
         await db.runAsync(
@@ -225,7 +307,8 @@ export default function CadastroPacQuatro() {
         );
 
         await db.runAsync(
-          `INSERT INTO complementares (usuario_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
+          `INSERT INTO complementares 
+            (usuario_id, escolaridade, unidade_1, unidade_2, unidade_3, autonomia_comunicacao)
            VALUES (?, ?, ?, ?, ?, ?)`,
           [
             authUserId,
@@ -238,21 +321,17 @@ export default function CadastroPacQuatro() {
         );
       });
 
-      console.log("Paciente salvo no SQLite");
-
-      const netState = await NetInfo.fetch();
-      if (netState.isConnected) {
-        console.log("Tem internet, dados enviados ao Supabase");
-      } else {
-        console.log("Sem internet: paciente será sincronizado depois");
-      }
+      console.log("Paciente salvo no Supabase e no SQLite.");
 
       Alert.alert("Cadastro concluído!");
       router.replace('/');
 
     } catch (error) {
       console.error("Erro ao salvar paciente:", error);
-      Alert.alert("Erro", "Falha ao salvar o paciente.");
+
+      const mensagem = traduzirErroCadastro(error);
+
+      Alert.alert("Erro no cadastro", mensagem);
     } finally {
       setCadastroCarregando(false);
     }
@@ -274,6 +353,7 @@ export default function CadastroPacQuatro() {
           },
         }}
       />
+
       <KeyboardAwareScrollView contentContainerStyle={styles.corEscura} extraHeight={280}>
         <View style={styles.container}>
           <View style={styles.containerForm}>
@@ -364,9 +444,15 @@ export default function CadastroPacQuatro() {
             </View>
 
             {cadastroCarregando ? (
-              <ButtonP onPress={salvarPaciente} label={<ActivityIndicator color='#FAFAFF' />} />
+              <ButtonP
+                onPress={salvarPaciente}
+                label={<ActivityIndicator color='#FAFAFF' />}
+              />
             ) : (
-              <ButtonP onPress={salvarPaciente} label="Cadastrar" />
+              <ButtonP
+                onPress={salvarPaciente}
+                label="Cadastrar"
+              />
             )}
           </View>
         </View>

@@ -579,7 +579,7 @@ CONTATO
 
 Em caso de dúvidas, solicitações ou exercício de direitos relacionados à proteção de dados, o usuário pode entrar em contato pelo e-mail:
 
-DownHora@gmail.com
+downhorasuporte@gmail.com
 
 FIM DA POLÍTICA DE PRIVACIDADE
 `}
